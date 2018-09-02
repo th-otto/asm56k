@@ -65,9 +65,9 @@ endif
 
 
 CC=$(CROSSPREFIX)gcc
-CFLAGS=-O3 -Wall
+CFLAGS=-O2 -Wall -Wstrict-prototypes -Wmissing-prototypes
 
-LDFLAGS=-g -O3
+LDFLAGS=-s
 LD=$(CC)
 
 LEX=flex

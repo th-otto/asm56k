@@ -79,13 +79,10 @@ int const incdec_patterns[] = {
 
 void GenAndEorOr(uint insn_patt, uint src_reg, uint dest_reg, bcode * par_move)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = par_move->sflag;
 		insert_vcode_w(&inst_code);
 	} else
@@ -110,13 +107,10 @@ void GenAndEorOr(uint insn_patt, uint src_reg, uint dest_reg, bcode * par_move)
 
 void GenAdcSbc(uint insn_patt, uint src_reg, uint dest_reg, bcode * par_move)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = par_move->sflag;
 		insert_vcode_w(&inst_code);
 	} else
@@ -154,13 +148,10 @@ void GenAdcSbc(uint insn_patt, uint src_reg, uint dest_reg, bcode * par_move)
 
 void GenAddSub(uint insn_patt, uint src_reg, uint dest_reg, bcode * par_move)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = par_move->sflag;
 		insert_vcode_w(&inst_code);
 	} else
@@ -195,13 +186,10 @@ void GenAddSub(uint insn_patt, uint src_reg, uint dest_reg, bcode * par_move)
 
 void GenCmp(uint insn_patt, uint src_reg, uint dest_reg, bcode * par_move)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = par_move->sflag;
 		insert_vcode_w(&inst_code);
 	} else
@@ -236,13 +224,10 @@ void GenCmp(uint insn_patt, uint src_reg, uint dest_reg, bcode * par_move)
 
 void GenAddSubEorOrLong(uint insn_patt, int val, uint dest_reg)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = 1;
 		insert_vcode_w(&inst_code);
 	} else
@@ -263,13 +248,11 @@ void GenAddSubEorOrLong(uint insn_patt, int val, uint dest_reg)
 
 void GenAddSubEorOrShort(uint insn_patt, int val, uint dest_reg)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		insert_vcode_w(&inst_code);
 	} else
 	{
@@ -292,13 +275,10 @@ void GenAddSubEorOrShort(uint insn_patt, int val, uint dest_reg)
 
 void GenAddxSubx(uint insn_patt, uint src_reg, uint dest_reg, bcode * par_move)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = par_move->sflag;
 		insert_vcode_w(&inst_code);
 	} else
@@ -325,13 +305,11 @@ void GenAddxSubx(uint insn_patt, uint src_reg, uint dest_reg, bcode * par_move)
 
 void GenAndiOri(uint insn_patt, int val, uint dest_reg)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		insert_vcode_w(&inst_code);
 	} else
 	{
@@ -359,13 +337,11 @@ void GenAndiOri(uint insn_patt, int val, uint dest_reg)
 
 void GenAsxImmediate(uint insn_patt, int val, uint src_reg, uint dest_reg)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		insert_vcode_w(&inst_code);
 	} else
 	{
@@ -389,13 +365,11 @@ void GenAsxImmediate(uint insn_patt, int val, uint src_reg, uint dest_reg)
 
 void GenAsxReg(uint insn_patt, int val_reg, uint src_reg, uint dest_reg)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		insert_vcode_w(&inst_code);
 	} else
 	{
@@ -420,13 +394,10 @@ void GenAsxReg(uint insn_patt, int val_reg, uint src_reg, uint dest_reg)
 
 void GenCmpm(uint src_reg, uint dest_reg, bcode * par_move)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = par_move->sflag;
 		insert_vcode_w(&inst_code);
 	} else
@@ -458,13 +429,11 @@ void GenCmpm(uint src_reg, uint dest_reg, bcode * par_move)
 
 void GenCmpu(uint src_reg, uint dest_reg)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		insert_vcode_w(&inst_code);
 	} else
 	{
@@ -493,13 +462,11 @@ void GenCmpu(uint src_reg, uint dest_reg)
 
 void GenIncDec(uint inst_patt, uint reg)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		insert_vcode_w(&inst_code);
 	} else
 	{
@@ -516,13 +483,11 @@ void GenIncDec(uint inst_patt, uint reg)
 
 void GenDiv(uint src_reg, uint dst_reg)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		insert_vcode_w(&inst_code);
 	} else
 	{
@@ -540,13 +505,11 @@ void GenDiv(uint src_reg, uint dst_reg)
 void GenDMac(uint modifier, uint plusminus, int val, uint dest_reg)
 {
 	DSP56301;
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		insert_vcode_w(&inst_code);
 	} else
 	{
@@ -566,13 +529,11 @@ void GenDMac(uint modifier, uint plusminus, int val, uint dest_reg)
 void GenLsxImmediate(const int *insn_patt, int val, uint dest_reg)
 {
 	DSP56301;
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		insert_vcode_w(&inst_code);
 	} else
 	{
@@ -596,13 +557,11 @@ void GenLsxImmediate(const int *insn_patt, int val, uint dest_reg)
 void GenLsxReg(const int *insn_patt, int src_reg, uint dest_reg)
 {
 	DSP56301;
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		insert_vcode_w(&inst_code);
 	} else
 	{
@@ -652,13 +611,10 @@ uint const mpyr_pattern[] = {
 
 void GenMul1(const uint * insn_patt, uint plusminus, uint reg_pair, uint dest_reg, bcode * par_move)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = par_move->sflag;
 		insert_vcode_w(&inst_code);
 	} else
@@ -684,13 +640,11 @@ void GenMul1(const uint * insn_patt, uint plusminus, uint reg_pair, uint dest_re
 
 void GenMul2(const uint * insn_patt, uint plusminus, uint src_reg, int val, uint dest_reg)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		insert_vcode_w(&inst_code);
 	} else
 	{
@@ -708,7 +662,7 @@ void GenMul2(const uint * insn_patt, uint plusminus, uint src_reg, int val, uint
 		val = exp_2_ssss(val);
 		if (val == -1)
 		{
-			yyerror(ERROR_13);
+			yyerror("Immediate value must be of the following form: 2^n.");
 			val = 0;
 		}
 		dest_reg = ddddd_2_d_dst(dest_reg);
@@ -720,13 +674,10 @@ void GenMul2(const uint * insn_patt, uint plusminus, uint src_reg, int val, uint
 
 void GenMuli(const uint * insn_patt, uint plusminus, int val, uint src_reg, uint dest_reg)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = 1;
 		insert_vcode_w(&inst_code);
 	} else
@@ -753,13 +704,11 @@ void GenMuli(const uint * insn_patt, uint plusminus, int val, uint src_reg, uint
 
 void GenMulxx(const uint * insn_patt, uint code, uint plusminus, uint reg_pair, uint dest_reg)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		insert_vcode_w(&inst_code);
 	} else
 	{
@@ -787,13 +736,10 @@ uint const max_pattern[] = {
 
 void GenMax(uint insn_patt, uint src_reg, uint dst_reg, bcode * par_move)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = par_move->sflag;
 		insert_vcode_w(&inst_code);
 	} else
@@ -805,11 +751,11 @@ void GenMax(uint insn_patt, uint src_reg, uint dst_reg, bcode * par_move)
 		inst_code.w1 = 0;
 		if (src_reg != 10)
 		{
-			yyerror(ERROR_14);
+			yyerror("Illegal source register: A is allowed.");
 		}
 		if (dst_reg != 11)
 		{
-			yyerror(ERROR_15);
+			yyerror("Illegal destination register: B is allowed.");
 		}
 		inst_code.w0 = insn_patt | par_move->w0;
 		inst_code.w1 = par_move->w1;
@@ -821,13 +767,11 @@ void GenMax(uint insn_patt, uint src_reg, uint dst_reg, bcode * par_move)
 
 void GenNorm(uint src_reg, uint dst_reg)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		insert_vcode_w(&inst_code);
 	} else
 	{
@@ -839,7 +783,7 @@ void GenNorm(uint src_reg, uint dst_reg)
 		src_reg = ddddd_2_RRR(src_reg);
 		if (src_reg == -1)
 		{
-			yyerror(ERROR_22);
+			yyerror("Illegal source register: Rn regs are only allowed.");
 			src_reg = 0;
 		}
 		dst_reg = ddddd_2_d_dst(dst_reg);
@@ -851,13 +795,11 @@ void GenNorm(uint src_reg, uint dst_reg)
 
 void GenNormf(uint src_reg, uint dst_reg)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		insert_vcode_w(&inst_code);
 	} else
 	{

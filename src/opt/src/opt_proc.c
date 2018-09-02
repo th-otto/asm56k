@@ -81,7 +81,7 @@ static int  backup_file(char *fname);
  */
 
 void
-opt_freestrings()
+opt_freestrings(void)
 {
   OPT_FREE( opt_filename );
   OPT_FREE( opt_defaultfile );
@@ -154,14 +154,14 @@ optAdditionalUsage(OPT_PFI fcn)
     opt_additional_usage_fcn = fcn;
 }
 void
-optDisableMenu()
+optDisableMenu(void)
 {
     opt_menu_enabled = OPT_FALSE;
 }
 
 
 static void
-optWriteVersion()
+optWriteVersion(void)
 {
   char *opt_pkg;
   opt_pkg = optgetTitle();
@@ -740,7 +740,7 @@ break_word(int inquote, char *line)
 
 /* A global function which can be used to programatically */
 /* print the usage. */
-void optPrintUsage() {
+void optPrintUsage(void) {
   long_usage();
 }
 

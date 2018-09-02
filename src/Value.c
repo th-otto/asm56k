@@ -230,7 +230,7 @@ Value Val_Div(Value val1, Value val2)
 	{
 		if (val2.m_value.m_float == 0)
 		{
-			if (g_passNum)
+			if (g_passNum != 0)
 			{
 				yyerror("Division by zero.");
 			}
@@ -243,7 +243,7 @@ Value Val_Div(Value val1, Value val2)
 	{
 		if (val2.m_value.m_int == 0)
 		{
-			if (g_passNum)
+			if (g_passNum != 0)
 			{
 				yyerror("Division by zero.");
 			}
@@ -258,7 +258,8 @@ Value Val_Div(Value val1, Value val2)
 }
 
 
-Value Val_Mod(Value val1, Value val2)
+#if 0 /* unused */
+static Value Val_Mod(Value val1, Value val2)
 {
 	Value ret;
 
@@ -277,7 +278,7 @@ Value Val_Mod(Value val1, Value val2)
 	{
 		if (val2.m_value.m_int == 0)
 		{
-			if (g_passNum)
+			if (g_passNum != 0)
 			{
 				yyerror("Division by zero.");
 			}
@@ -290,6 +291,7 @@ Value Val_Mod(Value val1, Value val2)
 
 	return ret;
 }
+#endif
 
 
 Value Val_Neg(Value val1)
@@ -604,7 +606,7 @@ void EvalDefined(const char *pStr, bool invert)
 
 void GenIfError(void)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		yyerror("Illegal condition.");
 	}

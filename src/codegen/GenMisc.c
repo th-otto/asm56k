@@ -11,6 +11,7 @@ Author:     M.Buras (sqward)
 #include <export.h>
 #include <ErrorMessages.h>
 #include "GenMisc.h"
+#include "GenBitOps.h"
 #include <CodeUtils.h>
 #include <SymbolTable.h>
 
@@ -96,13 +97,10 @@ uint const movem_pattern2[] = {
 
 void GenOneParamParMove(uint insn_patt, uint reg, bcode * par_move)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = par_move->sflag;
 		insert_vcode_w(&inst_code);
 	} else
@@ -124,13 +122,10 @@ void GenOneParamParMove(uint insn_patt, uint reg, bcode * par_move)
 void GenBccRelTarger(uint insn_patt, raddr * rel_target)
 {
 	DSP56301;
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = rel_target->sflag;
 		insert_vcode_w(&inst_code);
 	} else
@@ -167,13 +162,10 @@ void GenBccRelTarger(uint insn_patt, raddr * rel_target)
 
 void GenBitOpReg(uint insn_patt, int val, int dest_reg)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = 0;
 		insert_vcode_w(&inst_code);
 	} else
@@ -203,13 +195,10 @@ void GenBitOpReg(uint insn_patt, int val, int dest_reg)
 void GenBraRelTarger(raddr * rel_target)
 {
 	DSP56301;
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = rel_target->sflag;
 		insert_vcode_w(&inst_code);
 	} else
@@ -247,13 +236,11 @@ void GenBraRelTarger(raddr * rel_target)
 
 void GenBrkCC(int condition)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		insert_vcode_w(&inst_code);
 	} else
 	{
@@ -271,13 +258,10 @@ void GenBrkCC(int condition)
 void GenBscc(uint condition, raddr * rel_target)
 {
 	DSP56301;
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = rel_target->sflag;
 		insert_vcode_w(&inst_code);
 	} else
@@ -316,13 +300,10 @@ void GenBscc(uint condition, raddr * rel_target)
 
 void GenBsr(raddr * rel_target)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		DSP56301;
 		inst_code.sflag = rel_target->sflag;
 		insert_vcode_w(&inst_code);
@@ -361,13 +342,11 @@ void GenBsr(raddr * rel_target)
 
 void GenClb(uint src_reg, uint dest_reg)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		insert_vcode_w(&inst_code);
 	} else
 	{
@@ -384,13 +363,11 @@ void GenClb(uint src_reg, uint dest_reg)
 
 void GenDebug(uint inst_patt, uint condition)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		insert_vcode_w(&inst_code);
 	} else
 	{
@@ -407,13 +384,10 @@ void GenDebug(uint inst_patt, uint condition)
 
 void GenDo1(uint xory, bcode * ea, raddr * rel_target)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = 1;
 		insert_vcode_w(&inst_code);
 	} else
@@ -457,13 +431,10 @@ void GenDo1(uint xory, bcode * ea, raddr * rel_target)
 
 void GenDo2(int val, raddr * rel_target)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = 1;
 		insert_vcode_w(&inst_code);
 	} else
@@ -494,13 +465,10 @@ void GenDo2(int val, raddr * rel_target)
 
 void GenDo3(uint src_reg, raddr * rel_target)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = 1;
 		insert_vcode_w(&inst_code);
 	} else
@@ -532,13 +500,10 @@ void GenDo3(uint src_reg, raddr * rel_target)
 
 void GenDoForever(raddr * rel_target)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = 1;
 		insert_vcode_w(&inst_code);
 	} else
@@ -564,13 +529,10 @@ void GenDoForever(raddr * rel_target)
 
 void GenDor1(uint xory, bcode * ea, raddr * rel_target)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = 1;
 		insert_vcode_w(&inst_code);
 	} else
@@ -614,13 +576,10 @@ void GenDor1(uint xory, bcode * ea, raddr * rel_target)
 
 void GenDor2(int val, raddr * rel_target)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = 1;
 		insert_vcode_w(&inst_code);
 	} else
@@ -651,13 +610,10 @@ void GenDor2(int val, raddr * rel_target)
 
 void GenDor3(uint src_reg, raddr * rel_target)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = 1;
 		insert_vcode_w(&inst_code);
 	} else
@@ -689,13 +645,10 @@ void GenDor3(uint src_reg, raddr * rel_target)
 
 void GenDorForever(raddr * rel_target)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = 1;
 		insert_vcode_w(&inst_code);
 	} else
@@ -721,13 +674,11 @@ void GenDorForever(raddr * rel_target)
 
 void GenEnddo(void)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		insert_vcode_w(&inst_code);
 	} else
 	{
@@ -745,13 +696,11 @@ void GenEnddo(void)
 
 void GenIllegal(void)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		insert_vcode_w(&inst_code);
 	} else
 	{
@@ -766,15 +715,12 @@ void GenIllegal(void)
 }
 
 
-void GenJmpJsrJsccJcc(const uint * insn_patt, uint condition, bcode * ea)
+void GenJmpJsrJsccJcc(const uint *insn_patt, uint condition, bcode *ea)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = ea->sflag;
 		if (inst_code.sflag == 2)
 			inst_code.sflag = 0;
@@ -808,13 +754,10 @@ void GenJmpJsrJsccJcc(const uint * insn_patt, uint condition, bcode * ea)
 
 void GenJccBitRelReg(int insn_patt, int val, int dest_reg, raddr * rel_target)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = 1;
 		insert_vcode_w(&inst_code);
 	} else
@@ -859,13 +802,10 @@ void GenJccBitRelReg(int insn_patt, int val, int dest_reg, raddr * rel_target)
 */
 void GenJccBitAbs(const int *insn_patt, int val, int xory, bcode * ea, raddr * rel_target)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = 1;
 		insert_vcode_w(&inst_code);
 	} else
@@ -926,13 +866,10 @@ void GenJccBitAbs(const int *insn_patt, int val, int xory, bcode * ea, raddr * r
 
 void GenJccBitAbsReg(int insn_patt, int val, uint dest_reg, raddr * rel_target)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = 1;
 		insert_vcode_w(&inst_code);
 	} else
@@ -963,14 +900,11 @@ void GenJccBitAbsReg(int insn_patt, int val, uint dest_reg, raddr * rel_target)
 
 void GenLra(raddr * rel_target, uint dest_reg)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
-		inst_code.sflag = TRUE;
+		inst_code.sflag = 1;
 		if (rel_target->type == T_REGISTER)
 			inst_code.sflag = FALSE;
 		insert_vcode_w(&inst_code);
@@ -1016,13 +950,11 @@ void GenLra(raddr * rel_target, uint dest_reg)
 
 void GenLua1(uint mmrrr, uint dest_reg)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		insert_vcode_w(&inst_code);
 	} else
 	{
@@ -1046,13 +978,11 @@ void GenLua1(uint mmrrr, uint dest_reg)
 void GenLua2(uint rreg, int val, uint dest_reg)
 {
 	DSP56301;
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		insert_vcode_w(&inst_code);
 	} else
 	{
@@ -1081,13 +1011,11 @@ void GenLua2(uint rreg, int val, uint dest_reg)
 void GenMerge(uint src_reg, uint dest_reg)
 {
 	DSP56301;
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		insert_vcode_w(&inst_code);
 	} else
 	{
@@ -1111,13 +1039,10 @@ void GenMerge(uint src_reg, uint dest_reg)
 
 void GenMove(bcode * par_move)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = par_move->sflag;
 		insert_vcode_w(&inst_code);
 	} else
@@ -1137,13 +1062,10 @@ void GenMove(bcode * par_move)
 
 void GenMovec1(const uint * insn_patt, uint dir, uint xory, bcode * ea, uint dest_reg)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = ea->sflag;
 		if (inst_code.sflag == 2)
 		{
@@ -1185,13 +1107,11 @@ void GenMovec1(const uint * insn_patt, uint dir, uint xory, bcode * ea, uint des
 
 void GenMovec2(uint src_reg, uint dest_reg)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		insert_vcode_w(&inst_code);
 	} else
 	{
@@ -1217,7 +1137,7 @@ void GenMovec2(uint src_reg, uint dest_reg)
 					inst_code.w0 = 0x4c0a0 | (new_src << 8) | new_dest;
 				} else
 				{
-					yyerror(ERROR_17);
+					yyerror("Illegal register combination.");
 				}
 			}
 		}
@@ -1228,13 +1148,10 @@ void GenMovec2(uint src_reg, uint dest_reg)
 
 void GenMovec3(uint sh, int val, uint dest_reg)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = sh;
 		insert_vcode_w(&inst_code);
 	} else
@@ -1271,13 +1188,10 @@ void GenMovec3(uint sh, int val, uint dest_reg)
 
 void GenMovem(const uint *insn_patt, uint dir, bcode * ea, uint reg)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = ea->sflag;
 		if (inst_code.sflag == 2)
 		{
@@ -1319,13 +1233,11 @@ void GenMovem(const uint *insn_patt, uint dir, bcode * ea, uint reg)
 
 void GenMovep(uint src_xory, bcode * src_ea, uint dst_xory, bcode * dst_ea)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		if (src_ea->sflag != dst_ea->sflag)
 		{
 			if (src_ea->sflag == 1 || dst_ea->sflag == 1)
@@ -1388,7 +1300,7 @@ void GenMovep(uint src_xory, bcode * src_ea, uint dst_xory, bcode * dst_ea)
 					}
 				} else
 				{
-					yyerror(ERROR_24);
+					yyerror("Source address out of range.");
 					inst_code.w0 = 0;
 				}
 			}
@@ -1402,13 +1314,10 @@ void GenMovep(uint src_xory, bcode * src_ea, uint dst_xory, bcode * dst_ea)
 
 void GenMovep2(uint rw, bcode * src_ea, uint dst_xory, bcode * dst_ea)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = src_ea->sflag;
 		insert_vcode_w(&inst_code);
 	} else
@@ -1447,13 +1356,10 @@ void GenMovep2(uint rw, bcode * src_ea, uint dst_xory, bcode * dst_ea)
 
 void GenMovep3(int val, uint dst_xory, bcode * dst_ea)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = 1;
 		insert_vcode_w(&inst_code);
 	} else
@@ -1499,13 +1405,11 @@ void GenMovep3(int val, uint dst_xory, bcode * dst_ea)
 
 void GenMovep4(uint rw, uint xory, bcode * ea, uint reg)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		insert_vcode_w(&inst_code);
 	} else
 	{
@@ -1559,13 +1463,11 @@ void GenMovep4(uint rw, uint xory, bcode * ea, uint reg)
 
 void GenNoArgOpcode(uint opcode)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		insert_vcode_w(&inst_code);
 	} else
 	{
@@ -1584,13 +1486,10 @@ void GenNoArgOpcode(uint opcode)
 void GenPlockPunloc(uint opcode, bcode * ea)
 {
 	DSP56301;
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = ea->sflag;
 		insert_vcode_w(&inst_code);
 	} else
@@ -1611,13 +1510,10 @@ void GenPlockPunloc(uint opcode, bcode * ea)
 void GenPlockrPunlockr(uint opcode, raddr * rel_target)
 {
 	DSP56301;
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = rel_target->sflag;
 		insert_vcode_w(&inst_code);
 	} else
@@ -1642,13 +1538,11 @@ void GenPlockrPunlockr(uint opcode, raddr * rel_target)
 
 void GenRep1(uint xory, bcode * ea)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		insert_vcode_w(&inst_code);
 	} else
 	{
@@ -1685,13 +1579,11 @@ void GenRep1(uint xory, bcode * ea)
 
 void GenRep2(int exp)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		insert_vcode_w(&inst_code);
 	} else
 	{
@@ -1713,13 +1605,11 @@ void GenRep2(int exp)
 
 void GenRep3(uint reg)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		insert_vcode_w(&inst_code);
 	} else
 	{
@@ -1731,7 +1621,7 @@ void GenRep3(uint reg)
 		reg = ddddd_2_DDDDDD(reg);
 		if (reg == -1)
 		{
-			yyerror(ERROR_23);
+			yyerror("Illegal register.");
 			reg = 0;
 		}
 		inst_code.w0 = 0x6c020 | (reg << 8);
@@ -1744,13 +1634,11 @@ void GenTcc1(uint condition, uint src_reg, uint dst_reg)
 {
 	int new_src_reg;
 
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		insert_vcode_w(&inst_code);
 	} else
 	{
@@ -1794,13 +1682,11 @@ void GenTcc1(uint condition, uint src_reg, uint dst_reg)
 
 void GenTcc2(uint condition, uint src_reg1, uint dst_reg1, uint src_reg2, uint dst_reg2)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		insert_vcode_w(&inst_code);
 	} else
 	{
@@ -1841,13 +1727,10 @@ void GenTcc2(uint condition, uint src_reg1, uint dst_reg1, uint src_reg2, uint d
 
 void GenTfr(uint src_reg, uint dst_reg, bcode * par_move)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = par_move->sflag;
 		insert_vcode_w(&inst_code);
 	} else
@@ -1879,13 +1762,11 @@ void GenTfr(uint src_reg, uint dst_reg, bcode * par_move)
 
 void GenTrapcc(uint condition)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		insert_vcode_w(&inst_code);
 	} else
 	{
@@ -1902,13 +1783,10 @@ void GenTrapcc(uint condition)
 
 void GenVsl(uint reg, int val, bcode * ea)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = ea->sflag;
 		insert_vcode_w(&inst_code);
 	} else
@@ -1938,7 +1816,7 @@ bcode GenEA1(uint opcode, uint addr_reg, uint offs_reg)
 	move.sflag = 0;
 	move.w0 = 0;
 	move.w1 = 0;
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 	} else
 	{
@@ -1960,7 +1838,7 @@ bcode GenEA2(uint opcode, uint addr_reg)
 	move.sflag = 0;
 	move.w0 = 0;
 	move.w1 = 0;
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 	} else
 	{
@@ -1976,7 +1854,7 @@ bcode GenImmLong(uint opcode, uint addr)
 	move.sflag = 0;
 	move.w0 = 0;
 	move.w1 = 0;
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		move.sflag = 1;
 	} else
@@ -1995,7 +1873,7 @@ bcode GenImmShortIO(uint opcode, uint addr)
 	move.sflag = 0;
 	move.w0 = 0;
 	move.w1 = 0;
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		move.sflag = 0;
 	} else
@@ -2014,7 +1892,7 @@ bcode GenImmShortAbs(uint opcode, uint addr)
 	move.sflag = 0;
 	move.w0 = 0;
 	move.w1 = 0;
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		move.sflag = 0;
 	} else
@@ -2034,7 +1912,7 @@ raddr GenRelAddrLong(int addr)
 	retInit(&ret);
 	ret.sflag = 1;
 
-	if (g_passNum)
+	if (g_passNum != 0)
 	{
 		int btarget;
 
@@ -2055,7 +1933,7 @@ raddr GenRelAddrShort(int addr)
 	retInit(&ret);
 	ret.sflag = 0;
 
-	if (g_passNum)
+	if (g_passNum != 0)
 	{
 		int btarget;
 
@@ -2081,7 +1959,7 @@ raddr GenRelAddrReg(uint reg)
 	retInit(&ret);
 	ret.sflag = 0;
 
-	if (g_passNum)
+	if (g_passNum != 0)
 	{
 		ret.type = T_REGISTER;
 		ret.value = reg;

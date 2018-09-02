@@ -153,7 +153,7 @@ int g_output_symbols = 0;
 int g_write_zero_sections = 0;
 
 
-int asm56k(int argc, char *argv[])
+static int asm56k(int argc, char *argv[])
 {
 	FILE *input = NULL;
 	int num_tokens = 0;
@@ -235,7 +235,7 @@ int asm56k(int argc, char *argv[])
 }
 
 
-int DefineSymbol(void *v)
+static int DefineSymbol(void *v)
 {
 	char *pSymbol;
 	char *pValue;
@@ -263,7 +263,7 @@ int DefineSymbol(void *v)
 	return OPT_OK;
 }
 
-int AddIncludePath(void *v)
+static int AddIncludePath(void *v)
 {
 	AddIncDir(include_path);
 	debugprint("adding incdir: %s\n", include_path);

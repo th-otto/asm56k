@@ -27,7 +27,7 @@ Author:     M.Buras (sqward)
 #include "OutputP56.h"
 
 
-void P56_SaveData(FILE * output_file, int chunkIndex, int memtype, int offset, int skip)
+static void P56_SaveData(FILE * output_file, int chunkIndex, int memtype, int offset, int skip)
 {
 	int j;
 	unsigned char *pCode;

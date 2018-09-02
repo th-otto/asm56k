@@ -119,12 +119,12 @@ line    :	EOL                                         {   dc_flag=FALSE;        
         |	OP_MACRO OP_END	                            {	MacroError();           		}
         |	OP_MACRO EOL                                {	MacroError();           		}
         |   OP_ERROR OP_STRING                          {   
-                                                            if ( g_passNum ) 
-                                                                yyerror((char*)$2.ptr);         
+                                                            if (g_passNum != 0) 
+                                                                yyerror($2.ptr);
                                                         }
         |   OP_MSG OP_STRING                            {   
-                                                            if ( g_passNum ) 
-                                                                yywarning((char*)$2.ptr);         
+                                                            if (g_passNum != 0) 
+                                                                yywarning($2.ptr);         
                                                         }
         |	error EOL
         ;
@@ -282,7 +282,7 @@ code
         |	OP_TRAPCC	                                            {   GenTrapcc($1);                          }
         |   OP_VSL ddddd TAG1 exp_int ',' LMEM  ea                  {   GenVsl($2,$4,&$7);                      }
         |	OP_MOVEM error                                          {   
-                                                                        if(!g_passNum){ }else{ yyerror("Illega movem operation."); };
+                                                                        if(g_passNum != 0) { yyerror("Illega movem operation."); };
                                                                     }
         ;
 

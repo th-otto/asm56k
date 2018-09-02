@@ -57,7 +57,7 @@ bcode GenParIFcc(uint condition, uint opcode)
 	move.sflag = 0;
 	move.w0 = 0;
 	move.w1 = 0;
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 	} else
 	{
@@ -75,7 +75,7 @@ bcode GenParExpReg(int val, uint dst_reg)
 	move.sflag = 0;
 	move.w0 = 0;
 	move.w1 = 0;
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		move.sflag = 1;
 	} else
@@ -102,7 +102,7 @@ bcode GenParExpRegShort(int val, uint dst_reg)
 	move.sflag = 0;
 	move.w0 = 0;
 	move.w1 = 0;
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 	} else
 	{
@@ -129,7 +129,7 @@ bcode GenParRegReg(uint src_reg, uint dst_reg)
 	move.sflag = 0;
 	move.w0 = 0;
 	move.w1 = 0;
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 	} else
 	{
@@ -158,7 +158,7 @@ bcode GenParUpdate(uint update_op)
 	move.sflag = 0;
 	move.w0 = 0;
 	move.w1 = 0;
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 	} else
 	{
@@ -175,7 +175,7 @@ bcode GenMemReg(const uint *opcodes, bcode * ea, uint dst_reg)
 	move.sflag = 0;
 	move.w0 = 0;
 	move.w1 = 0;
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		move.sflag = ea->sflag;
 		if (ea->sflag == 2)				/* indicate extension word usage */
@@ -226,7 +226,7 @@ bcode GenParEaRegRegReg(bcode * ea, uint dst_reg1, uint src_reg2, uint dst_reg2)
 	move.sflag = 0;
 	move.w0 = 0;
 	move.w1 = 0;
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		move.sflag = ea->sflag;
 #if 0
@@ -273,7 +273,7 @@ bcode GenParRegEaRegReg(uint src_reg1, bcode * ea, uint src_reg2, uint dst_reg2)
 	move.sflag = 0;
 	move.w0 = 0;
 	move.w1 = 0;
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		move.sflag = ea->sflag;
 		if (ea->sflag == 2)
@@ -355,7 +355,7 @@ bcode GenParRegRegEaReg(uint src_reg1, uint dst_reg1, bcode * ea, uint dst_reg2)
 	move.sflag = 0;
 	move.w0 = 0;
 	move.w1 = 0;
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		move.sflag = ea->sflag;
 		if (ea->sflag == 2)
@@ -394,7 +394,7 @@ bcode GenParRegRegRegEa(uint src_reg1, uint dst_reg1, uint dst_reg2, bcode * ea)
 	move.sflag = 0;
 	move.w0 = 0;
 	move.w1 = 0;
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		move.sflag = ea->sflag;
 		if (ea->sflag == 2)
@@ -462,7 +462,7 @@ bcode GenLMemReg(const uint * opcodes, bcode * ea, uint dst_reg)
 	move.sflag = 0;
 	move.w0 = 0;
 	move.w1 = 0;
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		move.sflag = ea->sflag;
 		if (ea->sflag == 2)
@@ -500,7 +500,7 @@ bcode GenParXRegYReg(uint opcode, bcode * src_ea1, uint dst_reg1, bcode * src_ea
 	move.sflag = 0;
 	move.w0 = 0;
 	move.w1 = 0;
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 	} else
 	{
@@ -557,7 +557,7 @@ bcode GenParEmpty(void)
 	move.sflag = 0;
 	move.w0 = 0;
 	move.w1 = 0;
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 	} else
 	{

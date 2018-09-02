@@ -36,8 +36,8 @@
 #define ADD_STRING(x) BEGIN(x); yylval.text.ptr=(char*)StringBufferInsert(asmtext); yylval.text.len=asmleng;
 #define ADD_STRING2() yylval.text.ptr=(char*)StringBufferInsert(asmtext); yylval.text.len=asmleng;
 
-void ParseString( );
-int	atobin(char* string);
+static void ParseString(void);
+static int atobin(const char *string);
 
 #ifdef _MSC_VER
     #define strtoll( a,b,c ) _strtol_l(a, b, c, _get_current_locale());
@@ -624,10 +624,10 @@ BEGIN(macro)
 %%
  /* -------------------------------------------------------------------------------------------------------- */
 
-int Input() { return input(); }
-void Unput( int c ) { unput(c); }
+int Input(void) { return input(); }
+void Unput(int c) { unput(c); }
 
-int atobin(char* string)
+static int atobin(const char* string)
 {
 	int temp=0;
 	int cnt=24;
@@ -648,7 +648,7 @@ int atobin(char* string)
 	return temp;
 }
 
-void ParseString( )
+static void ParseString(void)
 {
 	char	string[512],*sptr=&string[0];
 	char	c;

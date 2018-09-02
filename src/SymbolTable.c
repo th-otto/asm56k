@@ -41,7 +41,7 @@ void InitSymbolTable(void)
 	hashtable string menagment            
 	TODO: use crc32 to calculate hash
 */
-uint hash(const char *pString)
+static uint hash(const char *pString)
 {
 	uint sum = 0;
 
@@ -202,7 +202,7 @@ void SymSet(const char *pSymbol, Value val)
 
 hs *AddSym(stext * pSymName, int forceCopy)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		int curr_pc = pc;
 		hs *temp;
@@ -235,7 +235,7 @@ Value GetSym(const char *pSymbolName)
 
 	if (pSymbol == 0)
 	{
-		if (g_passNum)
+		if (g_passNum != 0)
 		{
 			yyerror("Undefined symbol: \"%s\"", pSymbolName);
 		}

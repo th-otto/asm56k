@@ -14,13 +14,14 @@ Author:     M.Buras (sqward)
 #include "SymbolTable.h"
 #include "CodeUtils.h"
 #include "OutputLod.h"
+#include "OutputEmbededAsm.h"
 
 
 /*
             offset and skip are used for L memory only
 */
 
-void SaveDataEmbeded(FILE * output_file, int chunkIndex, int MemType, int offset, int skip)
+static void SaveDataEmbeded(FILE *output_file, int chunkIndex, int MemType, int offset, int skip)
 {
 	int j;
 	int mod_cnt;

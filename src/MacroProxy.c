@@ -288,18 +288,18 @@ void MacroCall(const char *pString)
 
 	if (temp == 0)
 	{
-		if (g_passNum)
+		if (g_passNum != 0)
 		{
-			yyerror(ERROR_20);
+			yyerror("Undefined instruction/macro.");
 		}
 		Skip_line();
 	} else
 	{
 		if (temp->type != T_MACRO)
 		{
-			if (g_passNum)
+			if (g_passNum != 0)
 			{
-				yyerror(ERROR_21);
+				yyerror("label isn't a macro.");
 			}
 			Skip_line();
 		} else
@@ -313,17 +313,15 @@ void MacroCall(const char *pString)
 void MacroRecord(const char *pString)
 {
 	dc_flag = FALSE;
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
-		{
-			hs *temp = FindSymbol(pString);
+		hs *temp = FindSymbol(pString);
 
-			if (!temp)
-			{
-				yyerror(ERROR_18);
-			}
-			Record_Macro(temp);
+		if (!temp)
+		{
+			yyerror("Macro redefined.");
 		}
+		Record_Macro(temp);
 	} else
 	{
 		Skip_Macro();
@@ -334,9 +332,9 @@ void MacroRecord(const char *pString)
 void MacroError(void)
 {
 	dc_flag = FALSE;
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
-		yyerror(ERROR_19);
+		yyerror("Macro must have a name.");
 		Skip_Macro();
 	} else
 	{

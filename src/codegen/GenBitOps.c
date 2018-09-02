@@ -10,6 +10,7 @@ Author:     M.Buras (sqward)
 #include <export.h>
 #include <ErrorMessages.h>
 #include "GenBitOps.h"
+#include "GenMisc.h"
 
 int const bchg_patterns[] = {
 	0xb0000,
@@ -102,13 +103,10 @@ int const extract_patterns[] = {
 
 void GenBitOp(const int *insn_patt, int val, int xory, bcode * ea)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = ea->sflag;
 		if (inst_code.sflag == 2)
 		{
@@ -163,13 +161,10 @@ void GenBitOp(const int *insn_patt, int val, int xory, bcode * ea)
 
 void GenJccBitRel(const int *insn_patt, int val, int xory, bcode * ea, raddr * rel_target)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = 1;
 		insert_vcode_w(&inst_code);
 	} else
@@ -236,13 +231,11 @@ void GenJccBitRel(const int *insn_patt, int val, int xory, bcode * ea, raddr * r
 void GenInsExt1(uint insn_patt, uint reg1, uint src_reg, uint dest_reg)
 {
 	DSP56301;
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		insert_vcode_w(&inst_code);
 	} else
 	{
@@ -254,7 +247,7 @@ void GenInsExt1(uint insn_patt, uint reg1, uint src_reg, uint dest_reg)
 		reg1 = ddddd_2_sss(reg1);
 		if (reg1 == -1)
 		{
-			yyerror(ERROR_1);
+			yyerror("Illegal source register: X0-1,Y0-1,A1,B1 are allowed.");
 			reg1 = 0;
 		}
 		inst_code.w0 = 0xc1a00 | (ddddd_2_d_src(src_reg) << 4) | (reg1 << 1) | ddddd_2_d_dst(dest_reg);
@@ -266,13 +259,10 @@ void GenInsExt1(uint insn_patt, uint reg1, uint src_reg, uint dest_reg)
 void GenInsExt2(uint insn_patt, uint val, uint src_reg, uint dest_reg)
 {
 	DSP56301;
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.sflag = 1;
 		insert_vcode_w(&inst_code);
 	} else

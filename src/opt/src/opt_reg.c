@@ -74,7 +74,7 @@
  */
 
 static void
-opt_CSTRING_deprecated()
+opt_CSTRING_deprecated(void)
 {
 #ifndef OPT_DEPRECATED_OK
   opt_warning("OPT_CSTRING is deprecated...you should use OPT_STRING instead");
@@ -84,7 +84,7 @@ opt_CSTRING_deprecated()
 }
 
 static void
-opt_UNDELIM_deprecated()
+opt_UNDELIM_deprecated(void)
 {
 #ifndef OPT_DEPRECATED_OK
   opt_warning("OPT_UNDELIM and OPT_UNDELIMC are deprecated...");
@@ -181,7 +181,7 @@ static char opt_array_delim=',';    /* the delimiter for arrays. (eads)*/
 
 
 void
-opt_free()
+opt_free(void)
 {
   int i;
   for (i=0; i<opt_nreg; ++i) {
@@ -508,7 +508,7 @@ void opthook_n(int n, OPT_HOOK hook)
 {
     if (OPT_isvalidnum(n)) optlist[n].hook = hook;
 }
-int optinvoked_n(int n)
+static int optinvoked_n(int n)
 {
     if (OPT_isvalidnum(n))
         return optlist[n].invoked;
@@ -793,7 +793,7 @@ optsizeof( opt_TYPE typ )
         break;
     case OPT_NUL:
       /* FIXME */
-        retval = sizeof(int(*)());
+        retval = sizeof(int(*)(void));
         break;
     default:
         opt_fatal("optsizeof: Undefined o-type");

@@ -36,7 +36,7 @@ void allocate_chunk(int type)
 
 		if (chunks[num_chunks2].code_len2 == 0)
 		{
-			if (g_passNum)
+			if (g_passNum != 0)
 			{
 				/* yywarning("Empty section defined1."); */
 			}
@@ -55,7 +55,7 @@ void allocate_chunk(int type)
 
 int GetCurrentMemType(void)
 {
-	if (g_passNum)
+	if (g_passNum != 0)
 		return chunks[num_chunks2].mem_type;
 	else
 		return chunks[num_chunks].mem_type;
@@ -77,7 +77,7 @@ int GetCurrentPC(void)
 
 int GetCurrentChunkBegin(void)
 {
-	if (g_passNum)
+	if (g_passNum != 0)
 		return chunks[num_chunks2].pc;
 	else
 		return chunks[num_chunks].pc;
@@ -128,7 +128,7 @@ void close_vchunk(void)
 
 void GenOrg(uint memSpace, uint address)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		pc = address;
 		allocate_vchunk(memSpace);
@@ -142,7 +142,7 @@ void GenOrg(uint memSpace, uint address)
 
 void GenDc(Value data)
 {
-	if (!g_passNum)
+	if (g_passNum == 0)
 	{
 		bcode inst_code;
 
@@ -201,7 +201,7 @@ void GenDS(Value val1)
 
 	pc += val * lmem;
 
-	if (g_passNum)
+	if (g_passNum != 0)
 	{
 		int i;
 
@@ -239,7 +239,7 @@ int GenAlign(Value val1)
 			break;
 		}
 
-		if (g_passNum)
+		if (g_passNum != 0)
 		{
 			*c_ptr++ = 0;
 			*c_ptr++ = 0;
@@ -270,7 +270,7 @@ void GenDSM(hs * pLabel, Value val1)
 
 	val = Val_GetAsInt(val1);
 
-	if (val == 0 && g_passNum)
+	if (val == 0 && g_passNum != 0)
 	{
 		yywarning("Zero size DSM buffer not allowed.");
 		return;
@@ -292,7 +292,7 @@ void GenDSM(hs * pLabel, Value val1)
 		SymSetValue(pLabel, T_PTR, Val_CreateInt(pc));	/* reset label address value */
 	}
 
-	if (wasted != 0 && g_passNum)
+	if (wasted != 0 && g_passNum != 0)
 	{
 
 		yywarning("DSM statement wasted %d words of memory.", wasted);
@@ -361,7 +361,7 @@ void InsertString(const char *pString, int str_len)
 
 	pc += wordLength;
 
-	if (g_passNum)
+	if (g_passNum != 0)
 	{
 		int i = (wordLength * 3) % str_len;
 
@@ -380,7 +380,7 @@ void InsertString(const char *pString, int str_len)
 }
 
 
-void insert_vcode_w(bcode * inst_code)
+void insert_vcode_w(const bcode *inst_code)
 {
 	if (in_section)
 	{

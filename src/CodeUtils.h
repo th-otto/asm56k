@@ -28,7 +28,7 @@ typedef struct
     int	code_len;		/* code length for pass 1 */
     int code_len2;		/* code length for pass 2, for verification */
     int	mem_type;
-}chunk;
+} chunk;
 
 typedef struct
 {
@@ -42,7 +42,7 @@ typedef struct {
     int type;
     int	value;
     int abs_value;
-}raddr;
+} raddr;
 
 extern chunk	chunks[1024];
 extern int	num_chunks;		/* pass 1 */
@@ -67,7 +67,7 @@ void	insert_code(void);
 void	insert_code_w(bcode *inst_code);
 void	InsertString(const char *string,int str_len);
 void	insert_vcode(void);
-void	insert_vcode_w(bcode *inst_code);
+void	insert_vcode_w(const bcode *inst_code);
 void	GenDc( Value data );
 void	GenDS( Value val1 );
 int		GenAlign( Value val1 );

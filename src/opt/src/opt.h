@@ -176,7 +176,7 @@ extern void optVersion(char *);
 extern void optEnvVarName(char *);
 extern void optDefaultString(char *);
 extern void optDefaultFile(char *);
-extern void optDisableMenu();
+extern void optDisableMenu(void);
 
 extern void optAdditionalUsage(OPT_PFI);
 extern void optQuit(OPT_PFI);
@@ -189,7 +189,7 @@ extern void optExitNumber(int);
  */
 /* optPrintusage() writes the opt usage message to stdout
  */
-extern void optPrintUsage();
+extern void optPrintUsage(void);
 /* optinvoked(&var) returns the number of times the option was invoked
  * on the command line.  This function is not used in the registering
  * stage, but is used during execution of the code to see whether or
@@ -201,7 +201,7 @@ extern int  optinvoked(void *);
  * after opt_free(), you won't be able to use any other opt functions,
  * such as optinvoked
  */
-extern void opt_free();
+extern void opt_free(void);
 
   
 /* The following prototypes arguably belong in opt_p.h because it is

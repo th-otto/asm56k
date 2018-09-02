@@ -84,5 +84,8 @@ void    	IncludeFile(void);
 void		AddIncDir(char* pDir);
 bool		GetIncDir(const char **pDir, uint* pDirNum);
 
+void Unput(int c);
+int Input(void);
+
 
 #endif /* _TOKENSTREAM_H_ */

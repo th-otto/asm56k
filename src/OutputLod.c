@@ -19,7 +19,7 @@ Author:     M.Buras (sqward)
  * Generate output code in LOD format
  */
 
-void LOD_OutputSymbols(FILE * output_file, int memspace)
+static void LOD_OutputSymbols(FILE * output_file, int memspace)
 {
 	int i;
 
@@ -42,7 +42,7 @@ void LOD_OutputSymbols(FILE * output_file, int memspace)
  * offset and skip are used for L memory only
  */
 
-void LOD_SaveData(FILE * output_file, int chunkIndex, const char *MemType, int offset, int skip)
+static void LOD_SaveData(FILE * output_file, int chunkIndex, const char *MemType, int offset, int skip)
 {
 	int j, code_word;
 	int mod_cnt;
