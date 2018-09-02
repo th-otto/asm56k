@@ -1,4 +1,3 @@
-// -----------------------------------------------------------------------------------------------
 /*
 
 Project:    asm56k
@@ -6,7 +5,6 @@ Author:     M.Buras (sqward)
 
 
 */
-// -----------------------------------------------------------------------------------------------
 #ifndef _MACROPROXY_H_
 #define _MACROPROXY_H_
 
@@ -25,4 +23,4 @@ void 	MacroError();
 
 void    ResetLocalLabel(const char* pString);
 
-#endif // _MACROPROXY_H_
+#endif /* _MACROPROXY_H_ */

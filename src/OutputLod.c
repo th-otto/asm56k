@@ -1,11 +1,9 @@
-// -----------------------------------------------------------------------------------------------
 /*
 
 Project:    asm56k
 Author:     M.Buras (sqward)
 
 */
-// -----------------------------------------------------------------------------------------------
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,9 +15,9 @@ Author:     M.Buras (sqward)
 #include "CodeUtils.h"
 #include "OutputLod.h"
 
-// -----------------------------------------------------------------------------------------------
-// Generate output code in LOD format
-// -----------------------------------------------------------------------------------------------
+/*
+ * Generate output code in LOD format
+ */
 
 void LOD_OutputSymbols(FILE* output_file, int memspace)
 {
@@ -40,11 +38,9 @@ void LOD_OutputSymbols(FILE* output_file, int memspace)
 	}
 }
 
-// ----------------------------------------------------------------------------------------------------------------------------
 /*
-            offset and skip are used for L memory only
-*/
-// ----------------------------------------------------------------------------------------------------------------------------
+ * offset and skip are used for L memory only
+ */
 
 void LOD_SaveData(FILE* output_file,int chunkIndex, const char* MemType, int offset, int skip)
 {
@@ -94,7 +90,7 @@ void SaveFileLod(char* name,char* iname)
 		printf("error while opening file: %s for write.\n",name);
 		return;
 	}
-	// write out LOD header:
+	/* write out LOD header: */
 
 	fprintf(output_file,"_START %s 0000 0000 0000 asm56k v0.1a\r\n\r\n",iname);
 
@@ -140,4 +136,3 @@ void SaveFileLod(char* name,char* iname)
 
     fclose( output_file );
 }
-

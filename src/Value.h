@@ -1,11 +1,9 @@
-// -----------------------------------------------------------------------------------------------
 /*
 
 Project:    asm56k
 Author:     M.Buras (sqward)
 
 */
-// -----------------------------------------------------------------------------------------------
 #ifndef _VALUE_H_
 #define _VALUE_H_
 
@@ -82,4 +80,4 @@ void EvalIfOneArg( uint cond , Value val );
 
 int StrToInt(const char* pString);
 
-#endif //_VALUE_H_
+#endif /* _VALUE_H_ */

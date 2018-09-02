@@ -1,11 +1,9 @@
-// -----------------------------------------------------------------------------------------------
 /*
 
 Project:    asm56k
 Author:     M.Buras (sqward)
 
 */
-// -----------------------------------------------------------------------------------------------
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -18,8 +16,7 @@ Author:     M.Buras (sqward)
 #include <StringBuffer.h>
 #include <export.h>
 
-// -----------------------------------------------------------------------------------------------
-// includes stack
+/* includes stack */
 
 #define MAX_INCLUDES_NESTED 32
 
@@ -32,13 +29,12 @@ int			g_incStackDeepth = -1;
 
 TokenVal* 	g_tokens;
 
-void*	buffer;				// top level buffer... TODO: it should be local to fetch_tokens
+void*	buffer;				/* top level buffer... TODO: it should be local to fetch_tokens */
 
 int		if_stack_l;
 char	if_stack[MAX_CONDITION_NESTS];
 
-// -----------------------------------------------------------------------------------------------
-// streams stack
+/* streams stack */
 
 int 				g_streamsStrackIndex;
 StreamStackEntry	streamsStack[MACRO_NEST_DEPTH];
@@ -49,8 +45,7 @@ int					g_MacroNumInstances;
 TokenVal*			params_pointers[MACRO_PARAMS_POINTER_BUFFER];
 TokenVal			macros_params[MACRO_PARAMS_TOKEN_BUFFER];
 
-// -----------------------------------------------------------------------------------------------
-// interfacing with lex
+/* interfacing with lex */
 
 void*	asm_create_buffer(FILE*,int);
 void	asm_delete_buffer(void*);
@@ -59,18 +54,18 @@ void	asm_switch_to_buffer(void*);
 
 int     Input ( void );
 void    Unput( int c );
-// -----------------------------------------------------------------------------------------------
 
 void InitTokenStream(FILE* input,const char *file_name)
 {
-// 	buffer=(void*)asm_create_buffer(input,LEX_BUFFER);
-// 	asm_switch_to_buffer(buffer);
-// 	inc_names[0]=(char*)file_name;
-// 	inc_buffers[0]=buffer;
+#if 0
+ 	buffer=(void*)asm_create_buffer(input,LEX_BUFFER);
+ 	asm_switch_to_buffer(buffer);
+ 	inc_names[0]=(char*)file_name;
+ 	inc_buffers[0]=buffer;
+#endif
 	g_CurrentFile=(char*)file_name;
 }
 
-// -----------------------------------------------------------------------------------------------
 
 TokenVal* CopyToken(int token,TokenVal* pToken)
 {
@@ -79,7 +74,6 @@ TokenVal* CopyToken(int token,TokenVal* pToken)
 	return pToken++;
 }
 
-// -----------------------------------------------------------------------------------------------
 
 void PushStream( TokenVal* pMacro,const char* pFileName,int curline, int params_count, int instancesNumber )
 {
@@ -191,14 +185,16 @@ int SkipToken()
 	return token;
 }
 
-// -----------------------------------------------------------------------------------------------
-// Fetch whole source file as a tokens
-// -----------------------------------------------------------------------------------------------
+/*
+ * Fetch whole source file as a tokens
+ */
 
-// We read the tokens and save them for
-// future use. This improves speed since
-// on the second phase we'er reading form
-// table, not from flex...
+/*
+ * We read the tokens and save them for
+ * future use. This improves speed since
+ * on the second phase we'er reading form
+ * table, not from flex...
+ */
 
 #define TOKENS_BLOCK 	4096
 
@@ -223,7 +219,7 @@ int PrefetchTokens()
 		{
 			TokenVal *store_tokens2 = (TokenVal*) malloc( TOKENS_BLOCK*sizeof( TokenVal ) );
 			mtest(store_tokens2,__LINE__,__FILE__);
-			store_tokens->token = TOKEN_NEW_PTR;							// "switch to next memory block"
+			store_tokens->token = TOKEN_NEW_PTR;							/* "switch to next memory block" */
 			store_tokens->data.pNextBlock=store_tokens2;
 			tokens_bound = store_tokens2 + (TOKENS_BLOCK-2);
 			store_tokens = store_tokens2;
@@ -241,7 +237,6 @@ int PrefetchTokens()
 	return token_count;
 }
 
-// -----------------------------------------------------------------------------------------------
 
 int PushNewFile(const char* pFileName)
 {
@@ -283,11 +278,13 @@ int PushNewFile(const char* pFileName)
 
     asm_switch_to_buffer(inc_buffers[g_incStackDeepth]);
 
-    //Insert source file name into the tokenized code
-    //This tells us which source line in which source
-    //is invalid (this is for error reporting)
+    /*
+     * Insert source file name into the tokenized code
+     * This tells us which source line in which source
+     * is invalid (this is for error reporting)
+     */
 
-    yylval.text.len=0;			//fake string
+    yylval.text.len=0;			/*fake string */
     yylval.text.ptr=(char*)StringBufferInsert(name_buf);
 
     debugprint("Include_file(%s);\n",pFileName);
@@ -295,9 +292,9 @@ int PushNewFile(const char* pFileName)
     return 0;
 }
 
-// -----------------------------------------------------------------------------------------------
-// Include another source file
-// -----------------------------------------------------------------------------------------------
+/*
+ * Include another source file
+ */
 
 void IncludeFile()
 {
@@ -360,7 +357,7 @@ void IncludeFile()
 		i = Input();
 	}
 
-    // remove quotation marks if used
+    /* remove quotation marks if used */
 
     if ( inc_temp_string[0] == '\"' )
     {
@@ -377,9 +374,9 @@ void IncludeFile()
     }
 }
 
-// -----------------------------------------------------------------------------------------------
-// leave included file
-// -----------------------------------------------------------------------------------------------
+/*
+ * leave included file
+ */
 
 int PopFile()
 {
@@ -397,9 +394,9 @@ int PopFile()
     return TRUE;
 }
 
-// -----------------------------------------------------------------------------------------------
-// skip a block of code
-// -----------------------------------------------------------------------------------------------
+/*
+ * skip a block of code
+ */
 
 int SkipConditional()
 {
@@ -448,7 +445,6 @@ int SkipConditional()
 	}
 }
 
-// -----------------------------------------------------------------------------------------------
 
 void Skip_line()
 {
@@ -461,8 +457,7 @@ void Skip_line()
 	while( token != EOL && token != OP_END );
 }
 
-// -----------------------------------------------------------------------------------------------
-// include dirs
+/* include dirs */
 
 #define			MAX_INC_DIRS_LIST 32
 

@@ -1,4 +1,3 @@
-// -----------------------------------------------------------------------------------------------
 /*
 
 Project:    asm56k
@@ -6,7 +5,6 @@ Author:     M.Buras (sqward)
 
 
 */
-// -----------------------------------------------------------------------------------------------
 #include <stdio.h>
 #include <stdlib.h>
 #include <ConvertFields.h>
@@ -15,7 +13,7 @@ Author:     M.Buras (sqward)
 #include "GenMisc.h"
 #include <CodeUtils.h>
 #include <SymbolTable.h>
-// -----------------------------------------------------------------------------------------------
+
 int jclr_patterns[]={
 	0xa0080,
 	0xa8080,
@@ -49,7 +47,6 @@ int jsset_patterns[]={
 	0xbc020
 };
 
-// -----------------------------------------------------------------------------------------------
 
 void GenOneParamParMove(uint insn_patt,uint reg,bcode *par_move )
 {
@@ -63,7 +60,7 @@ void GenOneParamParMove(uint insn_patt,uint reg,bcode *par_move )
 	AFTER_PASSES
 }
 
-// -----------------------------------------------------------------------------------------------
+
 void GenBccRelTarger(uint insn_patt, raddr *rel_target )
 {
     DSP56301
@@ -90,7 +87,7 @@ void GenBccRelTarger(uint insn_patt, raddr *rel_target )
     AFTER_PASSES
 }
 
-// -----------------------------------------------------------------------------------------------
+
 void GenBitOpReg(uint insn_patt,int val,int dest_reg)
 {
     IN_PASS1
@@ -110,7 +107,8 @@ void GenBitOpReg(uint insn_patt,int val,int dest_reg)
         inst_code.w0=insn_patt|(val)|(dest_reg<<8);
      AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenBraRelTarger(raddr *rel_target )
 {
     DSP56301
@@ -139,7 +137,7 @@ void GenBraRelTarger(raddr *rel_target )
     AFTER_PASSES
 }
 
-// -----------------------------------------------------------------------------------------------
+
 void GenBrkCC(int condition)
 {
     IN_PASS1
@@ -147,7 +145,8 @@ void GenBrkCC(int condition)
         inst_code.w0=0x210|condition;
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenBscc(uint condition, raddr *rel_target  )
 {
     DSP56301
@@ -175,7 +174,8 @@ void GenBscc(uint condition, raddr *rel_target  )
         }
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenBsr( raddr *rel_target )
 {
     IN_PASS1
@@ -203,7 +203,8 @@ void GenBsr( raddr *rel_target )
         }
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenClb(uint src_reg, uint dest_reg)
 {
     IN_PASS1
@@ -212,7 +213,7 @@ void GenClb(uint src_reg, uint dest_reg)
     AFTER_PASSES
 }
 
-// -----------------------------------------------------------------------------------------------
+
 void GenDebug(uint inst_patt,uint condition)
 {
     IN_PASS1
@@ -221,7 +222,7 @@ void GenDebug(uint inst_patt,uint condition)
     AFTER_PASSES
 }
 
-// -----------------------------------------------------------------------------------------------
+
 void GenDo1(uint xory, bcode *ea ,raddr *rel_target)
 {
     IN_PASS1
@@ -257,7 +258,8 @@ void GenDo1(uint xory, bcode *ea ,raddr *rel_target)
         inst_code.w1=rel_target->abs_value-1;
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenDo2(int val,raddr *rel_target )
 {
     IN_PASS1
@@ -279,7 +281,8 @@ void GenDo2(int val,raddr *rel_target )
         inst_code.w1=rel_target->abs_value-1;
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenDo3(uint src_reg,raddr *rel_target )
 {
     IN_PASS1
@@ -302,7 +305,8 @@ void GenDo3(uint src_reg,raddr *rel_target )
         inst_code.w1=rel_target->abs_value-1;
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenDoForever(raddr *rel_target )
 {
     IN_PASS1
@@ -319,7 +323,8 @@ void GenDoForever(raddr *rel_target )
         inst_code.w1=rel_target->abs_value-1;
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenDor1(uint xory, bcode *ea ,raddr *rel_target)
 {
     IN_PASS1
@@ -354,7 +359,8 @@ void GenDor1(uint xory, bcode *ea ,raddr *rel_target)
         inst_code.w1=rel_target->value-1;
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenDor2(int val,raddr *rel_target )
 {
     IN_PASS1
@@ -376,7 +382,8 @@ void GenDor2(int val,raddr *rel_target )
         inst_code.w1=rel_target->value-1;
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenDor3(uint src_reg,raddr *rel_target )
 {
     IN_PASS1
@@ -399,7 +406,8 @@ void GenDor3(uint src_reg,raddr *rel_target )
         inst_code.w1=rel_target->value-1;
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenDorForever(raddr *rel_target )
 {
     IN_PASS1
@@ -416,7 +424,8 @@ void GenDorForever(raddr *rel_target )
         inst_code.w1=rel_target->value-1;
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenEnddo()
 {
     IN_PASS1
@@ -426,7 +435,7 @@ void GenEnddo()
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 void GenIllegal()
 {
     IN_PASS1
@@ -434,7 +443,7 @@ void GenIllegal()
         inst_code.w0=0x5;
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
 
 uint jmp_pattern[]=
 {
@@ -482,7 +491,8 @@ void GenJmpJsrJsccJcc(uint *insn_patt,uint condition, bcode *ea )
         }
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenJccBitRelReg( int insn_patt,int val,int dest_reg, raddr *rel_target )
 {
     IN_PASS1
@@ -510,7 +520,8 @@ void GenJccBitRelReg( int insn_patt,int val,int dest_reg, raddr *rel_target )
         inst_code.w1=rel_target->value;
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 /*
 0xa0080,
 0xa8080,
@@ -556,7 +567,7 @@ void GenJccBitAbs( int *insn_patt,int val,int xory,bcode *ea, raddr *rel_target 
                 else
                 {
                     if(ea->w1>=0xffff80 && ea->w1<=0xffffbf)
-                    {   // 56301 only!
+                    {   /* 56301 only! */
                         inst_code.w0=insn_patt[2]|((ea->w1-0xffff80)<<8)|(val)|(xory<<6);
                     }else
                     {
@@ -573,7 +584,8 @@ void GenJccBitAbs( int *insn_patt,int val,int xory,bcode *ea, raddr *rel_target 
         inst_code.sflag=1;
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenJccBitAbsReg( int insn_patt,int val, uint dest_reg, raddr *rel_target )
 {
     IN_PASS1
@@ -595,7 +607,8 @@ void GenJccBitAbsReg( int insn_patt,int val, uint dest_reg, raddr *rel_target )
         inst_code.w1=rel_target->abs_value;
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenLra(raddr *rel_target, uint dest_reg)
 {
     IN_PASS1
@@ -632,7 +645,7 @@ void GenLra(raddr *rel_target, uint dest_reg)
     AFTER_PASSES
 }
 
-// -----------------------------------------------------------------------------------------------
+
 void GenLua1(uint mmrrr,uint dest_reg)
 {
     IN_PASS1
@@ -646,7 +659,8 @@ void GenLua1(uint mmrrr,uint dest_reg)
         inst_code.w0=0x44010|( mmrrr << 8 )|dest_reg;
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenLua2(uint rreg,int val,uint dest_reg)
 {
 	DSP56301
@@ -667,7 +681,7 @@ void GenLua2(uint rreg,int val,uint dest_reg)
     AFTER_PASSES
 }
 
-// -----------------------------------------------------------------------------------------------
+
 void GenMerge(uint src_reg, uint dest_reg)
 {
 	DSP56301
@@ -683,7 +697,8 @@ void GenMerge(uint src_reg, uint dest_reg)
         inst_code.w0=0xc1b800|(src_reg<<1)|dest_reg;
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenMove(bcode *par_move)
 {
     IN_PASS1
@@ -694,7 +709,8 @@ void GenMove(bcode *par_move)
         inst_code.w1=par_move->w1;
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 uint movec_pattern1[]=
 {
     0x58020,
@@ -739,7 +755,8 @@ void GenMovec1(uint *insn_patt,uint dir,uint xory,bcode *ea,uint dest_reg)
         }
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenMovec2(uint src_reg,uint dest_reg)
 {
     IN_PASS1
@@ -768,7 +785,8 @@ void GenMovec2(uint src_reg,uint dest_reg)
     }
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenMovec3(uint sh,int val,uint dest_reg)
 {
     IN_PASS1
@@ -797,7 +815,8 @@ void GenMovec3(uint sh,int val,uint dest_reg)
         inst_code.sflag=sh;
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 uint movem_pattern1[]=
 {
     0x70000,
@@ -841,7 +860,8 @@ void GenMovem(uint *insn_patt,uint dir,bcode *ea,uint reg)
         }
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenMovep(uint src_xory,bcode *src_ea,uint dst_xory,bcode *dst_ea)
 {
     IN_PASS1
@@ -906,7 +926,8 @@ void GenMovep(uint src_xory,bcode *src_ea,uint dst_xory,bcode *dst_ea)
         }
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenMovep2(uint rw,bcode *src_ea,uint dst_xory,bcode *dst_ea)
 {
     IN_PASS1	
@@ -938,7 +959,8 @@ void GenMovep2(uint rw,bcode *src_ea,uint dst_xory,bcode *dst_ea)
         inst_code.w1=src_ea->w1;
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenMovep3(int val,uint dst_xory,bcode *dst_ea)
 {
 	IN_PASS1 
@@ -978,7 +1000,8 @@ void GenMovep3(int val,uint dst_xory,bcode *dst_ea)
 
 	AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenMovep4(uint rw,uint xory,bcode *ea,uint reg)
 {
 	IN_PASS1	
@@ -1026,7 +1049,8 @@ void GenMovep4(uint rw,uint xory,bcode *ea,uint reg)
 		}
 	AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenNoArgOpcode(uint opcode)
 {
 	IN_PASS1
@@ -1037,7 +1061,6 @@ void GenNoArgOpcode(uint opcode)
 
 
 
-// -----------------------------------------------------------------------------------------------
 void GenPlockPunloc(uint opcode,bcode *ea)
 {
 	DSP56301
@@ -1049,7 +1072,8 @@ void GenPlockPunloc(uint opcode,bcode *ea)
 		inst_code.sflag=ea->sflag;
 	AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenPlockrPunlockr(uint opcode,raddr *rel_target )
 {
 	DSP56301
@@ -1066,7 +1090,8 @@ void GenPlockrPunlockr(uint opcode,raddr *rel_target )
 		inst_code.sflag=rel_target->sflag;
 	AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenRep1(uint xory,bcode *ea)
 {
 	IN_PASS1
@@ -1097,7 +1122,8 @@ void GenRep1(uint xory,bcode *ea)
 		}
 	AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenRep2(int exp)
 {
 	IN_PASS1
@@ -1106,7 +1132,8 @@ void GenRep2(int exp)
 		inst_code.w0=0x600a0|(exp>>8)|((exp&0xff)<<8);
 	AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenRep3(uint reg)
 {
 	IN_PASS1
@@ -1120,7 +1147,8 @@ void GenRep3(uint reg)
 		inst_code.w0=0x6c020|(reg<<8);
 	AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenTcc1(uint condition,uint src_reg,uint dst_reg)
 {	
     int new_src_reg;
@@ -1157,7 +1185,8 @@ void GenTcc1(uint condition,uint src_reg,uint dst_reg)
         }
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenTcc2(uint condition,uint src_reg1,uint dst_reg1,uint src_reg2,uint dst_reg2)
 {	
     IN_PASS1
@@ -1173,7 +1202,8 @@ void GenTcc2(uint condition,uint src_reg1,uint dst_reg1,uint src_reg2,uint dst_r
         inst_code.w0=0x30000|(condition<<12)|(src_reg1<<3)|(dst_reg1<<3)|(src_reg2<<8)|dst_reg2;
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenTfr(uint src_reg,uint dst_reg,bcode *par_move)
 {
     IN_PASS1
@@ -1188,7 +1218,8 @@ void GenTfr(uint src_reg,uint dst_reg,bcode *par_move)
         inst_code.sflag=par_move->sflag;
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenTrapcc(uint condition)
 { 
     IN_PASS1
@@ -1196,7 +1227,8 @@ void GenTrapcc(uint condition)
         inst_code.w0=0x10|condition; 
     AFTER_PASSES 
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenVsl(uint reg,int val,bcode *ea)
 {	
     IN_PASS1
@@ -1211,7 +1243,8 @@ void GenVsl(uint reg,int val,bcode *ea)
         inst_code.sflag=ea->sflag;
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 bcode GenEA1(uint opcode, uint addr_reg, uint offs_reg )
 {	
 	PAR1
@@ -1267,7 +1300,7 @@ bcode GenImmShortAbs( uint opcode, uint addr )
 		move.w1=addr & 0xffffff; 
 	PAREND
 }	
-// -----------------------------------------------------------------------------------------------
+
 
 raddr GenRelAddrLong(int addr)
 {
@@ -1286,7 +1319,8 @@ raddr GenRelAddrLong(int addr)
 	}
 	return ret;
 }
-// -----------------------------------------------------------------------------------------------
+
+
 raddr GenRelAddrShort(int addr)
 {
 	raddr ret;
@@ -1311,7 +1345,7 @@ raddr GenRelAddrShort(int addr)
 	}
 	return ret;
 }
-// -----------------------------------------------------------------------------------------------
+
 raddr GenRelAddrReg(uint reg)
 {
 	raddr ret;
@@ -1325,4 +1359,3 @@ raddr GenRelAddrReg(uint reg)
 	}
 	return ret;
 }
-// -----------------------------------------------------------------------------------------------

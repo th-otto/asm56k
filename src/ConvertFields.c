@@ -1,4 +1,3 @@
-// -----------------------------------------------------------------------------------------------
 /*
 
 Project:    asm56k
@@ -6,7 +5,6 @@ Author:     M.Buras (sqward)
 
 
 */
-// -----------------------------------------------------------------------------------------------
 
 #include "ConvertFields.h"
 #include "export.h"
@@ -276,7 +274,7 @@ int   ddddd_2_JJJ(unsigned int code)
 	return _ddddd_2_JJJ[code]; 
 }
 
-// used bu TFR
+/* used bu TFR */
 char	_ddddd_2_JJJ2[]={
     0x08>>1,0x0C>>1,0x0A>>1,0x0E>>1,0xff,0xff,0xff,0xff,
     0xff,0xff,0x00,0x00,0xff,0xff,0xff,0xff,
@@ -428,7 +426,7 @@ int   ea_2_mmrr(unsigned int code, unsigned int code2)
 int  exp_2_ssss(int value)
 {
 	switch(value)
-	{					// MB: why we start with 0x2 ?? confirm this with manual and fix anyways!
+	{					/* MB: why we start with 0x2 ?? confirm this with manual and fix anyways! */
 		case 0x2:		return 22;
 		case 0x2<<1:	return 21;
 		case 0x2<<2:	return 20;
@@ -455,7 +453,6 @@ int  exp_2_ssss(int value)
 	return -1;
 }
 
-// ----------------------------------------------------------------------------------------------
 
 int GetQQQ( int first, int second, int dont_iterate )
 {
@@ -482,7 +479,6 @@ int GetQQQ( int first, int second, int dont_iterate )
             return -1;
 }
 
-// ----------------------------------------------------------------------------------------------
 int GetQQQQXregXreg( int first, int second )
 {
 	switch( ( first<<1 ) | second )

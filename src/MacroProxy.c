@@ -1,4 +1,3 @@
-// -----------------------------------------------------------------------------------------------
 /*
 
 Project:    asm56k
@@ -6,12 +5,11 @@ Author:     M.Buras (sqward)
 
 
 */
-// -----------------------------------------------------------------------------------------------
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <asm_types.h>
-#include <CodeUtils.h>		//eventually this will be removed
+#include <CodeUtils.h>		/*eventually this will be removed */
 #include <SymbolTable.h>
 #include <Parser.h>
 #include <TokenStream.h>
@@ -22,7 +20,6 @@ Author:     M.Buras (sqward)
 #include <StringBuffer.h>
 #include "export.h"
 
-// -----------------------------------------------------------------------------------------------
 /*
 This is the replacement of the orginal
 yylex function.
@@ -51,16 +48,14 @@ grammar. The  following rule causes recording of all
 the code after the 'macro' keyword until 'endm' is
 encountered.*/
 
-// -----------------------------------------------------------------------------------------------
 
-void InitMacroProxy()
+void InitMacroProxy(void)
 {
 	ResetStream();
 	g_MacroNumInstances=0;
 }
 
-// -----------------------------------------------------------------------------------------------
-int yylex()
+int yylex(void)
 {
     TokenVal* pTokenValue;
 	int token = GetToken(&pTokenValue);
@@ -121,11 +116,11 @@ int yylex()
                     int stamp = 0;
 
                     if( TopPosStream() == 0)
-                    {                               // local label
+                    {                               /* local label */
                         stamp = g_LocalSerial;
                     }
                     else
-                    {                               // macro local label
+                    {                               /* macro local label */
                         stamp = streamsStack[g_streamsStrackIndex].instancesNumber;
                     }
                     
@@ -134,7 +129,7 @@ int yylex()
                     if ( TopPosStream() == 0 )
                     {
                         if ( g_passNum == 0 )
-                        {                       // don't need to add twice
+                        {                       /* don't need to add twice */
                             yylval.text.ptr = pTokenValue->data.val.text.ptr = StringBufferInsert(temp_name);
                             yylval.text.len = pTokenValue->data.val.text.len = strlen(temp_name);
                         }
@@ -176,7 +171,6 @@ int yylex()
 	return token;
 }
 
-// -----------------------------------------------------------------------------------------------
 
 void Record_Macro(hs* temp)
 {
@@ -184,7 +178,6 @@ void Record_Macro(hs* temp)
 	Skip_Macro();
 }
 
-// -----------------------------------------------------------------------------------------------
 
 void Skip_Macro()
 {
@@ -203,9 +196,9 @@ void Skip_Macro()
 	while(token!=OP_ENDM);
 }
 
-// -----------------------------------------------------------------------------------------------
-// Replay_Macro() inserts previously defined macro
-// -----------------------------------------------------------------------------------------------
+/*
+ * Replay_Macro() inserts previously defined macro
+ */
 
 void Replay_Macro(hs* name)
 {
@@ -287,7 +280,8 @@ void Replay_Macro(hs* name)
 
 	debugprint("macro ptr %p, nr of params: 0x%X\n",streamsStack[g_streamsStrackIndex].macro_ptr,params_count);
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void MacroCall(const char* pString)
 {
     hs* temp;
@@ -318,7 +312,8 @@ void MacroCall(const char* pString)
         }
     }
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void MacroRecord(const char* pString)
 {
     dc_flag=FALSE;
@@ -335,7 +330,8 @@ void MacroRecord(const char* pString)
         Skip_Macro();
     PASSEND
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void MacroError()
 {
     dc_flag=FALSE;
@@ -346,7 +342,7 @@ void MacroError()
         Skip_Macro();
     PASSEND
 }
-// -----------------------------------------------------------------------------------------------
+
 
 void ResetLocalLabel(const char* pString)
 {

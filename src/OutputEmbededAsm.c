@@ -1,11 +1,9 @@
-// -----------------------------------------------------------------------------------------------
 /*
 
 Project:    asm56k
 Author:     M.Buras (sqward)
 
 */
-// -----------------------------------------------------------------------------------------------
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,11 +16,9 @@ Author:     M.Buras (sqward)
 #include "OutputLod.h"
 
 
-// ----------------------------------------------------------------------------------------------------------------------------
 /*
             offset and skip are used for L memory only
 */
-// ----------------------------------------------------------------------------------------------------------------------------
 
 void SaveDataEmbeded(FILE* output_file,int chunkIndex, int MemType, int offset, int skip)
 {
@@ -67,7 +63,6 @@ void SaveDataEmbeded(FILE* output_file,int chunkIndex, int MemType, int offset, 
     }
 }
 
-// ----------------------------------------------------------------------------------------------------------------------------
 
 void SaveFileEmbeded( const char* name )
 {
@@ -91,7 +86,7 @@ void SaveFileEmbeded( const char* name )
     {
         pBaseName = strrchr ( baseName,'\\' );
         if ( pBaseName == NULL )
-        {   // huh, something went wrong.
+        {   /* huh, something went wrong. */
             pBaseName = baseName;
         }
     }
@@ -150,5 +145,3 @@ void SaveFileEmbeded( const char* name )
 
     fclose( output_file );
 }
-
-// ----------------------------------------------------------------------------------------------------------------------------

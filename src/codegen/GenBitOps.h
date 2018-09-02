@@ -1,4 +1,3 @@
-// -----------------------------------------------------------------------------------------------
 /*
 
 Project:    asm56k
@@ -6,7 +5,6 @@ Author:     M.Buras (sqward)
 
 
 */
-// -----------------------------------------------------------------------------------------------
 
 #ifndef _GENBITOPS_H_
 #define _GENBITOPS_H_
@@ -31,4 +29,4 @@ void GenInsExt1(uint insn_patt,uint reg1,uint src_reg,uint dest_reg);
 void GenInsExt2(uint insn_patt,uint val,uint src_reg,uint dest_reg);
 
 
-#endif //_GENBITOPS_H_
+#endif /* _GENBITOPS_H_ */

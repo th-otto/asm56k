@@ -1,4 +1,3 @@
-// -----------------------------------------------------------------------------------------------
 /*
 
 Project:    asm56k
@@ -6,14 +5,12 @@ Author:     M.Buras (sqward)
 
 
 */
-// -----------------------------------------------------------------------------------------------
 #include <stdio.h>
 #include "GenParMoves.h"
 #include <ConvertFields.h>
 #include <export.h>
 #include <ErrorMessages.h>
 
-// -----------------------------------------------------------------------------------------------
 bcode GenParIFcc(uint condition, uint opcode)
 {
 	PAR1
@@ -22,7 +19,8 @@ bcode GenParIFcc(uint condition, uint opcode)
 		move.w0=condition|(opcode<<8);
 	PAREND
 }
-// -----------------------------------------------------------------------------------------------
+
+
 bcode GenParExpReg( int val, uint dst_reg )
 {	
 	PAR1
@@ -40,7 +38,8 @@ bcode GenParExpReg( int val, uint dst_reg )
 
 	PAREND
 }
-// -----------------------------------------------------------------------------------------------
+
+
 bcode GenParExpRegShort( int val, uint dst_reg )
 {
 	PAR1
@@ -58,7 +57,8 @@ bcode GenParExpRegShort( int val, uint dst_reg )
 		move.w0=0x200000|((val&0xff)<<8)|(dst_reg<<16);
 	PAREND
 }
-// -----------------------------------------------------------------------------------------------
+
+
 bcode GenParRegReg( uint src_reg, uint dst_reg )
 {
     PAR1
@@ -78,7 +78,8 @@ bcode GenParRegReg( uint src_reg, uint dst_reg )
         move.w0=0x200000|(src_reg<<13)|(dst_reg<<8);
     PAREND
 }
-// -----------------------------------------------------------------------------------------------
+
+
 bcode GenParUpdate(uint update_op)
 {	
     PAR1 
@@ -86,7 +87,8 @@ bcode GenParUpdate(uint update_op)
         move.w0=0x204000|(update_op<<8); 
     PAREND
 }
-// -----------------------------------------------------------------------------------------------
+
+
 uint xmem_reg_pattern1[]=
 {
     0x408000,
@@ -138,7 +140,7 @@ bcode GenMemReg(uint *opcodes, bcode *ea,uint dst_reg)
     PAREND
 }
 
-// -----------------------------------------------------------------------------------------------
+
 bcode GenParExpRegRegReg(int val,uint dst_reg1,uint src_reg2,uint dst_reg2 )
 {
 	bcode	ea;
@@ -148,18 +150,21 @@ bcode GenParExpRegRegReg(int val,uint dst_reg1,uint src_reg2,uint dst_reg2 )
 	return GenParEaRegRegReg( &ea,dst_reg1,src_reg2,dst_reg2 );
 
 }
-// -----------------------------------------------------------------------------------------------
+
+
 bcode GenParEaRegRegReg( bcode *ea,uint dst_reg1,uint src_reg2,uint dst_reg2 )
 {	
 	PAR1
 		move.sflag=ea->sflag;
-// 		if(ea->sflag==2)
-// 			ea->sflag=1;
-// 
-// 		if(ea->w0==0x30 && ea->w0==0x34)
-// 			move.sflag=1;
-// 		else
-// 			move.sflag=0;
+#if 0
+ 		if(ea->sflag==2)
+ 			ea->sflag=1;
+ 
+ 		if(ea->w0==0x30 && ea->w0==0x34)
+ 			move.sflag=1;
+ 		else
+ 			move.sflag=0;
+#endif
 	PAR2
 		src_reg2=ddddd_2_d(src_reg2);
 		if(src_reg2==-1)
@@ -184,7 +189,8 @@ bcode GenParEaRegRegReg( bcode *ea,uint dst_reg1,uint src_reg2,uint dst_reg2 )
 		move.w1=ea->w1;
 	PAREND
 }
-// -----------------------------------------------------------------------------------------------
+
+
 bcode GenParRegEaRegReg( uint src_reg1,bcode *ea,uint src_reg2,uint dst_reg2 )
 {
     PAR1
@@ -245,7 +251,8 @@ bcode GenParRegEaRegReg( uint src_reg1,bcode *ea,uint src_reg2,uint dst_reg2 )
         }
     PAREND
 }
-// -----------------------------------------------------------------------------------------------
+
+
 bcode GenParRegRegExpReg( uint src_reg1,uint dst_reg1,int val,uint dst_reg2 )
 {        
 	bcode	ea;
@@ -284,7 +291,8 @@ bcode GenParRegRegEaReg( uint src_reg1,uint dst_reg1,bcode *ea,uint dst_reg2 )
         move.w1=ea->w1;
     PAREND
 }
-// -----------------------------------------------------------------------------------------------
+
+
 bcode GenParRegRegRegEa( uint src_reg1,uint dst_reg1,uint dst_reg2,bcode *ea )
 {
 	PAR1
@@ -343,7 +351,8 @@ bcode GenParRegRegRegEa( uint src_reg1,uint dst_reg1,uint dst_reg2,bcode *ea )
 		}
 	PAREND
 }
-// -----------------------------------------------------------------------------------------------
+
+
 uint lmem_reg_pattern1[]=
 {
 	0x408000,
@@ -382,7 +391,8 @@ bcode GenLMemReg(uint *opcodes,bcode *ea,uint dst_reg)
 		}
 	PAREND
 }
-// -----------------------------------------------------------------------------------------------
+
+
 uint XRegYReg_pattern[]=
 {
 	0xc08000,
@@ -414,10 +424,12 @@ bcode GenParXRegYReg(uint opcode, bcode *src_ea1,uint dst_reg1,bcode *src_ea2,ui
 			src_ea2->sflag=0;
 			src_ea2->w0=0;
 		}
-// 		if(dst_reg1==dst_reg2)
-// 		{
-// 			yyerror("In parallel move: Same destination registers specified.");
-// 		}
+#if 0
+ 		if(dst_reg1==dst_reg2)
+ 		{
+ 			yyerror("In parallel move: Same destination registers specified.");
+ 		}
+#endif
 		dst_reg1=ddddd_2_ff(dst_reg1);
 		if(dst_reg1==-1)
 		{
@@ -433,7 +445,8 @@ bcode GenParXRegYReg(uint opcode, bcode *src_ea1,uint dst_reg1,bcode *src_ea2,ui
 		move.w0=opcode | ((src_ea2->w0&0xc)<<18) | (dst_reg1<<18) | (dst_reg2<<16) | ((src_ea2->w0&0x3)<<13) | (src_ea1->w0<<8);
 	PAREND
 }
-// -----------------------------------------------------------------------------------------------
+
+
 bcode GenParEmpty()
 {
     PAR1 

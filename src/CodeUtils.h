@@ -1,4 +1,3 @@
-// -----------------------------------------------------------------------------------------------
 /*
 
 Project:    asm56k
@@ -6,7 +5,6 @@ Author:     M.Buras (sqward)
 
 
 */
-// -----------------------------------------------------------------------------------------------
 #ifndef _CODEUTILS_H_
 #define _CODEUTILS_H_
 
@@ -22,14 +20,13 @@ Author:     M.Buras (sqward)
 #define Y_MEM 2
 #define L_MEM 3
 
-// -----------------------------------------------------------------------------------------------
 
 typedef struct
 {
     uint pc;
     uchar *code_ptr;
-    int	code_len;		// code length for pass 1
-    int code_len2;		// code length for pass 2, for verification
+    int	code_len;		/* code length for pass 1 */
+    int code_len2;		/* code length for pass 2, for verification */
     int	mem_type;
 }chunk;
 
@@ -57,7 +54,6 @@ extern unsigned char*	c_max_ptr;
 extern int 	mem_space;
 extern int 	in_section;
 
-// -----------------------------------------------------------------------------------------------
 
 void	CreateOutputName(char* input_name,char** output_name);
 void	allocate_chunk(int type);
@@ -81,9 +77,8 @@ void    CheckCodeInLMem();
 int		GetCurrentChunkBegin();
 void	retInit( raddr *ret );
 
-// -----------------------------------------------------------------------------------------------
 
-// this stuff looks really dodgy, but it helps a lot in code generators.
+/* this stuff looks really dodgy, but it helps a lot in code generators. */
 
 #define PASS1 if(!g_passNum){
 #define PASS2 }else{ 
@@ -98,7 +93,7 @@ void	retInit( raddr *ret );
 #define AFTER_PASSES insert_code_w(&inst_code); };
 
 #define DSP56301 if ( g_dsp_cpu != 56301 ) yyerror ("Illegal 56301 instruction. CPU is set to %d",g_dsp_cpu );
-// this is a bit pointless...
+/* this is a bit pointless... */
 #define DSP56001 if ( g_dsp_cpu != 56001 ) yyerror ("Illegal 56001 instruction. CPU is set to %d",g_dsp_cpu );
 
-#endif //_CODEUTILS_H_
+#endif /* _CODEUTILS_H_ */

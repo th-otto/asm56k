@@ -1,4 +1,3 @@
-// -----------------------------------------------------------------------------------------------
 /*
 
 Project:    asm56k
@@ -6,7 +5,6 @@ Author:     M.Buras (sqward)
 
 
 */
-// -----------------------------------------------------------------------------------------------
 #ifndef _CONVERTFIELDS_H_
 #define _CONVERTFIELDS_H_
 
@@ -44,4 +42,4 @@ int GetQQQQXregYreg( int first, int second );
 int GetQQQQYregXreg( int first, int second );
 int GetQQQQYregYreg( int first, int second );
 
-#endif // _CONVERTFIELDS_H_
+#endif /* _CONVERTFIELDS_H_ */

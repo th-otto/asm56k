@@ -1,4 +1,3 @@
-// -----------------------------------------------------------------------------------------------
 /*
 
 Project:    asm56k
@@ -6,7 +5,6 @@ Author:     M.Buras (sqward)
 
 
 */
-// -----------------------------------------------------------------------------------------------
 
 #ifndef _CODEGEN_H_
 #define _CODEGEN_H_
@@ -89,4 +87,4 @@ raddr GenRelAddrLong(int addr);
 raddr GenRelAddrShort(int addr);
 raddr GenRelAddrReg(uint reg);
 
-#endif // _CODEGEN_H_
+#endif /* _CODEGEN_H_ */

@@ -1,4 +1,3 @@
-// -----------------------------------------------------------------------------------------------
 /*
 
 Project:    asm56k
@@ -6,7 +5,6 @@ Author:     M.Buras (sqward)
 
 
 */
-// -----------------------------------------------------------------------------------------------
 
 #ifndef _GENARITH_H_
 #define _GENARITH_H_
@@ -58,4 +56,4 @@ void GenMax(uint insn_patt,uint src_reg,uint dst_reg,bcode *par_move);
 void GenNorm(uint src_reg,uint dst_reg);
 void GenNormf(uint src_reg,uint dst_reg);
 
-#endif //_GENARITH_H_
+#endif /* _GENARITH_H_ */

@@ -1,4 +1,3 @@
-// -----------------------------------------------------------------------------------------------
 /*
 
 Project:    asm56k
@@ -6,13 +5,12 @@ Author:     M.Buras (sqward)
 
 
 */
-// -----------------------------------------------------------------------------------------------
 #include <stdio.h>
 #include <ConvertFields.h>
 #include <export.h>
 #include <ErrorMessages.h>
 #include "GenBitOps.h"
-// -----------------------------------------------------------------------------------------------
+
 int bchg_patterns[]={
 	0xb0000,
 	0xb8000,
@@ -93,7 +91,7 @@ int extract_patterns[]={
 	0xc1900
 };
 
-// -----------------------------------------------------------------------------------------------
+
 void GenBitOp( int *insn_patt,int val,int xory,bcode *ea  )
 {
 	IN_PASS1
@@ -143,7 +141,8 @@ void GenBitOp( int *insn_patt,int val,int xory,bcode *ea  )
 	    }
 		AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenJccBitRel( int *insn_patt,int val,int xory,bcode *ea, raddr *rel_target )
 {
 	IN_PASS1
@@ -205,7 +204,7 @@ void GenJccBitRel( int *insn_patt,int val,int xory,bcode *ea, raddr *rel_target 
 		AFTER_PASSES
 }
 
-// -----------------------------------------------------------------------------------------------
+
 void GenInsExt1(uint insn_patt,uint reg1,uint src_reg,uint dest_reg)
 {
 	DSP56301
@@ -220,7 +219,8 @@ void GenInsExt1(uint insn_patt,uint reg1,uint src_reg,uint dest_reg)
 		inst_code.w0=0xc1a00|(ddddd_2_d_src(src_reg)<<4)|(reg1<<1)|ddddd_2_d_dst(dest_reg);
 	AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenInsExt2(uint insn_patt,uint val,uint src_reg,uint dest_reg)
 {
 	DSP56301

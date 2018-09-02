@@ -1,4 +1,3 @@
-// -----------------------------------------------------------------------------------------------
 /*
 
 Project:    asm56k
@@ -6,17 +5,16 @@ Author:     M.Buras (sqward)
 
 
 */
-// -----------------------------------------------------------------------------------------------
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "StringBuffer.h"
 #include <export.h>
-// -----------------------------------------------------------------------------------------------
+
 char* pStrBufPtr        = 0;
 char* pStrBufCurrent    = 0;
 int  StrBufBlockSize   = 0;
-// -----------------------------------------------------------------------------------------------
+
 int StringBufferInit(int bufferSize)
 {
     pStrBufPtr = (char*)malloc(bufferSize);
@@ -26,11 +24,10 @@ int StringBufferInit(int bufferSize)
         StrBufBlockSize = bufferSize;
         return 0;
     }
-    return 1; // error
+    return 1; /* error */
 }
 
-// -----------------------------------------------------------------------------------------------
-// TODO: deduplication
+/* TODO: deduplication */
 
 const char* StringBufferInsert(char* pStr)
 {

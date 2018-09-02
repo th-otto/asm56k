@@ -1,4 +1,3 @@
-// -----------------------------------------------------------------------------------------------
 /*
 
 Project:    asm56k
@@ -16,7 +15,6 @@ Author:     M.Buras (sqward)
 
 
 */
-// -----------------------------------------------------------------------------------------------
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,7 +26,6 @@ Author:     M.Buras (sqward)
 #include "CodeUtils.h"
 #include "OutputP56.h"
 
-// -----------------------------------------------------------------------------------------------
 
 void P56_SaveData(FILE* output_file,int chunkIndex,int memtype, int offset, int skip)
 {
@@ -70,7 +67,6 @@ void P56_SaveData(FILE* output_file,int chunkIndex,int memtype, int offset, int 
     free ( pCodeOrig );
 }
 
-// -----------------------------------------------------------------------------------------------
 
 void SaveFileP56( char* name )
 {
@@ -122,5 +118,3 @@ void SaveFileP56( char* name )
 
     fclose( output_file );
 }
-
-// -----------------------------------------------------------------------------------------------

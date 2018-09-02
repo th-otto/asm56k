@@ -431,7 +431,7 @@ opt_process(int argc, char **argv)
                             optAbortRun();
                     } else if (0==strcmp("optVersion",ag_s(ag))) {
 #ifdef OPT_VERSION                        
-       //                 opt_mess_1("OPT Version %s\n",OPT_VERSION);
+       /*                 opt_mess_1("OPT Version %s\n",OPT_VERSION); */
 #endif
                         if (!opt_menuflag) {
                             ag_free(ag);

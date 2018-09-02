@@ -1,4 +1,3 @@
-// -----------------------------------------------------------------------------------------------
 /*
 
 Project:    asm56k
@@ -6,14 +5,14 @@ Author:     M.Buras (sqward)
 
 
 */
-// -----------------------------------------------------------------------------------------------
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <asm_types.h>
 #include <export.h>
 #include "CodeUtils.h"
-// -----------------------------------------------------------------------------------------------
+
 
 chunk chunks[1024];
 int	num_chunks;		/* pass 1 */
@@ -25,7 +24,6 @@ unsigned char*	c_max_ptr;
 int mem_space;
 int in_section;
 
- // -----------------------------------------------------------------------------------------------
 
  void allocate_chunk(int type)
  {
@@ -52,9 +50,8 @@ int in_section;
 	 in_section=TRUE;
  }
  
-// -----------------------------------------------------------------------------------------------
 
-int GetCurrentMemType()
+int GetCurrentMemType(void)
 {
     if ( g_passNum )
 	    return chunks[num_chunks2].mem_type;
@@ -62,33 +59,30 @@ int GetCurrentMemType()
         return chunks[num_chunks].mem_type;
 }
 
-// -----------------------------------------------------------------------------------------------
 
-void    CheckCodeInLMem()
+void    CheckCodeInLMem(void)
 {
     if ( GetCurrentMemType() == L_MEM )
         yyerror ( "No code in L: memory allowed." );
 }
 
-// -----------------------------------------------------------------------------------------------
 
-int GetCurrentPC()
+int GetCurrentPC(void)
 {
     return pc;
 }
 
-// -----------------------------------------------------------------------------------------------
 
-int GetCurrentChunkBegin()
+int GetCurrentChunkBegin(void)
 {
 	if ( g_passNum )
 		return chunks[num_chunks2].pc;
 	else
 		return chunks[num_chunks].pc;
 }
-// -----------------------------------------------------------------------------------------------
 
-void close_chunk()
+
+void close_chunk(void)
 {
 	if(in_section)
 	{
@@ -104,7 +98,6 @@ void close_chunk()
 	}
 }
 
- // -----------------------------------------------------------------------------------------------
 
  void  allocate_vchunk(int type)
  {
@@ -123,9 +116,8 @@ void close_chunk()
      in_section=TRUE;
  }
 
- // -----------------------------------------------------------------------------------------------
 
- void close_vchunk()
+ void close_vchunk(void)
  {
 	 if(in_section)
 	 {
@@ -134,7 +126,6 @@ void close_chunk()
 	 }
  }
 
- // -----------------------------------------------------------------------------------------------
 void GenOrg(uint memSpace, uint address)
 {
 	PASS1
@@ -146,7 +137,6 @@ void GenOrg(uint memSpace, uint address)
 	PASSEND
 }
 
-// -----------------------------------------------------------------------------------------------
 
 void GenDc(Value data)
 { 
@@ -284,7 +274,7 @@ void GenDSM( hs* pLabel, Value val1 )
 
     if ( pLabel )
     {
-        SymSetValue( pLabel, T_PTR, Val_CreateInt( pc ) );              // reset label address value
+        SymSetValue( pLabel, T_PTR, Val_CreateInt( pc ) );              /* reset label address value */
     }   
 
     if ( wasted != 0 && g_passNum )
@@ -296,9 +286,8 @@ void GenDSM( hs* pLabel, Value val1 )
     GenDS( Val_CreateInt( val ) );
 }
 
-// -----------------------------------------------------------------------------------------------
 
- void verify_code()
+ void verify_code(void)
  {
 	 int	a;
 
@@ -319,16 +308,17 @@ void GenDSM( hs* pLabel, Value val1 )
 
  }
 
-// -----------------------------------------------------------------------------------------------
 
 void   insert_code_w(bcode *inst_code)
 {
 
-//     if ( (inst_code->w1& 0xffffff) == 0x7FFF80 )
-//     {
-//         yywarning( "found!");
-// 
-//     }
+#if 0
+     if ( (inst_code->w1& 0xffffff) == 0x7FFF80 )
+     {
+         yywarning( "found!");
+ 
+     }
+#endif
 
     *c_ptr++=(unsigned char)(inst_code->w0>>16);
     *c_ptr++=(unsigned char)(inst_code->w0>>8);
@@ -345,13 +335,12 @@ void   insert_code_w(bcode *inst_code)
     }
 }
 
-// -----------------------------------------------------------------------------------------------
 
 void   InsertString(const char *pString,int str_len)
 {
     int wordLength;
 
-    str_len++;      // take the termination character into account
+    str_len++;      /* take the termination character into account */
 
     wordLength = ( str_len / 3 ) +( (str_len % 3) > 0 ? 1 : 0 );
 
@@ -367,7 +356,7 @@ void   InsertString(const char *pString,int str_len)
 
 		for(  ; i!=0 ; i--)
 		{		
-			*c_ptr++ = 0;  //pad out the remaining bytes
+			*c_ptr++ = 0;  /*pad out the remaining bytes */
 		}
     }
     else
@@ -376,7 +365,6 @@ void   InsertString(const char *pString,int str_len)
     }
 }
 
-// -----------------------------------------------------------------------------------------------
 
 void   insert_vcode_w(bcode *inst_code)
 {
@@ -400,7 +388,6 @@ void   insert_vcode_w(bcode *inst_code)
     }
 }
 
-// -----------------------------------------------------------------------------------------------
 
 void	retInit( raddr *ret )
 {
@@ -409,5 +396,3 @@ void	retInit( raddr *ret )
 	ret->type=0;
 	ret->value=0;
 }
-
-// -----------------------------------------------------------------------------------------------

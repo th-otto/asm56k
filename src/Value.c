@@ -1,11 +1,9 @@
-// -----------------------------------------------------------------------------------------------
 /*
 
 Project:    asm56k
 Author:     M.Buras (sqward)
 
 */
-// -----------------------------------------------------------------------------------------------
 
 #include <math.h>
 
@@ -15,7 +13,7 @@ Author:     M.Buras (sqward)
 #include <asm_types.h>
 #include <export.h>
 #include <Value.h>
-#include <CodeUtils.h>		//eventually this will be removed
+#include <CodeUtils.h>		/*eventually this will be removed */
 #include <SymbolTable.h>
 #include <Parser.h>
 #include <TokenStream.h>
@@ -23,8 +21,7 @@ Author:     M.Buras (sqward)
 #include <StringBuffer.h>
 #include <assert.h>
 
-// -----------------------------------------------------------------------------------------------
-// TODO: introduce overflow checking!
+/* TODO: introduce overflow checking! */
 
 Value Val_CastToInt(Value val)
 {
@@ -45,8 +42,9 @@ Value Val_CastToInt(Value val)
 
 	return ret;
 }
-// -----------------------------------------------------------------------------------------------
-// TODO: introduce overflow checking!
+
+
+/* TODO: introduce overflow checking! */
 
 Value Val_CastToFloat(Value val)
 {
@@ -69,9 +67,8 @@ Value Val_CastToFloat(Value val)
 
 	return ret;
 }
-// -----------------------------------------------------------------------------------------------
 
-// TODO: introduce overflow checking!
+/* TODO: introduce overflow checking! */
 
 Value Val_CastToFract(Value val)
 {
@@ -94,7 +91,7 @@ Value Val_CastToFract(Value val)
 
 	return ret;
 }
-// -----------------------------------------------------------------------------------------------
+
 
 int	Val_GetAsInt(Value val)
 {
@@ -106,7 +103,6 @@ int	Val_GetAsInt(Value val)
 	return Val_CastToInt(val).m_value.m_int;
 }
 
-// -----------------------------------------------------------------------------------------------
 
 bool Val_CheckResolved( Value val2 )
 {
@@ -126,8 +122,7 @@ bool Val_CheckResolved2( Value val1,Value val2 )
     return false;
 }
 
-// -----------------------------------------------------------------------------------------------
-// I think this might be flawed ...
+/* I think this might be flawed ... */
 
 u32	Val_GetAsFract24(Value val)
 {
@@ -137,7 +132,7 @@ u32	Val_GetAsFract24(Value val)
 
 		if ( raw > 1.0f || raw < -1.0f )
 		{
-			yywarning("Overflow when casting to 24bit fractional.");
+			/* yywarning("Overflow when casting to 24bit fractional."); */
 		}
 
 		return (u32) floor( raw * 0x800000 );
@@ -161,7 +156,7 @@ u64	Val_GetAsFract48(Value val)
             yywarning("Overflow when casting to 24bit fractional.");
         }
 
-        return (u64) floor( raw * 0x80000000000000LL ); // ??
+        return (u64) floor( raw * 0x80000000000000LL ); /* ?? */
     }
     else if ( val.m_type == kInt)
     {
@@ -171,7 +166,6 @@ u64	Val_GetAsFract48(Value val)
     return 0;
 }
 
-// -----------------------------------------------------------------------------------------------
 Value Val_Add(Value val1,Value val2)
 {
 	Value ret;
@@ -200,7 +194,6 @@ Value Val_Add(Value val1,Value val2)
 	return ret;
 }
 
-// -----------------------------------------------------------------------------------------------
 
 Value Val_Mul(Value val1,Value val2)
 {
@@ -229,7 +222,7 @@ Value Val_Mul(Value val1,Value val2)
 
 	return ret;
 }
-// -----------------------------------------------------------------------------------------------
+
 
 Value Val_Div(Value val1,Value val2)
 {
@@ -250,7 +243,7 @@ Value Val_Div(Value val1,Value val2)
             {
                 yyerror("Division by zero.");
             }
-            ret.m_value.m_float = 1;    //?
+            ret.m_value.m_float = 1;    /* ? */
         }
         else
         {
@@ -265,7 +258,7 @@ Value Val_Div(Value val1,Value val2)
             {
                 yyerror("Division by zero.");
             }
-            ret.m_value.m_float = 1;    //?
+            ret.m_value.m_float = 1;    /* ? */
         }
         else
         {
@@ -275,7 +268,7 @@ Value Val_Div(Value val1,Value val2)
 
 	return ret;
 }
-// -----------------------------------------------------------------------------------------------
+
 
 Value Val_Mod(Value val1,Value val2)
 {
@@ -301,7 +294,7 @@ Value Val_Mod(Value val1,Value val2)
             {
                 yyerror("Division by zero.");
             }
-            ret.m_value.m_float = 1;    //?
+            ret.m_value.m_float = 1;    /* ? */
         }
         else
         {
@@ -312,7 +305,6 @@ Value Val_Mod(Value val1,Value val2)
 	return ret;
 }
 
-// -----------------------------------------------------------------------------------------------
 
 Value Val_Neg(Value val1)
 {
@@ -337,7 +329,6 @@ Value Val_Neg(Value val1)
 	return ret;
 }
 
-// -----------------------------------------------------------------------------------------------
 
 Value Val_And(Value val1,Value val2)
 {
@@ -362,7 +353,8 @@ Value Val_And(Value val1,Value val2)
 
 	return ret;
 }
-// -----------------------------------------------------------------------------------------------
+
+
 Value Val_Xor(Value val1,Value val2)
 {
 	Value ret;
@@ -387,7 +379,6 @@ Value Val_Xor(Value val1,Value val2)
 	return ret;
 }
 
-// -----------------------------------------------------------------------------------------------
 
 Value Val_Or(Value val1,Value val2)
 {
@@ -413,7 +404,6 @@ Value Val_Or(Value val1,Value val2)
 	return ret;
 }
 
-// -----------------------------------------------------------------------------------------------
 
 Value Val_Lsr(Value val1,Value val2)
 {
@@ -444,7 +434,6 @@ Value Val_Lsr(Value val1,Value val2)
 	return ret;
 }
 
-// -----------------------------------------------------------------------------------------------
 
 Value Val_Lsl(Value val1,Value val2)
 {
@@ -475,7 +464,7 @@ Value Val_Lsl(Value val1,Value val2)
 	return ret;
 }
 
-// -----------------------------------------------------------------------------------------------
+
 Value Val_CreateUnresolved()
 {
     Value ret;
@@ -507,7 +496,6 @@ Value Val_CreateFract(double val)
 	return ret;
 }
 
-// -----------------------------------------------------------------------------------------------
 
 bool Val_Eq(Value val1,Value val2)
 {
@@ -570,7 +558,6 @@ bool Val_Ls(Value val1,Value val2)
 	return false;
 }
 
-// -----------------------------------------------------------------------------------------------
 
 void EvalCondition(uint condition,Value val1,Value val2)
 {
@@ -603,7 +590,6 @@ void EvalCondition(uint condition,Value val1,Value val2)
 	}
 }
 
-// -----------------------------------------------------------------------------------------------
 
 void EvalDefined(const char* pStr,bool invert)
 {
@@ -652,7 +638,6 @@ int StrToInt(const char* pString)
     return val;
 }
 
-// -----------------------------------------------------------------------------------------------
 
 void EvalIfOneArg( uint cond , Value val1 )
 {
@@ -669,11 +654,11 @@ void EvalIfOneArg( uint cond , Value val1 )
 
     switch(cond)
     {
-        break; case 0x1:        answer = val >= 0 ? 1 : 0 ;			// GE
+        break; case 0x1:        answer = val >= 0 ? 1 : 0 ;			/* GE */
         break; case 0x2:        answer = val != 0 ? 1 : 0 ;
-		break; case 0x3:        answer = val <  0 ? 0 : 1 ;			// PL
-		break; case 0x7:        answer = val >  0 ? 1 : 0 ;			// GT
-		break; case 0x9:        answer = val <  0 ? 1 : 0 ;			// LT
+		break; case 0x3:        answer = val <  0 ? 0 : 1 ;			/* PL */
+		break; case 0x7:        answer = val >  0 ? 1 : 0 ;			/* GT */
+		break; case 0x9:        answer = val <  0 ? 1 : 0 ;			/* LT */
 		break; case 0xa:        answer = val == 0 ? 1 : 0 ;
         break; case 0xf:        answer = val <= 0 ? 1 : 0 ;
         break; default:         yyerror("Illegal IFxx opcode."); return;
@@ -689,5 +674,3 @@ void EvalIfOneArg( uint cond , Value val1 )
         }
     }
 }
-
-// -----------------------------------------------------------------------------------------------

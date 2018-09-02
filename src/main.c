@@ -1,11 +1,9 @@
-// -----------------------------------------------------------------------------------------------
 /*
 
 Project:    asm56k
 Author:     M.Buras (sqward)
 
 */
-// -----------------------------------------------------------------------------------------------
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -36,7 +34,6 @@ Author:     M.Buras (sqward)
 #include <opt.h>
 
 
-// -----------------------------------------------------------------------------------------------
 
 int 			g_currentLine = 1;
 int 			g_passNum;
@@ -45,7 +42,6 @@ int				g_warnCount;
 int             g_LocalSerial = 0;
 jmp_buf         critical_error;
 
-// -----------------------------------------------------------------------------------------------
 
 void mtest(void* pMem,int Line,char* File_)
 {
@@ -56,7 +52,6 @@ void mtest(void* pMem,int Line,char* File_)
 	}
 }
 
-// -----------------------------------------------------------------------------------------------
 
 void debugprint(const char* pFmt, ... )
 {
@@ -106,9 +101,8 @@ int yywarning(const char* s, ...)
 	g_warnCount++;
 	va_end(arglist);
 	return 0;
-};
+}
 
-// -----------------------------------------------------------------------------------------------
 
 void asm_abort(void)
 {
@@ -116,13 +110,12 @@ void asm_abort(void)
 	longjmp( critical_error, 1);
 }
 
-// -----------------------------------------------------------------------------------------------
 
 static void InitParserPass1(void)
 {
     g_LocalSerial = 0;
 	in_section=FALSE;
-	g_passNum=0;	// pass 1
+	g_passNum=0;	/* pass 1 */
 	pc=0;
 	g_currentLine=1;
 	num_chunks=0;
@@ -137,7 +130,7 @@ static void InitParserPass2(void)
 {
     g_LocalSerial = 0;
     in_section=FALSE;
-	g_passNum=1;	// pass 2
+	g_passNum=1;	/* pass 2 */
 	pc=0;
 	dc_flag=0;
 	if_stack_l=0;
@@ -146,7 +139,6 @@ static void InitParserPass2(void)
 	PushStream( g_tokens,inc_names[0],1, -1 , 0);
 }
 
-// -----------------------------------------------------------------------------------------------
 
 char* lod_output_name = NULL;
 char* p56_output_name = NULL;
@@ -160,7 +152,6 @@ int g_falcon = 0;
 int g_output_symbols=0;
 int g_write_zero_sections=0;
 
-// -----------------------------------------------------------------------------------------------
 
 int asm56k(int argc,char* argv[])
 {
@@ -204,7 +195,7 @@ int asm56k(int argc,char* argv[])
         
 	    if( yyparse() == 0 && g_errorCount == 0 )
 	    {	
-		    //	pass 2
+		    /*	pass 2 */
 		    debugprint("PASS2\n");
 		    close_vchunk();
 		    InitMacroProxy();
@@ -247,7 +238,6 @@ int asm56k(int argc,char* argv[])
 	return g_errorCount;
 }
 
-// -----------------------------------------------------------------------------------------------
 
 int DefineSymbol(void *v) 
 {
@@ -282,7 +272,6 @@ int AddIncludePath(void *v)
 	return OPT_OK; 
 }
 
-// -----------------------------------------------------------------------------------------------
 
 int main(int argc,char* argv[])
 {
@@ -327,5 +316,3 @@ int main(int argc,char* argv[])
 
     return ret;
 }
-
-// -----------------------------------------------------------------------------------------------

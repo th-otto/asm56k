@@ -1,4 +1,3 @@
-// -----------------------------------------------------------------------------------------------
 /*
 
 Project:    asm56k
@@ -6,13 +5,12 @@ Author:     M.Buras (sqward)
 
 
 */
-// -----------------------------------------------------------------------------------------------
 #include <stdio.h>
 #include <ConvertFields.h>
 #include <export.h>
 #include <ErrorMessages.h>
 #include "GenArith.h"
-// -----------------------------------------------------------------------------------------------
+
 int	add_patterns[]={
 	0x0,			/* add jjj,d */
 	0x14080,	/* add #>xx,d */
@@ -69,7 +67,7 @@ int incdec_patterns []={
 	0xa
 };
 
-// -----------------------------------------------------------------------------------------------
+
 void GenAndEorOr(uint insn_patt,uint src_reg,uint dest_reg,bcode *par_move )
 {
     IN_PASS1
@@ -85,7 +83,8 @@ void GenAndEorOr(uint insn_patt,uint src_reg,uint dest_reg,bcode *par_move )
 
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenAdcSbc(uint insn_patt,uint src_reg,uint dest_reg,bcode *par_move )
 {
     IN_PASS1
@@ -116,7 +115,8 @@ void GenAdcSbc(uint insn_patt,uint src_reg,uint dest_reg,bcode *par_move )
 
         AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenAddSub(uint insn_patt,uint src_reg,uint dest_reg,bcode *par_move )
 {
     IN_PASS1
@@ -142,7 +142,8 @@ void GenAddSub(uint insn_patt,uint src_reg,uint dest_reg,bcode *par_move )
 
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenCmp(uint insn_patt,uint src_reg,uint dest_reg,bcode *par_move )
 {
     IN_PASS1
@@ -168,7 +169,8 @@ void GenCmp(uint insn_patt,uint src_reg,uint dest_reg,bcode *par_move )
 
         AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenAddSubEorOrLong(uint insn_patt,int val,uint dest_reg)
 {
     IN_PASS1
@@ -180,7 +182,8 @@ void GenAddSubEorOrLong(uint insn_patt,int val,uint dest_reg)
     inst_code.w1=val;
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenAddSubEorOrShort(uint insn_patt,int val,uint dest_reg)
 {
     IN_PASS1
@@ -194,7 +197,8 @@ void GenAddSubEorOrShort(uint insn_patt,int val,uint dest_reg)
     inst_code.w0=insn_patt|(dest_reg<<3)|(val<<8);
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenAddxSubx(uint insn_patt,uint src_reg,uint dest_reg,bcode *par_move )
 {
     IN_PASS1
@@ -213,7 +217,7 @@ void GenAddxSubx(uint insn_patt,uint src_reg,uint dest_reg,bcode *par_move )
     AFTER_PASSES
 }
 
-// -----------------------------------------------------------------------------------------------
+
 void GenAndiOri(uint insn_patt,int val,uint dest_reg)
 {
     IN_PASS1
@@ -232,7 +236,8 @@ void GenAndiOri(uint insn_patt,int val,uint dest_reg)
     inst_code.w0=insn_patt|dest_reg|(val<<8);
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenAsxImmediate(uint insn_patt,int val,uint src_reg,uint dest_reg)
 {
     IN_PASS1
@@ -247,7 +252,8 @@ void GenAsxImmediate(uint insn_patt,int val,uint src_reg,uint dest_reg)
         inst_code.w0=insn_patt|(src_reg<<7)|dest_reg|(val<<1);
         AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenAsxReg(uint insn_patt,int val_reg,uint src_reg,uint dest_reg)
 {
     IN_PASS1
@@ -263,7 +269,8 @@ void GenAsxReg(uint insn_patt,int val_reg,uint src_reg,uint dest_reg)
     inst_code.w0=insn_patt|(src_reg<<4)|(val_reg<<1)|dest_reg;
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenCmpm(uint src_reg, uint dest_reg,bcode *par_move)
 {
     IN_PASS1
@@ -287,7 +294,7 @@ void GenCmpm(uint src_reg, uint dest_reg,bcode *par_move)
         inst_code.w1=par_move->w1;
         AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
 void GenCmpu(uint src_reg, uint dest_reg)
 {
     IN_PASS1
@@ -307,7 +314,8 @@ void GenCmpu(uint src_reg, uint dest_reg)
         inst_code.w0=0xc1ff0|(src_reg<<1)|dest_reg;
         AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenIncDec(uint inst_patt,uint reg)
 {
     IN_PASS1
@@ -315,7 +323,8 @@ void GenIncDec(uint inst_patt,uint reg)
         inst_code.w0=inst_patt|ddddd_2_d_dst(reg);
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenDiv(uint src_reg,uint dst_reg)
 {
     IN_PASS1
@@ -323,7 +332,8 @@ void GenDiv(uint src_reg,uint dst_reg)
         inst_code.w0=0x18040|(ddddd_2_JJ_src(src_reg)<<4)|(ddddd_2_d_dst(dst_reg)<<3);
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenDMac(uint modifier,uint plusminus,int val, uint dest_reg)
 {
 	DSP56301
@@ -332,7 +342,8 @@ void GenDMac(uint modifier,uint plusminus,int val, uint dest_reg)
         inst_code.w0=0x12480|((modifier&2)<<7)|((modifier&1)<<6)|(ddddd_2_d_dst(dest_reg)<<5)|(plusminus<<4)|val;
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenLsxImmediate( int *insn_patt,int val, uint dest_reg)
 {
 	DSP56301
@@ -347,7 +358,8 @@ void GenLsxImmediate( int *insn_patt,int val, uint dest_reg)
         inst_code.w0=insn_patt[1]|(val<<1)|dest_reg;
      AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenLsxReg( int *insn_patt,int src_reg, uint dest_reg)
 {
 	DSP56301
@@ -363,7 +375,8 @@ void GenLsxReg( int *insn_patt,int src_reg, uint dest_reg)
 		inst_code.w0=insn_patt[2]|(src_reg<<1)|dest_reg;
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 uint mac_pattern[]=
 {
     0x82,
@@ -407,7 +420,8 @@ void GenMul1(uint *insn_patt,uint plusminus,uint reg_pair,uint dest_reg,bcode *p
         inst_code.sflag=par_move->sflag;
         AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenMul2(uint *insn_patt,uint plusminus,uint src_reg,int val,uint dest_reg)
 {
     IN_PASS1
@@ -428,7 +442,8 @@ void GenMul2(uint *insn_patt,uint plusminus,uint src_reg,int val,uint dest_reg)
     inst_code.w0=insn_patt[1]|(val<<8)|(src_reg<<4)|(dest_reg<<3)|(plusminus<<2);
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenMuli(uint *insn_patt,uint plusminus,int val,uint src_reg,uint dest_reg)
 {
     IN_PASS1
@@ -446,7 +461,8 @@ void GenMuli(uint *insn_patt,uint plusminus,int val,uint src_reg,uint dest_reg)
     inst_code.sflag=1;
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenMulxx(uint *insn_patt,uint code, uint plusminus,uint reg_pair,uint dest_reg)
 {
     IN_PASS1
@@ -460,7 +476,8 @@ void GenMulxx(uint *insn_patt,uint code, uint plusminus,uint reg_pair,uint dest_
 		inst_code.w0=insn_patt[3]|(code<<6)|(dest_reg<<5)|(plusminus<<4)|reg_pair;
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 uint max_pattern[]=
 {
     0x1d,
@@ -485,7 +502,8 @@ void GenMax(uint insn_patt,uint src_reg,uint dst_reg,bcode *par_move)
         inst_code.sflag=par_move->sflag;
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenNorm(uint src_reg,uint dst_reg)
 {
     IN_PASS1
@@ -500,7 +518,8 @@ void GenNorm(uint src_reg,uint dst_reg)
     inst_code.w0=0x1d815|(src_reg<<8)|(dst_reg<<3);
     AFTER_PASSES
 }
-// -----------------------------------------------------------------------------------------------
+
+
 void GenNormf(uint src_reg,uint dst_reg)
 {
     IN_PASS1

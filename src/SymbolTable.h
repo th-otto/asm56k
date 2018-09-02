@@ -1,4 +1,3 @@
-// -----------------------------------------------------------------------------------------------
 /*
 
 Project:    asm56k
@@ -6,7 +5,6 @@ Author:     M.Buras (sqward)
 
 
 */
-// -----------------------------------------------------------------------------------------------
 
 #ifndef _SYMBOLTABLE_H_
 #define _SYMBOLTABLE_H_
@@ -58,7 +56,6 @@ hashEntry;
 
 extern hashEntry hash_tab[HASH_SIZE];
 
-// -----------------------------------------------------------------------------------------------
 void InitSymbolTable();
 hs*	 AddSymbol(const char* string,int len,int forceCopy);
 hs*	 FindSymbol(const char* pString);
@@ -66,11 +63,10 @@ void SymSetValue(hs* slot,int meaning,Value val);
 void SymSetValueMacro(hs* slot,int meaning,void* val1,void* val2,int val3);
 void SymbolSetMemSpace(hs* slot,int mem_space);
 void ListSymbolTable();
-// -----------------------------------------------------------------------------------------------
+
 void SymSet(const char* pSymbol,Value val);
 hs* AddSym(stext* pSymName,int forceCopy);
 Value GetSym(const char* pString);
 hs* AddLabel( stext* pSymName );
-// -----------------------------------------------------------------------------------------------
 
-#endif //_SYMBOLTABLE_H_
+#endif /*_SYMBOLTABLE_H_ */

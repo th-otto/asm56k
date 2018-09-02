@@ -1,4 +1,3 @@
-// -----------------------------------------------------------------------------------------------
 /*
 
 Project:    asm56k
@@ -6,7 +5,6 @@ Author:     M.Buras (sqward)
 
 
 */
-// -----------------------------------------------------------------------------------------------
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,25 +12,22 @@ Author:     M.Buras (sqward)
 #include <asm_types.h>
 #include <export.h>
 #include <Value.h>
-#include <CodeUtils.h>		//eventually this will be removed
+#include <CodeUtils.h>		/*eventually this will be removed */
 #include <SymbolTable.h>
 #include <Parser.h>
 #include <TokenStream.h>
 #include <MacroProxy.h>
 #include <StringBuffer.h>
 
-// -----------------------------------------------------------------------------------------------
 
 hashEntry 		hash_tab[HASH_SIZE];
 hs* 			g_pSymbolSlot;
 hs* 			free_slot;
 int				node_len=0;
 
-// -----------------------------------------------------------------------------------------------
 /*
 	Initialise hash tables                
 */
-// -----------------------------------------------------------------------------------------------
 void InitSymbolTable()
 {
 	g_pSymbolSlot=(hs*)malloc(MAX_DESC*sizeof(hs));
@@ -40,12 +35,12 @@ void InitSymbolTable()
 	free_slot=g_pSymbolSlot;
 	memset( hash_tab, 0, sizeof(hash_tab));
 }
-// -----------------------------------------------------------------------------------------------
+
+
 /*  
 	hashtable string menagment            
 	TODO: use crc32 to calculate hash
 */	
-// -----------------------------------------------------------------------------------------------
 uint hash(const char* pString)
 {
 	uint sum = 0;
@@ -59,13 +54,12 @@ uint hash(const char* pString)
 
 	return sum & ( HASH_SIZE-1 );
 }
-// -----------------------------------------------------------------------------------------------
+
+
 /* 
 	Add a new string to the hash table. If not enough memory in the tables expand... 
 	If string already exists, warn..    
 */
-// -----------------------------------------------------------------------------------------------
-
 hs* AddSymbol(const char* pString,int len,int forceCopy)
 {
 	uint hash_val=hash(pString);
@@ -75,13 +69,13 @@ hs* AddSymbol(const char* pString,int len,int forceCopy)
 #ifdef _MSC_BUILD
     _ASSERT ( _CrtCheckMemory( ) );
 #endif
-												// check if the string is already defined
+												/* check if the string is already defined */
 	if( FindSymbol(pString) != NULL )
 	{
 		return NULL;							
 	}
-												// if we have no empty hash slots
-												// expand...
+												/* if we have no empty hash slots */
+												/* expand... */
 	if( node_len >= MAX_DESC )
 	{
 		g_pSymbolSlot=(hs*)malloc(MAX_DESC*sizeof(hs));
@@ -94,10 +88,11 @@ hs* AddSymbol(const char* pString,int len,int forceCopy)
 		node_len++;
 	}
 
-	// add the string into the table
-	// if a given hash slot level is not initialised yet
-	// do it...
-
+	/*
+	 * add the string into the table
+	 * if a given hash slot level is not initialised yet
+	 * do it...
+	*/
 #ifdef _MSC_BUILD
     _ASSERT ( _CrtCheckMemory( ) );
 #endif
@@ -118,7 +113,7 @@ hs* AddSymbol(const char* pString,int len,int forceCopy)
 		hash_tab[hash_val].pTail=pNewEntry;
 	}
 	else
-	{							// if the hash level already contains entries then use them.
+	{							/* if the hash level already contains entries then use them. */
 		pNewEntry=free_slot++;
 		hash_tab[hash_val].pTail->pNext=pNewEntry;
 		hash_tab[hash_val].pTail=pNewEntry;
@@ -135,11 +130,9 @@ hs* AddSymbol(const char* pString,int len,int forceCopy)
 	return pNewEntry;
 }
 
-// -----------------------------------------------------------------------------------------------
 /* 
 	Find a string in the hash table. If not found, warn. If found, return slot pointer.             
 */
-// -----------------------------------------------------------------------------------------------
 
 hs* FindSymbol(const char* pString)
 {
@@ -206,7 +199,6 @@ void ListSymbolTable()
 	}
 }
 
-// -----------------------------------------------------------------------------------------------
 
 void SymSet(const char* pSymbol,Value val)
 {
@@ -221,7 +213,6 @@ void SymSet(const char* pSymbol,Value val)
     SymSetValue(temp,T_VALUE,val);
 }
 
-// -----------------------------------------------------------------------------------------------
 
 hs* AddSym(stext* pSymName,int forceCopy)
 {
@@ -235,7 +226,7 @@ hs* AddSym(stext* pSymName,int forceCopy)
             return NULL;
         }
 
-		// correct L: memory address
+		/* correct L: memory address */
         if ( GetCurrentMemType() == L_MEM )
         {
             curr_pc = GetCurrentChunkBegin() + ( ( pc - GetCurrentChunkBegin() ) >> 1 ) ;
@@ -253,7 +244,6 @@ hs* AddSym(stext* pSymName,int forceCopy)
 #endif
 }
 
-// -----------------------------------------------------------------------------------------------
 
 Value GetSym(const char* pSymbolName)
 {
@@ -274,7 +264,6 @@ Value GetSym(const char* pSymbolName)
     return Val_CreateUnresolved();
 }
 
-// -----------------------------------------------------------------------------------------------
 
 hs* AddLabel( stext* pSymName )
 {   

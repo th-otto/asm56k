@@ -1,11 +1,9 @@
-// -----------------------------------------------------------------------------------------------
 /*
 
 Project:    asm56k
 Author:     M.Buras (sqward)
 
 */
-// -----------------------------------------------------------------------------------------------
 #ifndef _TOKENSTREAM_H_
 #define _TOKENSTREAM_H_
 
@@ -15,9 +13,8 @@ Author:     M.Buras (sqward)
 #define	MACRO_PARAMS_TOKEN_BUFFER 2048
 #define MACRO_PARAMS_POINTER_BUFFER 32*64
 
-#define LEX_BUFFER 0x8000			// this is size of the flex buffer (for each included file)
+#define LEX_BUFFER 0x8000			/* this is size of the flex buffer (for each included file) */
 
-// -----------------------------------------------------------------------------------------------
 
 struct TokenVal;
 
@@ -41,14 +38,13 @@ typedef struct{
 	TokenVal*	pParamsPool;
 }StreamStackEntry;
 
-// -----------------------------------------------------------------------------------------------
 
 extern void*	buffer;
 
 extern	int		if_stack_l;
 extern	char	if_stack[];
 
-// includes stack:
+/* includes stack: */
 extern const char*	inc_names[];
 extern const char*	g_CurrentFile;
 extern FILE*		inc_handles[];
@@ -68,7 +64,6 @@ extern int			g_MacroNumInstances;
 extern TokenVal*	params_pointers[];
 extern TokenVal		macros_params[];
 
-// -----------------------------------------------------------------------------------------------
 
 void		InitTokenStream(FILE* input,const char *file_name);
 void		PushStream( TokenVal* pMacro,const char* pFileName, int curline, int params_count, int instancesNumber );
@@ -89,6 +84,5 @@ void    	IncludeFile();
 void		AddIncDir(char* pDir);
 bool		GetIncDir(const char **pDir, uint* pDirNum);
 
-// -----------------------------------------------------------------------------------------------
 
-#endif // _TOKENSTREAM_H_
+#endif /* _TOKENSTREAM_H_ */

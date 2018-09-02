@@ -1,4 +1,3 @@
-// -----------------------------------------------------------------------------------------------
 /*
 
 Project:    asm56k
@@ -6,7 +5,6 @@ Author:     M.Buras (sqward)
 
 
 */
-// -----------------------------------------------------------------------------------------------
 
 #ifndef _GENPARMOVES_H_
 #define _GENPARMOVES_H_
@@ -38,4 +36,4 @@ bcode GenLMemReg(uint *opcodes,bcode *ea,uint dst_reg);
 bcode GenParXRegYReg(uint opcode,bcode *src_ea1,uint dst_reg1,bcode *src_ea2,uint dst_reg2);
 bcode GenParEmpty();
 
-#endif // _GENPARMOVES_H_
+#endif /* _GENPARMOVES_H_ */
