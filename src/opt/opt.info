@@ -1,0 +1,68 @@
+This is opt.info, produced by makeinfo version 4.1 from opt.texi.
+
+   This document describes `opt', v3.19, a subroutine library for
+communicating options and parameter values to a C program via the
+command line, parameter files, environment variables, or a rudimentary
+builtin interactive menu.
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided this permission notice is preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the section entitled "Copying" is included exactly as in the
+original, and provided that the entire resulting derived work is
+distributed under the terms of a permission notice identical to this
+one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the author.
+
+
+Indirect:
+opt.info-1: 1021
+opt.info-2: 49218
+
+Tag Table:
+(Indirect)
+Node: Top1021
+Node: Nutshell2490
+Node: What the user sees3914
+Node: What the programmer sees6723
+Node: Opt9644
+Node: Philosophical digression9821
+Node: What is Opt13209
+Node: User Interface14301
+Node: Direct command line options14814
+Node: Options from a named file17346
+Node: Environment strings20334
+Node: Rudimentary builtin menu21845
+Node: Standard usage messages24621
+Node: Programmer Interface25282
+Node: Example code25749
+Node: Registering options28258
+Ref: Registering options-Footnote-129447
+Node: Delimited options29695
+Node: Positional options35302
+Node: Flexible options37896
+Node: Default values39057
+Node: Modifying option attributes39593
+Node: Registering array options41941
+Node: Registering options in C++43703
+Node: Setting some strings46985
+Node: Registering functions (hooks)49218
+Node: Misc56154
+Node: Etc57119
+Node: Installation57304
+Ref: Installation-Footnote-161077
+Node: recipe61151
+Node: Global variables63894
+Node: Single file64551
+Node: Extensions66392
+Node: Bugs68769
+Node: Warranty69828
+Node: Copying69931
+
+End Tag Table

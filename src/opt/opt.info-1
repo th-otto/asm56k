@@ -1,0 +1,1232 @@
+This is opt.info, produced by makeinfo version 4.1 from opt.texi.
+
+   This document describes `opt', v3.19, a subroutine library for
+communicating options and parameter values to a C program via the
+command line, parameter files, environment variables, or a rudimentary
+builtin interactive menu.
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided this permission notice is preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the section entitled "Copying" is included exactly as in the
+original, and provided that the entire resulting derived work is
+distributed under the terms of a permission notice identical to this
+one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the author.
+
+
+File: opt.info,  Node: Top,  Next: Nutshell,  Prev: (dir),  Up: (dir)
+
+   This document describes `opt', v3.19, a subroutine library for
+communicating options and parameter values to a C program via the
+command line, parameter files, environment variables, or a rudimentary
+builtin interactive menu.
+
+* Menu:
+
+* Nutshell::                    What is opt, in a nutshell?
+* Opt::                         What is opt, in a deeper philosophical sense?
+* Etc::                         What else?
+
+ --- The Detailed Node Listing ---
+
+Nutshell
+
+* What the user sees::          How to use programs that use opt
+* What the programmer sees::    How to write programs that use opt
+
+Opt
+
+* Philosophical digression::
+* What is Opt::
+* User Interface::
+* Programmer Interface::
+
+What is Opt?
+
+* User Interface::
+* Programmer Interface::
+
+User Interface
+
+* Direct command line options::
+* Options from a named file::
+* Environment strings::
+* Rudimentary builtin menu::
+* Standard usage messages::
+
+Programmer Interface
+
+* Example code::
+* Registering options::
+* Setting some strings::
+* Registering functions (hooks)::
+* Misc::
+
+Registering options
+
+* Delimited options::
+* Positional options::
+* Flexible options::
+* Default values::
+* Modifying option attributes::
+* Registering array options::
+* Registering options in C++::
+* Registering array options::
+
+Etc
+
+* Installation::
+* recipe::
+* Global variables::
+* Single file::
+* Extensions::
+* Bugs::
+* Warranty::
+* Copying::
+
+
+File: opt.info,  Node: Nutshell,  Next: Opt,  Prev: Top,  Up: Top
+
+Nutshell
+********
+
+   `opt' is a subroutine library which facilitates the convenient input
+of parameters to a C program.  Parameters are parsed from a command
+line, with further facilities for reading options from files, from
+environment strings, or from an interactive environment.
+
+   The aim of the `opt' package is to permit programs to be both user-
+and programmer- friendly.  The package attempts to provide a direct and
+relatively full-featured input interface to the ultimate user of the
+program, and at the same time to impose a minimal amount of work on the
+programmer to "add" options parsing to existing software.
+
+   `opt' is similar in its effects to the standard UNIX (and also to
+the GNU) `getopts' packages, and I have tried (though possibly not as
+hard as I could have) to keep them as similar as possible whenever
+feasable.  But `opt' does takes a somewhat different philosophy.
+Variables are "registered" to strings, and whenever the strings are
+used on the command line, the variables are updated accordingly.  This
+tends to be a little more compact (and in my view more convenient) than
+the loop and case-statement approach used by `getopt'.  Also, `opt' has
+a few more bells and whistles.
+
+* Menu:
+
+* What the user sees::          How to use programs that use opt
+* What the programmer sees::    How to write programs that use opt
+
+
+File: opt.info,  Node: What the user sees,  Next: What the programmer sees,  Prev: Nutshell,  Up: Nutshell
+
+What the user sees
+==================
+
+   Code written with `opt' can read parameters from the command line;
+for example running the program
+     birthday -m 9 -d 11 -y1989 -v
+
+can set paramters MONTH=9, DAY=11, and YEAR=1989, and also turn on the
+VERBOSE flag, inside the `birthday' program.  Note that the space
+between the single-character option name and the value is optional.
+Some parameters can also be set using long names, for instance:
+     birthday --month=9 --day 11 -y1989
+
+Note that the `=' can only be used with the long form of the options,
+but it is optional and white space can also be used to separate the
+option name from its value.  Note also that the long name `--month' and
+the variable name MONTH only happen to be the same in this example;
+they aren't in general.  Alternatively, you can use
+     birthday @file.opt
+
+to read the paramters from the file `file.opt'.  There is also an
+interactive menu.  If you type
+     birthday --menu
+
+at the command line, then you'll see this on the screen:
+     birthday
+     m Month                                    4
+     d Day of month                             24
+     y Year                                     1993
+     v Verbose                                  FALSE
+     p Use Pade Approximants                    FALSE
+     g Gregorian                                FALSE
+     (Type ? for Help)
+     ->
+
+By invoking the menu, the user is able to see what all the available
+options are, even the obscure ones.  The prompt `->' is waiting for
+your response; type `m 9' and return to set the value of MONTH to 9.
+Set any other parameters as you see fit.  Enter a blank line, and the
+you'll again see a list of parameters and values.  Then type `=' and
+the program will run with those parameters, and then return to the
+prompt.  You can change the parameters and run again if you like.  Type
+`.' to exit.
+
+   Note that the programmer may optionally disable the menu, so some
+applications that use `opt' may not allow the -menu option.
+
+   Finally, the program is somewhat self-documenting.  Type
+     birthday --help
+
+at the command line, and then you'll see a message like this:
+     Usage: birthday [options]
+     To invoke the menu, type:
+             birthday --menu
+     The options are:
+      -m, --month        <INT>           Month
+      -d, --day          <INT>           Day of month
+      -y                 <INT>           Year
+      -v                 <INTLEVEL>      Verbose
+      -p                 <BOOL>          Use Pade Approximants
+      -g                 <BOOL>          Gregorian
+
+and then the program exits.  There are several other features provided
+by `opt' that will be discussed in later sections.
+
+
+File: opt.info,  Node: What the programmer sees,  Prev: What the user sees,  Up: Nutshell
+
+What the programmer sees
+========================
+
+   The above example is based on actual output from the following code.
+This is not the simplest possible, but it illustrates what I personally
+find to be the most commonly used features.  More sophisticated options
+processing is also available, and will be discussed in later sections.
+     /* birthday.c */
+     
+     #include <stdio.h>
+     #include <opt.h>                /* part of opt package */
+     
+     /* Parameters that user has access to via opt package;
+      * They are typically (but not necessarily) global variables.
+      * Their default values are provided in the assignement statements.
+      */
+     int month=9;
+     int day=11;
+     int year=1989;
+     int verb=0;
+     int pade=0;
+     int greg=0;
+     
+     /* All of what the program itself does is in the birthday() function;
+      * This function does what a non-options parsing main() might do.
+      */
+     int birthday(int argc, char **argv)
+     {
+         if (month == 9 && day == 11 && year == 1989)
+             printf("Happy birthday, Max\n");
+         else if (month == 4 && day == 24 && year == 1993)
+             printf("Happy birthday, Sky\n");
+     
+         if (verb)
+             printf("Hello, world: %4d/%02d/%02d\n",year,month,day);
+     
+         return OPT_OK;
+     }
+     
+     /* all of the options parsing is in the new main() function */
+     
+     int main(int argc, char **argv)
+     {
+         /* optrega() registers short name '-m' and long name '--month' to
+          * variable 'month', and provides brief description "Month"
+          */
+         optrega(&month,OPT_INT,'m',"month","Month");
+         optrega(&day,  OPT_INT,'d',"day",  "Day of month");
+         /* optreg() only provides short name '-y' */
+         optreg(&year,OPT_INT,'y',"Year");
+         /* register some flag variables... */
+         optreg(&verb,OPT_INTLEVEL,'v',"Verbose");
+         optreg(&pade,OPT_BOOL,'p',"Use Pade Approximants");
+         optreg(&greg,OPT_BOOL,'g',"Gregorian");
+     
+         /* the function birthday() is registered with opt */
+         optMain(birthday);
+     
+         /* opt() is the routine that actually parses the argc/argv
+          * variables
+          */
+         opt(&argc,&argv);
+         opt_free();
+         /* and when it's done, argc/argv will contain the leftover
+          * argc/argv variables, including the same argv[0] as in
+          * the original argc/argv
+          */
+     
+         /* Now that variables are parsed, run birthday() */
+         return birthday(argc,argv);
+     }
+
+   The opt package consists of the header file `opt.h', which must be
+`#include''d in any code that uses opt, and the library file
+`libopt.a', which is linked to the program at compile time
+             cc -Idir_with_opt_h -Ldir_with_libopt_a birthday.c -lopt
+
+
+File: opt.info,  Node: Opt,  Next: Etc,  Prev: Nutshell,  Up: Top
+
+Opt
+***
+
+* Menu:
+
+* Philosophical digression::
+* What is Opt::
+* User Interface::
+* Programmer Interface::
+
+
+File: opt.info,  Node: Philosophical digression,  Next: What is Opt,  Prev: Opt,  Up: Opt
+
+Philosophical digression
+========================
+
+   Programs that provide a convenient user interface, especially those
+with gooey user interfaces (GUI's), generally require a fair bit of
+programming to produce.  But for short programs that will not be used a
+lot, "programmer friendly" is more important than "user friendly."  If
+a program grows in size or usefulness, the programmer can then go back
+and put in a better interface.  But in doing so, the programmer trades
+away the "programmer friendliness" of the original code to end up with
+software that exhibits "user friendliness".
+
+   Suppose you want to write a program that depends on some parameters.
+As a programmer, it is convenient to set the parameters (in the
+vernacular, to "hardcode" them) to desired values right in the program.
+It is not really very convenient, though, because you have to recompile
+the program every time you want to run it with different values.  This
+is especially inconvenient when the user and the programmer are
+different people.
+
+   It is usually more convenient (for the user) if the parameters can be
+specified at run time.  There is, of course, more than one way to do
+this.  You can specify parameter values in an input file, for instance.
+Then the program has to open the file, read the values, assign them to
+the appropriate variables, and then compute accordingly.  It's a little
+inconvenient for the programmer, and a little inconvenient for the
+user, but if there are a large number of parameters, this is often the
+best approach.  Even for a small number of parameters, it is useful to
+at least have the option of saving parameter values in a file.
+
+   Another approach is to have the program "ask" the user what parameter
+values are desired.  After typing `birthday' for instance, the program
+might respond with
+     What is the number of the month?_
+
+to which the user would reply, say, "9".  Then
+     Enter the day of the month and the year?_
+
+to which the user would type "11 1989" or perhaps "11,1989" depending
+on the format that the program expected for input.  This style of
+program sometimes seems friendly at first, since the user doesn't have
+to know a lot about the program to run it, but just has to answer the
+questions.  It can get to be pretty awkward after awhile, though,
+particularly if there are a lot of options, and especially if the
+program is to be used in shell scripts.  It is not too hard to write
+the program to do this (it is basically a series alternating `printf''s
+and `scanf''s), but for a lot of parameters, it can get pretty tedious.
+
+   One of the most popular approaches is to specify the options and
+parameter values directly from the command line.  The user types
+     birthday -m 9 -d 11 -y 1989
+
+and this specifies in one compact line values for month, day, and year.
+This is a bit of a compromise; the user has to know what all the options
+are, and the programmer has to do a little string parsing.  The
+motivation for the `opt' package is to bridge this gap: to on the one
+hand simplify the programmer's task of converting command line strings
+into parameter assignments, and on the other hand to provide the user a
+little more information about the available options and a little more
+convenience in setting those options and parameter values.
+
+
+File: opt.info,  Node: What is Opt,  Next: User Interface,  Prev: Philosophical digression,  Up: Opt
+
+What is Opt?
+============
+
+   I know I've said this already, but...  `opt' is a subroutine library
+for communicating options and parameter values to a C program via the
+command line, parameter files, environment variables, or a rudimentary
+builtin interactive menu.
+
+   The aim of the `opt' package is to permit programs to be both user-
+and programmer- friendly.  The package attempts to provide a direct and
+relatively full-featured input interface to the ultimate user of the
+program, and at the same time to impose a minimal amount of work on the
+programmer to "add" options parsing to existing software.
+
+   The next sections basically parallel the `Nutshell' chapter, but add
+a little more detail.  First, the `opt' interface will be described, as
+it appears to the user.  This comprises the advertisement for
+incorporating `opt' into your code.  Then it will be shown how to write
+code that uses `opt' for its user interface.
+
+* Menu:
+
+* User Interface::
+* Programmer Interface::
+
+
+File: opt.info,  Node: User Interface,  Next: Programmer Interface,  Prev: What is Opt,  Up: Opt
+
+User Interface
+==============
+
+   Currently, `opt' supports the following modes of interface to the
+user:
+
+   * Direct command line options
+
+   * Options from a named file
+
+   * Environment strings
+
+   * Rudimentary builtin menu
+
+   * Standard usage messages
+
+* Menu:
+
+* Direct command line options::
+* Options from a named file::
+* Environment strings::
+* Rudimentary builtin menu::
+* Standard usage messages::
+
+
+File: opt.info,  Node: Direct command line options,  Next: Options from a named file,  Prev: User Interface,  Up: User Interface
+
+Direct command line options
+---------------------------
+
+   Options are typically invoked with a delimiter (either `-' or `--')
+followed by an alphabetic character or string, and both of those by the
+value of the parameter.  Thus `birthday -m5' means that the parameter
+associated with `m' takes the value 5.  The same effect is acheived by
+`birthday -m 5' (with a space between `m' and `5').  The power of this
+assignment is that options for several parameters can be assigned in a
+flexible way:
+     birthday -m9 -d11 -y1989  ;Sets values of month, day, and year
+     birthday -d11 -y1989 -m9  ;Doesn't matter what order
+     birthday -m9              ;Set month=9, day and year to their defaults
+     birthday -m 9             ;Space is permitted between m and 9
+     birthday - m9             ;Not valid to have space beweeen - and m
+     birthday -m9-d11          ;Not valid; need space between each
+                               ;delimited option
+
+   Some kinds of options are of a different form.  Among these are
+"flags" which signal whether a given option is on off.  Thus, one might
+signal that a program is to operate in verbose mode with a command line
+of the form `birthday -m9 -v'.  Alternatively, one can write `birthday
+-m9 -v+' to explicitly turn the verbose option on, or `birthday -m9
+-v-' to explicitly turn verbose off.  Unlike options which assign
+values, flag parameters can be assigned with a single delimiter.  Thus,
+one might have a verbose (`v') flag, a gregorian (`g') flag, and a "use
+Pade approximant" (`p') flag.  In this case, one can write commands of
+the following forms:
+     birthday -v -g -p  ;Invoke all flags
+     birthday -vgp      ;Invoke all flags, in a more compact notation
+     birthday -pv+g-    ;Invoke p-flag, while explicitly
+                        ;turning v-flag on, g-flag off.
+   Invoking a flag is not always the same as setting the flag to ON.
+Depending on how the flags are defined in the program, invoking a flag
+may set its value to ON, to OFF, or toggle it to the opposite of its
+value before invocation.  For instance, if the `p'-flag is a toggle,
+the command `birthday -p -m9 -p' toggles it twice, so that the effect of
+the two invocations are to cancel each other out.  The motivation for
+toggles and other kinds of flags will become apparent when the command
+line is extended to files and environment variables and interactive
+menus.
+
+
+File: opt.info,  Node: Options from a named file,  Next: Environment strings,  Prev: Direct command line options,  Up: User Interface
+
+Options from a named file
+-------------------------
+
+   It is clear that a program with many options begins to get unwieldy
+on the command line, and it is desirable to save options in a file, and
+not have to retype them every time the program is run.  The `opt'
+package permits this with command lines of the form `birthday
+@bday.opt'.  Here `bday.opt' is a file which contains options which are
+used by the program `birthday'.  The form of the options file
+`bday.opt' is like that of the command line itself.  Thus, if the file
+is composed of the string `-m9 -d11 -y1989 -vg' then it is as if that
+string replaced `@bday.opt' on the command line.
+
+   A file permits some luxuries that are not available on the command
+line directly.  One of these is that you are not limited to a single
+line, and another is that you can add comments in the file.  Thus if
+the file looks like this:
+     ;file: bday.opt
+     ;Comments are preceded by a semi-colon
+     -m9             ;September
+     -g              ;Use gregorian
+     -d11 -y1989     ;Can still have several options on one line
+
+Then `birthday @bday.opt" is exactly equivalent to "birthday -m9 -g
+-d11 -y1989'.
+
+   It is possible to mix direct command line options with file options.
+Thus `birthday -v @bday.opt -p' is equivalent to `birthday -v -m9 -g
+-d11 -y1989 -p'.  This is particularly useful if you want to make many
+runs in which only a few parameters are changed at a time.  For
+instance,
+     birthday @defaults.opt
+     birthday @defaults.opt -m10
+     birthday @defaults.opt -v
+
+might represent three runs of the program "birthday", the first with a
+default set of options, the second with the same options except m=10,
+and the third the same as the first, except that verbose is turned ON.
+
+   It is also possible to nest files, so that one might have two files:
+     ;file: bd1.opt
+     -m5             ;set some option values
+     -y 1997
+     @bd2.opt        ;get more options from file bd2.opt
+
+and
+     ;file: bd2.opt
+     -d 11           ;set day=11
+     -y 1989         ;set year=1989
+
+and then the command line `birthday @bd1.opt' conceptually expands to be
+the equivalent `birthday -m5 -y 1997 -d 11 -y1989'.  This is a
+completely valid command line, even though the 'y' option appears
+twice; it is the last value of a variable which the program uses, in
+this case y=1989.
+
+   Of course, recursive nesting will only get you into trouble.
+
+   There is a useful abbreviation for files: @@ stands for the default
+options filename which is always the program name with the extension
+".opt".  Thus `birthday @@' is equivalent to `birthday @birthday.opt'
+
+   You can also write to an `opt' file; the directive `%file.opt'
+writes the current options to the file `file.opt' and then exits.
+Here, `%%', invoked for a program called `birthday', is an abbreviation
+for `%birthday.opt'.
+
+
+File: opt.info,  Node: Environment strings,  Next: Rudimentary builtin menu,  Prev: Options from a named file,  Up: User Interface
+
+Environment strings
+-------------------
+
+   The program which uses the `opt' package can be instructed to look
+for an environment variable for options.  If birthday sets `BIRTHDAY'
+as its option environment variable, and if the environment string
+`BIRTHDAY=-m9 -y1989' is set, then running `birthday' is equivalent to
+running `birthday -m9 -y1989'.  The environment options are assigned
+before any command line options, so they can be over-ridden: thus the
+command `birthday -m10' resets m to be equal to 10 instead of m=9
+suggested by the environment string, but one still has y=1989.  The
+environment string is therefore a useful place for storing default
+options that you don't want to have to keep typing them each time you
+run the program.  In the UNIX C-shell you can set an environment string
+with the `setenv' command:
+     setenv BIRTHDAY "-m9 -y1989"
+   while in the Bourne shell, you'd write
+     BIRTHDAY="-m9 -y1989"
+     export BIRTHDAY
+   Note that UNIX environment strings are not the same thing as shell
+variables In MS-DOS, one uses the command "set"; the format is
+     set BIRTHDAY=-m9 -y1989
+
+with no quotes.  To unset, type "set BIRTHDAY=", and to view just type
+"set".  (However, it's been ages since I've used `opt' on MS-DOS; I'd
+be surprised if it still worked on that platform.  Of course I'm always
+surprised when anything works on that platform.)
+
+
+File: opt.info,  Node: Rudimentary builtin menu,  Next: Standard usage messages,  Prev: Environment strings,  Up: User Interface
+
+Rudimentary builtin menu
+------------------------
+
+   Although the above methods provide flexible means of getting
+parameter values to a program which is run in background or batch mode,
+it is also useful to alter parameters interactively.  The `opt' package
+provides a convenient way to do this, with an interactive menu.  To
+invoke the menu type `$' (or `--menu') at the end of the command line.
+For instance, typing `birthday -m4 -y1993 $' will return a menu that
+looks something like
+     birthday
+     m Month                                    4
+     d Day of month                             11
+     y Year                                     1993
+     v Verbose                                  FALSE
+     p Use Pade Approximants                    FALSE
+     g Gregorian                                FALSE
+     (Type ? for Help)
+     ->
+   The prompt `->' is an invitation to the user to write a segment of a
+command line.  For instance a reply of `-m4 -vg' will come back with a
+bare prompt:
+     ->
+
+Responding with an empty line will give a new menu that looks like
+     m Month                                    4
+     d Day of month                             11
+     y Year                                     1989
+     v Verbose                                  TRUE
+     p Use Pade Approximants                    FALSE
+     g Gregorian                                TRUE
+     (Type ? for Help)
+     ->
+   When you are ready to run the program with these values, type `='.
+Actually, there are a number of things you can type at the command
+prompt; type a plain `?' for the following description:
+             - Options delimiter
+             ? Help
+             = Run program and return to menu
+             ! Shell to Operating System
+             $ Exit menu
+             + Additional options
+             @<filename> Get options from file
+             @@ Get options from file [birthday.opt]
+             %<filename> Put options in file
+             %% Put options in file [birthday.opt]
+             . Quit
+     ->
+
+   It is also possible that `?c' will give further information about
+the option specified by `c', although this requires that the programmer
+supplied extra information (usually, the brief description is all that
+is available).  For example,
+             -> ?d
+             d: Use day of month, should be less than 32
+             ->
+
+   If you don't want the user to have access to the menu for some
+reason, then you can invoke the function `optDisableMenu()' before
+calling `opt()', to achieve this. You might want to do this to avoid
+stuff about menus appearing in the usage message, for instance.
+
+
+File: opt.info,  Node: Standard usage messages,  Prev: Rudimentary builtin menu,  Up: User Interface
+
+Standard usage messages
+-----------------------
+
+   The user can type
+     birthday --help
+
+and get a fairly complete usage message:
+     Usage: birthday [options]
+     To invoke the menu, type:
+             birthday --menu
+     The options are:
+      -m, --month        <integer>       Month
+      -d, --day          <integer>       Day of month
+      -y                 <integer>       Year
+      -v                 <flag>          Verbose
+      -p                 <flag>          Use Pade Approximants
+      -g                 <flag>          Gregorian
+
+
+File: opt.info,  Node: Programmer Interface,  Prev: User Interface,  Up: Opt
+
+Programmer Interface
+====================
+
+   First an example source code will be shown so that the programmer
+gets an idea of what it takes to incorporate `opt' into his or her
+favorite application.  Subsequent sections will then go into more
+detailed explanation.
+
+* Menu:
+
+* Example code::
+* Registering options::
+* Setting some strings::
+* Registering functions (hooks)::
+* Misc::
+
+
+File: opt.info,  Node: Example code,  Next: Registering options,  Prev: Programmer Interface,  Up: Programmer Interface
+
+Example code
+------------
+
+   The easiest way to see how to use the `opt' package is with an
+example.  The following program illustrates most of the features that
+you'd actually want to use (and several you probably don't care about).
+
+     /* testopt.c */
+     
+     #include <stdio.h>
+     #include <stdlib.h>
+     #include <opt.h>
+     
+     int month=4;
+     int day=24;
+     int year=1993;
+     char *who=NULL;
+     
+     int go(int argc, char **argv)
+     {
+         if (argc>1) {
+             printf("In program %s, Extra option: %s\n",argv[0],argv[1]);
+         }
+     
+         if (optinvoked(&month)) {
+             printf("User set month...\n");
+         }
+     
+         if (month == 9 && day == 11 && year == 1989) {
+             printf("Happy birthday, Max\n");
+         } else {
+             printf("Hello, %s: %4d/%02d/%02d\n",(who==NULL ? "world" : who),
+                    year,month,day);
+         }
+         return OPT_OK;
+     }
+     
+     int checkyear(void *v)
+     {
+         if (year == 2000) {
+             printf("Watch out for that year=2000 bug!\n");
+             return OPT_ERROR;
+         }
+         return OPT_OK;
+     }
+     int quit()
+     {
+         printf("Bye...\n");
+         return OPT_OK;
+     }
+     int write_altversion()
+     {
+         printf("AltVersion XXX\n");
+         optExitNumber(12);
+         return OPT_EXIT;
+     }
+     int fix_mon(void *v)
+     {
+         int m;
+         /* fix whatever int variable v is pointing to */
+         m = *((int *)v);
+         if (m < 1 || m > 12)
+             m=1;
+         *((int *)v) = m;
+         return OPT_OK;
+     }
+     
+     main(int argc, char **argv)
+     {
+         optreg(&month,OPT_INT,'m',"Month");
+         optlongname(&month,"month");
+         opthook(&month,fix_mon);
+     
+         optrega(&day,OPT_INT,'d',"day","Day");
+         opthelp(&day,"Use day of month, should be less than 32");
+     
+         optreg_INT(&year,'y',"Year");
+         optreg(&year,OPT_INT,'Y',"Year");
+         optdescript(&year,"What Year");
+         opthook(&year,checkyear);
+     
+         optregp(&who,OPT_STRING,"who","Who to say hello to");
+     
+         optexec("altversion",write_version,"Write version number and exit");
+     
+         optEnvVarName( "OPT" );
+     
+         optMain(go);
+         optQuit(quit);
+     
+         opt(&argc,&argv);
+         go(argc,argv);
+         opt_free();
+     }
+
+
+File: opt.info,  Node: Registering options,  Next: Delimited options,  Prev: Example code,  Up: Programmer Interface
+
+Registering options
+-------------------
+
+   	It is necessary for the programmer to somehow tell the package which
+options are associated with which variables in the program, and what
+descriptions `opt' should use in the usage message and the menu.  This
+is done with a function call that "registers" (or associates(1)) a
+variable and a name.  These functions (one for each variable, in
+general) are usually called at the beginning of the code.
+
+   `Opt' can handle three kinds of options:
+
+Delimited options
+     Options that are "flagged" by the user using a command line switch
+     such as `-n' or `--size'.
+
+Positional options
+     Options that do not have an associated switch and simply appear on
+     the command line as bare arguments.
+
+Flexible options
+     Options that can appear either as a delimited or a positional
+     argument.
+
+* Menu:
+
+* Delimited options::
+* Positional options::
+* Flexible options::
+* Default values::
+* Modifying option attributes::
+* Registering array options::
+* Registering options in C++::
+
+   ---------- Footnotes ----------
+
+   (1) When I say "register" I mean it as a verb, in the sense of
+"register your handgun", and not as a noun, meaning an immediate memory
+location on a microprocessor.  I apologize to any old assembler-coders
+who may find this language confusing.
+
+
+File: opt.info,  Node: Delimited options,  Next: Positional options,  Prev: Registering options,  Up: Registering options
+
+Delimited options
+.................
+
+   Delimited options are the standard options you'd expect an option
+handling package to work with. Delimited options are flagged by the user
+with a switch that starts with `-' or `--'.
+
+   `Opt' provides a variety of commands for registering delimited
+options with different variable types, and using the "short", or "long"
+delimited option forms (or both).
+
+   For example,
+         optreg(&day,OPT_INT,'d',"Day");
+
+where DAY is the name of the variable as it appears (for instance as a
+global variable) in the C program; OPT_INT tells opt that the variable
+is an `int', D is the alphabetic character that is used on the command
+line to alter the parameter DAY, and "DAY" is a string that will be
+used in the menu and the standard usage messages.
+
+   You can register a long (string) name as well as the short (one
+character) name.  The function name has an extra `a' (mnemonic: all) at
+the end.
+     optrega(&month,OPT_INT,'m',"month","Month");
+   With this registration in place, `-m 4' and `--month=4' have the same
+effect; to change the value of the variable MONTH to four.  If you want
+to register a long name to a variable without also having a short name
+(this is sometimes desirable if there are a lot of options), this can
+be done with a call to `optrega' that sets the short name to the null
+character; e.g.,
+     optrega(&month,OPT_INT,'\0',"month","Month");
+
+   The variable `OPT_INT' is of type `opt_TYPE'; this is an enumerated
+type and is defined in the header file `opt.h'.  The available option
+types are: `OPT_INT', `OPT_SHORT', `OPT_LONG', `OPT_CHAR', `OPT_UINT',
+`OPT_USHORT', `OPT_ULONG', `OPT_UCHAR', `OPT_FLOAT', `OPT_DOUBLE',
+`OPT_BOOL', `OPT_TOGGLE', `OPT_NEGBOOL', `OPT_NEGTOGGLE',
+`OPT_INTLEVEL', `OPT_STRING', `OPT_CSTRING', `OPT_UNDELIM', and
+`OPT_UNDELIMC'.  There is also a type `OPT_NUL' that is used internally.
+
+   Most of these are self-explanatory:
+     OPT_INT     int
+     OPT_SHORT   short int
+     OPT_LONG    long int
+     OPT_UINT    unsigned int
+     OPT_USHORT  unsigned short int
+     OPT_ULONG   unsigned long int
+     OPT_FLOAT   float
+     OPT_DOUBLE  double
+   All of these are invoked on the command line with the form `-x#' or
+with `-x #' where `#' is the value of the number.  Along these same
+lines is the type
+     OPT_CHAR    char
+   which can only be invoked as `-x#' and not `-x #'.  The latter form
+will assign the X variable to the character value NULL ('\0'), and `#'
+will be treated as the next option.
+
+   There are a variety of options for boolean (yes/no, 1/0, on/off)
+flags:
+     OPT_BOOL        int     Probably this is the one that you want.
+                             Invoking this option sets the value to 1;
+                             and subsequent invocations have no effect.
+     OPT_TOGGLE      int     Each invocation changes the value - either
+                             from 0 to 1 or from 1 to 0.
+     OPT_NEGBOOL     int     Like OPT_BOOL but invoking the option sets
+                             the value of the variable to 0.
+     OPT_NEGTOGGLE   int     Like OPT_TOGGLE, in fact a lot like OPT_TOGGLE.
+                             I can't think of why you would want to use it.
+     
+     OPT_FLAG        int     Deprecated! Use OPT_TOGGLE instead.
+     OPT_NEGFLAG     int     Deprecated! Use OPT_NEGTOGGLE instead.
+     OPT_ABSFLAG     int     Deprecated! Use OPT_BOOL instead.
+     OPT_ABSNEGFLAG  int     Deprecated! Use OPT_NEGBOOL instead.
+     
+             In my own experience, I have found absolute flags are
+                usually preferable to toggle flags. The problem with toggles
+                is that you can easily lose track of the current state of
+                the toggle, especially when options can be specified in
+                files, environment variables, and the menu, as well as the
+                command line itself.
+             
+     
+     OPT_INTLEVEL    int     This is a kind of a combination of flag and int:
+     
+             OPT_INTLEVEL is an integer that can take on only positive
+                values, usually less than ten.  I find this useful for
+                "verbose" since I can not only turn verbose ON, but I can have
+                a range from slightly verbose to extremely verbose.
+                For this flag, each invocation increases the level; eg,
+                `-v -v' sets verbose=2, and `-v-' turns verbose off.
+   There are two types of strings, variable and constant.  Which of
+these to use depends on how the variable is declared:
+     char *vstring=NULL;     /* variable string */
+     char cstring[80];       /* constant string */
+     char *cstring="hello";  /* this is a constant string too */
+
+The difference is that CSTRING already has space allocated for it, so
+to have CSTRING be "string" one has to use `strcpy(cstring,"string")',
+and note that the pointer CSTRING itself does not change.  By contrast,
+to use VSTRING, space must be allocated dynamically.  In this case, one
+has to change the value of the pointer VSTRING with something like
+     vstring = (char *)malloc(strlen("string")+1);
+     strcpy(vstring,"string");
+
+     OPT_STRING         char *
+     OPT_CSTRING         char *
+
+By the way, if you are using `OPT_CSTRING', you should make sure that
+it has room for a string of length `OPT_MAXSTRLEN'.  But in general,
+you should prefer `OPT_STRING' of the two.  (Note, `OPT_STRING' used to
+be called `OPT_VSTRING' but the latter form is now discouraged.)
+
+
+File: opt.info,  Node: Positional options,  Next: Flexible options,  Prev: Delimited options,  Up: Registering options
+
+Positional options
+..................
+
+   The second kind of option that `opt' provides is the positional
+option. These are similar to delimited options except that they are not
+flagged by a delimiter switch on the command line. The user specifies
+values for positional options by simply writing those values as bare
+arguments on the command line. The processing of positional options is
+determined by the order in which they appear on the command line, hence
+the name.
+
+   To register a positional option, use the `optregp' command. For
+example:
+
+         char* input = NULL;
+         ...
+         optregp(&input,OPT_STRING,"input-file","File to process");
+
+   In this example, we have associated the variable `day' with a
+positional option of type OPT_STRING (a dynamically allocated string).
+`"input-file"' is a long name associated with the option. It is not
+actually used in option processing for pure positional parameters, but
+is used to refer to the positional argument in the usage message that
+`opt' generates. In addition, if the option is subsequently made
+"flexible" *note Flexible options::, then the option may be set either
+positionally OR using a delimited option of the form:
+     --input-file=fred.txt
+
+   Undelimited command line arguments are assigned to positional
+options in the order in which those positional options were registered.
+If there are insufficient command line arguments to process all
+registered positional options, then the remaining postional options are
+simply never invoked. If there are more command line arguments than
+positional options, then the remaining command line arguments are
+returned to the `argv' array after `opt' processing has finished.
+
+   Note: At the time of writing, such extra undelimited arguments also
+cause opt processing to terminate immediately, even if there are as yet
+unprocessed delimited arguments on the command line. This is probably a
+mistake and will be fixed in some future release.
+
+   Positional options can be registered using any of the types described
+under *Note Delimited options::.
+
+   A delimited option can be turned into a positional (or flexible)
+option by using the `optmode()' function on that option *note Modifying
+option attributes::.
+
+   In earlier versions of `opt', positional parameters were handled
+using a special variable type, `OPT_UNDELIM', that was equivalent to
+`OPT_STRING', but with positional semantics. This usage is still
+available in `opt' but is deprecated.
+
+
+File: opt.info,  Node: Flexible options,  Next: Default values,  Prev: Positional options,  Up: Registering options
+
+Flexible options
+................
+
+   The third kind of option is a flexible option. Flexible options are
+simply positional options that can also be set by the user using a
+delimited switch as well. This can be handy in some cases, for instance
+when setting a positional option from a file.
+
+   To register a flexible option, you can use the `optregf()' function:
+
+         char* input = NULL;
+         ...
+         optregf(&input,OPT_STRING,'f',"input-file","File to process");
+
+   In this example, we have associated the variable `day' with a
+flexible option of type OPT_STRING (a dynamically allocated string). The
+user may set this option either positionally, using the normal rule that
+positional options are processed in the order that they were registered,
+OR by using a delimited option of the form `-f foo.dat' or
+`--input-file=foo.dat'.
+
+   An existing positional or delimited option can be turned into a
+flexible option by invoking either the `optmode(...,OPT_FLEXIBLE)' or
+`optmode_n(...,OPT_FLEXIBLE)' functions on that option.
+
+
+File: opt.info,  Node: Default values,  Next: Modifying option attributes,  Prev: Flexible options,  Up: Registering options
+
+Default values
+..............
+
+   To give an option a default value, simply assign an appropriate
+value to the corresponding registered variable, before or after it is
+registered.  Consider the following example:
+
+     int year=1999;
+     ...
+     optrega(&year,OPT_INT,'y',"year","Year of interest");
+
+   If the user does not invoke the `-y' option, then the variable
+`year' will retain the value of 1999.
+
+
+File: opt.info,  Node: Modifying option attributes,  Next: Registering array options,  Prev: Default values,  Up: Registering options
+
+Modifying option attributes
+...........................
+
+   If a variable is registered, then you can change or add to its
+attributes; for instance:
+     optreg(&var,OPT_INT,'c');
+     optlongname(&var,"variance");
+
+   The various registration functions (`optreg()', etc) return an
+integer which is the index of the registered option. Sometimes (eg,
+instance when there is no variable associated with the registration)
+this integer is a more useful identifier of a given option.  The above,
+for instance, is equivalent to:
+     n = optreg(&var,OPT_INT,'c');
+     optlongname_n(n,"variance");
+
+`void optchar(void *v, char c)'
+     Associates the single-character name with the variable pointed to
+     by V.
+
+`void optchar_n(int n, char)'
+     Associates the single-character name with the N'th registered
+     variable.
+
+`void optlongname(void *v, char *longname)'
+     Associates the long name to the variable pointed to by V.
+
+`void optlongname_n(int n, char *longname)'
+     Associates the long name to the N'th registered variable.
+
+`void optmode(void *v, int mode)'
+     MODE can be one of OPT_DELIMITED, OPT_POSITIONAL, OPT_FLEXIBLE.
+     Makes the option associated with the variable pointed to by V have
+     the corresponding mode.
+
+`void optmode_n(int n, int mode)'
+     As `optmode()', but applies to the N'th option.
+
+`void optdescript(void *v, char *descript)'
+     Changes the brief description of the variable pointed to by V.
+
+`void optdescript_n(int n, char *descript)'
+     Changes the brief description of the N'th registered variable.
+
+`void opthelp(void *v, char *help)'
+     Associates a longer help string with the variable pointed to by V.
+     This is the string the user will see upon typing `?c' at the menu
+     prompt, where `c' is the single-character name.
+
+`void opthelp_n(int n, char *help)'
+     Associates a longer help string with the N'th registered variable.
+
+`void optarraydelim(void *v, char delim)'
+     Resets the delimiter (default is comma) for the array variable.
+     Note that using `optarraydelim(NULL,delim)' resets the delimiter
+     for all array options.
+
+`void optarraydelim_n(int n, char delim)'
+     Resets the delimited for the N'th registered variable.
+
+
+File: opt.info,  Node: Registering array options,  Next: Registering options in C++,  Prev: Modifying option attributes,  Up: Registering options
+
+Registering array options
+.........................
+
+   As well as registering scalar variables, you can also register
+dynamically allocated arrays, and manipulate their values with command
+line options, parameter files, environment strings, or on the menu.
+As a user, you would type for instance `program -x 1,2,3' to set the
+array values to 1, 2, and 3.  As a programmer, you need to keep track
+not only of the array pointer but of the size of the array, so to
+register an array option requires an extra argument.  For example
+     int nx=0;
+     double *x=NULL;
+     ...
+     optreg_array(&nx, &x, OPT_DOUBLE,'x',"Array of x values");
+
+   As well as the `optreg_array' function, you can also use
+`optrega_array', `optregc_array', `optregcb_array', `optregs_array',
+and `optregsb_array'.  These are essentially equivalent to the scalar
+versions, except that the first argument is a pointer to the size of
+the array.
+
+   After the options have been processed, the array `x[]' will have
+`nx' elements.  In the above example, `nx' would be 3, and `x[0]' would
+be 1, `x[1]' would be 2, and `x[2]' would be 3.  It would be a mistake
+to refer to `x[3]', since that is beyond the array bounds, but since
+the programmer has access to `nx', that shouldn't be a problem.
+
+   Note that `opt' can only handle arrays of simple types (strings,
+characters, and numbers); arrays of `OPT_BOOL''s or `OPT_INTLEVEL''s
+are not supported.
+
+   The default delimeter for array values is a comma; this can be
+changed using the `optarraydelim(void *v,char delim)' function.
+
+   See the file `test/tarray.c' for examples of this usage.
+
+
+File: opt.info,  Node: Registering options in C++,  Next: Setting some strings,  Prev: Registering array options,  Up: Registering options
+
+Registering options in C++
+..........................
+
+   `opt' also provides a rudimentary C++ interface.  You can always use
+the plain C code inside your C++ programs, but you may find it a little
+more convenient to use the `OptRegister' function.  This function can
+be used like `optrega' except that it has a lot more flexibility.
+Also, if you want to register a standard type, like `OPT_INT' or
+`OPT_DOUBLE' but not a specialty like `OPT_UNDELIM' or `OPT_INTLEVEL',
+then you can just leave out the type specifier - C++ knows what you
+mean.  For example:
+       // Can invoke with -N500 or --nPulses=500
+       OptRegister(&N, 'N', "nPulses","total Number of pulses");
+     
+       // Can only invoke with long name --delta=0.01
+       OptRegister(&delta,"delta","average time between pulses");
+     
+       // Can only invoke with short name -x3.14159
+       OptRegister(&x,'x',"x marks [the horizontal position of] the spot")
+     
+       // You have to specify flags as such, otherwise they are
+       // treated as ordinary integers.  Note that the variable is
+       // still an integer.  Currently there is no support for the
+       // C++ bool type, which is unfortunate.
+       OptRegister(&flag,OPT_BOOL,'f',"flag","boolean variable");
+     
+       // The descriptions are optional, so you can have very simple commands
+       OptRegister(&y,'y');
+     
+       // But beware that there can be ambiguity between longname and description.
+       // The first string is assumed to be the longname
+       OptRegister(&z,'z',"third coordinate value"); // error!
+     
+       // You can also register positional options using OptRegister
+       OptRegister(&y, OPT_POSITIONAL, "y-value", "The value of y");
+     
+       // Or flexible options
+       OptRegister(&y, OPT_FLEXIBLE, "y-value", "The value of y", OPT_FLEXIBLE);
+     
+       // If you specify both a type and a mode, specify the type first
+       OptRegister(&flag,OPT_BOOL,OPT_FLEXIBLE,'f',"flag","boolean variable");
+
+   See the example file `test/testcc.cc' for a working example.
+
+   Note that using these routines requires that `libopt.a' or `opt.o'
+be compiled using a C++ compiler. This is normally handled
+automatically by the installation procedure. If you want to include a
+single file with your distribution containing the opt code, then use
+`optcc.cc' rather than `opt.c'. Both of these are generated
+automatically as part of the opt install procedure.
+
+   Beware that there is a problem with gcc 3.0 and 3.1 on Solaris.  The
+problem has been traced to the compiler itself, and the maintainers have
+promised that it will be fixed in the next release.  If you use the
+environment variable `CPLUS_INCLUDE_PATH' to tell the compiler where
+`opt.h' is located, then you will get error messages during
+compilation.  One solution is to use the explicit `-I...' directive
+during compilation.  Another is to disable the C++ interface in opt by
+`#define''ing the variable `OPT_NOCPLUSINTERFACE' before `#include''ing
+`opt.h'.  This however will disable the overloaded `OptRegister'
+function, and you'll have to use the bulkier `optreg' functions from
+the C interface.
+
+
+File: opt.info,  Node: Setting some strings,  Next: Registering functions (hooks),  Prev: Registering options in C++,  Up: Programmer Interface
+
+Setting some strings
+--------------------
+
+   The following functions set strings which the `opt' package uses for
+various things.
+`void optUsage(char *s)'
+     Sets the usage statement that the program will print as part of
+     the help message.
+
+`void optTitle(char *s)'
+     Sets the title, which appears as the first line in the menu.  If
+     not set, then the program name is used.
+
+`void optProgName(char *s)'
+     Sets the program name, which appears in the usage message. Any
+     leading directories in S are stripped off. If the program name is
+     not set explicitly, then it is set when `opt()' is called. The
+     programmer might want to set the program name using this function,
+     if for some reason ARGV[0] does not contain the command that runs
+     the program, or to ensure that the usage message can be displayed
+     using the `optPrintUsage()' function, before `opt()' has been
+     invoked.
+
+`void optVersion(char *s)'
+     Sets the version number of the program that you are writing.  When
+     the user types `program --version', then this is the version
+     number that is printed.  Note that if the function `optVersion' is
+     not used, then `--version' will do nothing (except get a warning
+     message that `version' is not a registered option).
+
+`void optEnvVarName(char *s)'
+     Sets the name of the environment variable where the `opt' package
+     will look for initial command line options.  If not set, the `opt'
+     will not be check any environment variable for options processing.
+
+`void optDefaultString(char *s)'
+     The program itself can define a default command line to be
+     processed before the environment string and before the actual
+     command line.  To be honest, I can't imagine when you'd want to
+     use this in real life.
+
+`void optDefaultFile(char *s)'
+     The program can define a file name, eg `~/.programrc' or
+     `/etc/program.opt', in which to look for default options for the
+     program.  If the file exists, then its options are read in before
+     reading the environment string or the command line.
+

@@ -1,0 +1,417 @@
+#!/packages/bin/wish -f
+set RCSid {$Id: tkopt,v 1.4 1998/12/31 22:09:41 jt Exp $}
+regexp {Id: ([^ ]*),v ([0-9.]+) ([0-9/]*)} $RCSid {} \
+	script version rcsdate
+
+set extraOptString ""
+
+set usage \
+"Usage: [info script] command \[options\]
+       where command is a routine that uses the opt interface.
+
+This is a wrapper for program that use the 'opt' options parsing
+package.  To use this on a program called, say, 'bx', just type
+'[info script] bx' and you'll get a Tcl/Tk window with places to fill in
+all the blanks.  Click on the 'run' button, and voila!  coredump.
+ (i hope not)
+";
+
+## Global variables
+
+set command [lindex $argv 0]
+set auxopts [lrange $argv 1 [expr [llength $argv] - 1]]
+
+set optlist {}
+
+set stdinfile  {@stdin}
+set stdoutfile {@stdout}
+set stderrfile {@stderr}
+
+set d_optFileName   [format "%s.opt" $command]
+set in_optFileName  $d_optFileName
+set out_optFileName $d_optFileName
+
+## getOptList: runs 'command --help' to get a list of options
+## which it puts into the global list optlist
+##
+proc getOptList {command} {
+    global opt optlist
+    set tmpfile [format "/tmp/%s.%d" $command [pid]]
+    catch {exec $command --help >& $tmpfile}
+    set fp [ open $tmpfile ]
+    set count 0
+    while { [ gets $fp line ] >= 0 } {
+	## Remove leading whitespace
+	set line [string trim $line]
+	set optrest ""
+	set optlong ""
+	## -x, --xvalue
+	set okmatch  [regexp {^-([a-zA-Z]),[ 	]*--([a-zA-Z_]+)(.*)} \
+		$line {} optchar optlong optrest ]
+	## -x
+	if { $okmatch == 0 } {
+	    set okmatch [regexp {^-([a-zA-Z])(.*)} \
+		    $line {} optchar optrest]
+	}
+	## --xvalue
+	if { $okmatch == 0 } {
+	    set okmatch [regexp {^--([a-zA-Z_]+)(.*)} \
+		    $line {} optchar optrest]
+	}
+	## --
+	if { $okmatch == 0 } {
+	    set okmatch [regexp {^--$} $line {}]
+	    continue
+	}
+	if { $okmatch == 0 } {
+	    puts "No match for line $line"
+	}
+	
+	if { $okmatch != 0 } {
+	    set count [expr $count + 1 ]
+	    lappend optlist $optchar
+	    set optrest [string trim $optrest]
+	    set okmatch [regexp {^(<[A-Z]+>)[ 	]*(.*)} \
+		    $optrest {} opttype descrip]
+	    set opt($optchar,type) $opttype
+	    set opt($optchar,descrip) $descrip
+	    set opt($optchar,long) $optlong
+	}
+    }
+    close $fp
+    return $count
+}
+
+## parseOptString: converts a string or list of "-oval -xvalx ..."
+## into opt(o,value)=val, opt(x,value)=valx, etc.
+## The function is implemented by running
+## 'command $optstring %$tmpfile.opt .' and then parsing tmpfile.opt
+##
+proc parseOptString {optstringlist} {
+    global command opt optlist
+    set optstring [join $optstringlist]
+    set tmpfile [format "/tmp/%s.%d" $command [pid]]
+    catch {eval exec $command $optstringlist %$tmpfile.opt . >&/dev/null }
+    pinfile $tmpfile.opt
+    #catch {exec /bin/rm $tmpfile.opt}
+}
+
+##  Buttons across the top:
+frame .topstrip
+button .topstrip.quit  -text quit -command exit
+button .topstrip.usage -text usage -command usage
+#button .topstrip.usagex -text usagex -command usagex
+button .topstrip.qq    -text "." -command exit
+button .topstrip.pin   -text "@" -command pin
+button .topstrip.pout  -text "%" -command pout
+button .topstrip.fin   -text "<" -command stdinfile
+button .topstrip.fout  -text ">" -command stdoutfile
+#button .topstrip.q  -text "?" -command question
+label  .topstrip.note  -text "$script, v$version"
+button .topstrip.run   -text "Run $command" -command run
+
+proc question {} { help {} }
+
+pack .topstrip -side top -fill x
+pack .topstrip.quit .topstrip.usage -side left -anchor w
+#pack .topstrip.usagex -side left -anchor w
+pack .topstrip.qq                   -side left -anchor w
+pack .topstrip.pin  .topstrip.pout  -side left -anchor w
+pack .topstrip.fin  .topstrip.fout  -side left -anchor w
+# pack .topstrip.q     -side left -anchor w
+pack .topstrip.note -side left -fill x -expand 1
+pack .topstrip.run  -side right -anchor e
+frame .nextstrip
+pack .nextstrip -side top -fill x -expand 1
+label  .nextstrip.l  -text "Extra Command Line"
+entry .nextstrip.e -relief sunken -textvariable extraOptString
+pack .nextstrip.l -side left -fill x
+pack .nextstrip.e -side left -fill x -expand 1
+
+
+## #Errors and Warnings are written to a warning widget
+proc warning {string} {
+    catch { destroy .warning }
+    frame .warning
+    button .warning.b -text ok -command { destroy .warning }
+    label .warning.l  -text "Warning: $string"
+    pack .warning -side top -fill x -after .topstrip
+    pack .warning.b .warning.l -side left 
+}
+
+
+## makeOptListWidget
+## Given values, descripts for each $opt, make a label/entry for each
+proc makeOptListWidget {} {
+    global opt optlist 
+    foreach optc $optlist {
+	frame .f$optc
+	if {[string length $optc] == 1} {
+	    if {[string length $opt($optc,long)] > 0} {
+		set optlong $opt($optc,long)
+		label .f$optc.c -text "-$optc, --$optlong "
+	    } else {
+		label .f$optc.c -text "-$optc "
+	    }
+	} else {
+	    label .f$optc.c -text "--$optc "
+	}
+	label .f$optc.l -text $opt($optc,descrip)
+	entry .f$optc.e -relief sunken -textvariable opt($optc,value)
+	pack .f$optc -side top -anchor w -fill x
+	pack .f$optc.c -side left -anchor w
+	pack .f$optc.e .f$optc.l -side right -anchor e
+	bind .f$optc.e <Return> run
+	## Return makes it run the program (really!!?)
+	bind .f$optc.e <Control-h> {
+	    ## Control-h is for help
+	    if {[regexp {^\.f(.*)\.e$} %W {} optc]} {
+		help $optc
+	    }
+	}
+	bind .f$optc.e <Control-d> {
+	    ## Control-d specifies what the default and current values are
+	    if {[regexp {^\.f(.*)\.e$} %W {} optc]} {
+		puts "default: $opt($optc,d_value)"
+		puts "value:   $opt($optc,value)"
+	    }
+	}
+	bind .f$optc.e <Escape> {
+	    ## Escape resets to default
+	    if {[regexp {^\.f(.*)\.e$} %W {} optc]} {
+		set opt($optc,value) $opt($optc,d_value)
+	    }
+	}
+    }
+}
+
+
+proc usage {} {
+    global command
+    set tmpfile [format "/tmp/%s.usage.%d" $command [pid]]
+    catch { exec $command --usage > $tmpfile 2>/dev/null }
+    set usage [exec cat $tmpfile]
+    catch {exec /bin/rm $tmpfile}
+
+    ## Make a new .usage window
+    ## Start by destroying existing .usage, if it exists
+    catch { destroy .usage }
+    toplevel .usage 
+    button  .usage.quit -text quit -command { destroy .usage }
+    message .usage.msg -width 80c -font fixed -text $usage
+    pack .usage.quit .usage.msg -side top -anchor w
+}
+proc help {optc} {
+    global command
+    set tmpfile [format "/tmp/%s.help.%1s.%d" $command $optc [pid]]
+    catch { exec $command \?$optc . >& $tmpfile }
+    set help [exec cat $tmpfile]
+    catch {exec /bin/rm $tmpfile}
+
+    ## Make a new .usage window
+    ## Start by destroying existing .help, if it exists
+    catch { destroy .help }
+    toplevel .help 
+    button  .help.quit -text quit -command { destroy .help }
+    message .help.msg -width 80c -font fixed -text $help
+    pack .help.quit .help.msg -side top -anchor w
+}
+proc usagex {} {
+    global command
+    puts "Usagex..."
+    ## An experiment in reading commands using the open "|... " construct;
+    ## Wholly unsuccessful!!
+    set fp [open "|${command}xx" r]
+    while {[gets $fp line] >= 0} {
+	puts $line
+    }
+}
+
+proc pin {} {
+    global command in_optFileName d_optFileName
+    frame .pin
+    button .pin.b -text "@" -command { pinfile $in_optFileName }
+    label .pin.l -text "Read Parameters from this file:"
+    entry .pin.e -relief sunken -textvariable in_optFileName
+    pack .pin -after .topstrip -side top -fill x
+    pack .pin.b -side left -anchor w
+    pack .pin.e .pin.l -side right -anchor e
+    .topstrip.pin configure -command { 
+	destroy .pin
+	.topstrip.pin configure -command pin
+    }
+}
+proc pinfile {optFileName} {
+    global command opt optlist
+    if {[file readable $optFileName] == 0} {
+	warning "File $optFileName not found"
+	return 0
+    }
+    set fp [open $optFileName]
+    puts "Opening file $optFileName"
+    while {[gets $fp line] >= 0} {
+	## Remove leading whitespace
+	set line [string trim $line]
+	if { [regexp {^;} $line ] != 0} {
+	    continue;
+	}
+	set okmatch [regexp {^-([a-zA-Z])([^;]+)} \
+		    $line {} optchar val ]
+	if {$okmatch == 0} {
+	    set okmatch [regexp {^--([a-zA-Z_]+)=([^ 	;]+)} \
+		    $line {} optchar val ]
+	}
+	if {$okmatch != 0} {
+	    if {[regexp {^\"(.*)\"$} $val {} newval ]} {
+		## remove enclosing quotes
+		set val $newval
+	    }
+	    set opt($optchar,value) $val
+	}
+    }
+    close $fp
+}
+proc pout {} {
+    global command out_optFileName d_optFileName
+    frame .pout
+    button .pout.b -text "%" -command { poutfile $out_optFileName }
+    label .pout.l -text "Write Parameters to this file:"
+    entry .pout.e -relief sunken -textvariable out_optFileName
+    pack .pout -after .topstrip -side top -fill x
+    pack .pout.b -side left -anchor w
+    pack .pout.e .pout.l -side right -anchor e
+    .topstrip.pout configure -command { 
+	destroy .pout
+	.topstrip.pout configure -command pout
+    }
+    bind .pout.e <Escape> {
+	if {[string length $out_optFileName] == 0} {
+	    set out_optFileName $d_optFileName
+	}
+    }
+}
+proc poutfile {optFileName} {
+    global optlist opt command
+    set optstring [mkOptString]
+    puts "Writing the following string to file $optFileName"
+    puts $optstring
+    catch { eval exec $command $optstring %$optFileName . 2> /dev/null }
+}
+proc stdinfile {} {
+    global stdinfile
+    frame .stdinfile
+    button .stdinfile.b -text "<"
+    label .stdinfile.l -text "Read stdin from this file:"
+    entry .stdinfile.e -relief sunken -textvariable stdinfile
+    pack .stdinfile -after .topstrip -side top -fill x
+    pack .stdinfile.b -side left -anchor w
+    pack .stdinfile.e .stdinfile.l -side right -anchor e
+    .topstrip.fin configure -command { 
+	destroy .stdinfile
+	.topstrip.fin configure -command stdinfile
+    }
+    bind .stdinfile.e <Escape> {
+	set stdinfile "@stdin"
+    }
+}
+proc stdoutfile {} {
+    global stdoutfile
+    frame .stdoutfile
+    button .stdoutfile.b -text ">"  ;# doesn't do anything!
+    label .stdoutfile.l -text "Write stdout to this file:"
+    entry .stdoutfile.e -relief sunken -textvariable stdoutfile
+    pack .stdoutfile -after .topstrip -side top -fill x
+    pack .stdoutfile.b -side left -anchor w
+    pack .stdoutfile.e .stdoutfile.l -side right -anchor e
+    stderrfile
+    .topstrip.fout configure -command { 
+	destroy .stdoutfile
+	destroy .stderrfile
+	.topstrip.fout configure -command stdoutfile
+    }
+    bind .stdoutfile.e <Escape> {
+	set stdoutfile "@stdout"
+    }
+}
+proc stderrfile {} {
+    global stderrfile
+    frame .stderrfile
+    button .stderrfile.b -text "2>"  ;# doesn't do anything!
+    label .stderrfile.l -text "Write stderr to this file:"
+    entry .stderrfile.e -relief sunken -textvariable stderrfile
+    pack .stderrfile -after .stdoutfile -side top -fill x
+    pack .stderrfile.b -side left -anchor w
+    pack .stderrfile.e .stderrfile.l -side right -anchor e
+    bind .stderrfile.e <Escape> {
+	set stderrfile "@stderr"
+    }
+}
+## Converts an optlist into a single OptString
+proc mkOptString {} {
+    global optlist opt
+    set optstring {}
+    foreach optc $optlist {
+	set opt($optc,value) [string trim $opt($optc,value)]
+	if {[string length $optc] > 1} {
+	    append optstring --$optc "=" $opt($optc,value) " "
+	}
+	if {[string length $optc] == 1} {
+	    append optstring -$optc $opt($optc,value) " "
+	}
+    }
+    return [string trim $optstring]
+}    
+proc run {} {
+    global command opt extraOptString stdinfile stdoutfile stderrfile
+    set optstring [ mkOptString ]
+    .topstrip.note configure -text "Running..."
+    puts stderr "$command $optstring $extraOptString"
+    set err [catch { eval exec \
+	    $command $optstring $extraOptString <$stdinfile >$stdoutfile 2>$stderrfile } errmsg]
+    .topstrip.note configure -text $command
+    if {$err != 0} {
+	warning "nonzero exit: $errmsg"
+    }
+}
+######################### BEGIN EXECUTION ###########################
+
+## Write a quick usage message if there are no options
+
+if { $argc == 0 } {
+    puts stdout $usage
+    exit
+}
+
+
+
+set count [getOptList $command]
+parseOptString $auxopts
+
+## defaults are defined in after parsing auxopts
+foreach optc $optlist {
+    set opt($optc,d_value) $opt($optc,value)
+}
+
+makeOptListWidget
+
+
+#############################################################################
+# Known Bugs
+#
+# does not read INTLEVEL's correctly (thanks to the obscure way I chose
+# to write them in the .opt file); -v- -v gets read as -v-
+#
+# 'command \? .' does't do what you'd want.  but then again, you maybe
+# don't really want access to those commands anyway!
+#
+# Needs to read options that are not opt'able, eg
+# command -x 3 -y 4 filename
+# where 'filename' is an extra option that is not part of opt!
+
+
+
+
+
+
+
+

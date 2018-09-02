@@ -1,0 +1,69 @@
+Welcome to OPT, an Options Parsing Tool.
+
+OPT is a subroutine library for communicating options and parameter
+values to a C program via the command line, parameter files,
+environment variables, or a rudimentary builtin interactive menu.  For
+more information about what OPT is all about, see the file opt.texi or
+opt.info or (if it is provided) opt.ps
+
+What follows is a guide to installing OPT on a UNIX system.  I'm
+half assuming you know your way around UNIX systems, but please let
+me know if I'm unclear or if I've left out anything that would help.
+(If you want to install OPT on a non-UNIX system, I have heard one
+report that this is possible [and OPT was originally developed -- lo,
+these many years ago -- on a DOS system], but you're on your own!)
+
+  1/ first you have to un-archive the opt-XXX.tar.gz file, 
+     using commands along these lines:
+           cd directory_where_opt_source_will_go
+           gzip -d opt-XXX.tar.gz
+           tar xvf opt-XXX.tar
+  2/ then, it's bascially a generic GNU installation, with configure, 
+     make, and make install.  More details can be found in the INSTALL 
+     file, but those are details about the generic installation 
+     procedure, and contain no OPT-specific notes.
+
+     2a/ You configure with a command like
+           ./configure 
+         But you can also use the configure command with options.  Type 
+           ./configure --help
+         to see what those options are.  One of the most useful is the
+                       --prefix=PATHNAME
+         option, which tells you where to install it.  The OPT-specific 
+         options are:
+                       --disable-longjmp
+                       --with-readline        
+         You should only disable longjmp if you have trouble compiling.
+         Using readline makes things nicer, but it is not crucial, and
+         I wouldn't be surprised if the configure with readline is not 
+         that portable.
+
+     2b/ The next step is easy, just type
+           make
+         If this fails, you may want to reconfigure in step 2a.  If you
+         can't get that to work, tell me the problem as specifically as
+         you can, and I'll see if I can help.
+
+     2c/ The next step is to type
+           make install
+         but you should be sure you have permission to write to the
+         directories where libopt.a and opt.h will be copied.  This is
+         by default /usr/local/lib and /usr/local/include, but that
+         can be changed at the configure step (see INSTALL for details).
+         Unless you are installing OPT into your personal directory,
+         you will probably have to become "root" before you do this
+         step.
+
+  3/ You are now done, but if you like, you can go into the test/
+     directory and try running 
+           checkopt
+     The tests in this directory also serve as example code to show you
+     how to use the opt package in your own programs.
+
+
+Happy coding,
+jt
+
+$Id: README,v 2.2 1999/11/22 16:34:21 jt Exp $
+------------------------------------
+James Theiler            jt@lanl.gov

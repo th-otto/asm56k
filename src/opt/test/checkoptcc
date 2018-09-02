@@ -1,0 +1,72 @@
+#! /bin/sh
+## Perform various tests automatically -- for C++ version of code
+
+##
+PATH=.:$PATH
+## Change output to a real file if you need further diagnostics
+output=/dev/null
+echo > $output
+
+## checkit: if previous command successful, then print a dot
+##          otherwise note an error
+## checkitneg: vice versa
+##
+checkit ()    { if [ $? -eq 0 ]; then echo -n "."; else waserror $*; fi;
+    }
+checkitneg () { if [ $? -ne 0 ]; then echo -n "."; else waserror $*; fi;
+    }
+
+errcount=0
+waserror()    { echo; echo Error: $*; errcount=`expr $errcount + 1`;
+    }
+################################
+## Make sure we have the latest versions...
+make testcc
+
+################################
+
+testcc | grep Hello >> $output
+checkit to see that testcc basically works
+
+## Check -y # and -y#
+##
+testcc -m 11 | grep month >> $output
+checkit identify that user set month
+
+testcc -m 11 | grep '/11/' >> $output
+checkit that month set properly
+
+## Check long options
+##
+testcc --month 12 | grep '/12/' >> $output
+checkit longname --month
+
+## Check that invalid numeric arguments are flagged
+testcc --month July 2>&1 | grep 'OPT Warning' >> $output
+checkit failed to flag invalid numeric arguments
+
+## Check opthelp
+##
+testcc \?d 2>&1 | grep "32" >> $output
+checkit opthelp
+
+## Check optQuit
+##
+echo . | testcc --menu | grep "Bye" >> $output
+checkit optQuit
+
+testcc -m 9 -- snarfle | grep 'Extra option: snarfle' >> $output
+checkit reading strings after the unadorned --
+testcc -m 7 snarfle | grep 'Hello, snarfle' >> $output
+checkit reading strings after processing is finished
+
+## Check optexec
+testcc --version | grep 99 >> $output
+checkit optexec
+
+echo "Done"
+if [ $errcount -eq 0 ]; then echo "PASSED"; else echo "$errcount errors"; fi
+exit $errcount
+    
+
+

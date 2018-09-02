@@ -1,0 +1,246 @@
+#! /bin/sh
+## Perform various tests automatically -- not that easy with interactive code...
+
+##
+PATH=.:$PATH
+## Change output to a real file if you need further diagnostics
+output=/dev/null
+echo > $output
+
+## checkit: if previous command successful, then print a dot
+##          otherwise note an error
+## checkitneg: vice versa
+##
+checkit ()    { if [ $? -eq 0 ]; then echo -n "."; else waserror $*; fi;
+    }
+checkitneg () { if [ $? -ne 0 ]; then echo -n "."; else waserror $*; fi;
+    }
+
+errcount=0
+waserror()    { echo; echo Error: $*; errcount=`expr $errcount + 1`;
+    }
+################################
+## Make sure we have the latest versions...
+make birthday testopt hooktest iloop testtypes tstring tnull manyopts tarray
+
+################################
+
+birthday | grep Max >> $output
+checkit Max\'s birthday
+birthday -m4 -d24 -y1993 | grep Sky >> $output
+checkit Sky\'s birthday
+
+birthday -m 7 -v | grep Hello >> $output
+checkit setting -m
+
+## Check -y # and -y#
+##
+birthday -y 2001 -v | grep 2001 >> $output
+checkit setting -y 2001
+birthday -y2001 -v | grep 2001 >> $output
+checkit setting -y2001
+
+## Hmmm, maybe --help should write to stdout instead of stderr
+##
+birthday --help 2>&1 | grep Month >> $output
+checkit --help
+
+## Check @file.opt
+/bin/rm -f birthday.opt
+birthday -m 11 %% >> $output
+birthday @@ -v | grep '/11/' >> $output
+checkit using %% and @@
+## Make a new birthday.opt file
+birthday @@ %% >> $output 2>&1 
+## See whether the backup was made
+test -f birthday.opt~
+checkit optfile backup
+
+################################
+
+## Check opthook
+##
+testopt -y 2000 | grep bug >> $output
+checkit opthook
+
+## Check long options
+##
+testopt --month 12 | grep '/12/' >> $output
+checkit longname --month
+
+## Check that invalid numeric arguments are flagged
+testopt --month July 2>&1 | grep 'OPT Warning' >> $output
+checkit failed to flag invalid numeric arguments
+
+## Check that invalid numeric arguments are flagged
+testopt --month 2.5 2>&1 | grep 'OPT Warning' >> $output
+checkit failed to flag floating point number as not integer
+
+## Try to interpret partially numeric arguments
+## Send 2> to /dev/null to supress warning
+testopt --month 11x 2>/dev/null | grep '/11/' >> $output
+checkit failed to interpret partially numeric argument
+
+## Check optinvoked()
+##
+testopt -m 9 | grep "User set" >> $output
+checkit optinvoked
+
+## Check opthelp
+##
+testopt \?d 2>&1 | grep "32" >> $output
+checkit opthelp
+
+## Check optQuit
+##
+echo . | testopt --menu | grep "Bye" >> $output
+checkit optQuit
+
+OPT=-y2001 testopt | grep 2001 >> $output
+checkit optEnvVarName
+
+testopt -m 9 -- snarfle | grep 'Extra option: snarfle' >> $output
+checkit reading strings after the unadorned --
+
+testopt -m 7 snarfle | grep 'Hello, snarfle' >> $output
+checkit reading strings after processing is finished
+
+## Check opt can handle positional args that are special chars
+testopt . -m 5 |grep 'Hello, \.: 1993/05/24' >> $output
+checkit handling .  as a positional arg
+
+## Check optexec
+testopt --altversion | grep 99 >> $output
+checkit optexec
+## Make sure it exits before executing actual runcode
+## This no longer happens automatically; the hook fcn must call exit
+## (or optAbortRun())
+testopt -y2001 --altversion | grep 2001 >> $output
+checkitneg optexec fails to exit
+
+## Check builtin --version
+testopt --version | grep "Version 3.14159+" >> $output
+checkit builtin --version failed
+
+## Check builtin --optVersion
+testopt --optVersion 2>&1 | grep 'OPT Version' >> $output
+checkit builtin --optVersion failed
+## Make sure it exits before executing actual runcode
+testopt -y2001 --optVersion 2>&1 | grep 2001 >> $output
+checkitneg optVersion fails to exit
+
+testmain --optVersion | grep "OPT Version" >> $output
+checkit failed to write an --optVersion
+
+## Check optDisableMenu()
+echo . | testmain --menu 2>&1 |grep 'menu not available' >> $output
+checkit optDisableMenu function didn\'t work
+
+## Check fix_mon
+testopt -m22 2>&1 | grep '/01/' >> $output
+checkit fix_mon hook
+
+## Mark Muldoon's hook test
+hooktest -a 2 | grep 'All is well' >> $output
+checkit hooktest
+
+## Check optAbortRun (too bad we cant check the infinite loop here -- but
+## I think you really have to do that by hand!)
+## This only works if HAVE_LONGJMP is #define'd to be 1
+echo 'N -1 =
+.' | iloop --menu 2>&1 | grep 'Run aborted' >> $output
+checkit optAbortRun, are you sure HAVE_LONGJMP is nonzero \?
+
+## Check optMain
+testmain -N 1 hello world | grep hello >> $output
+checkit optMain echoing extra parameters
+
+testmain -N 1 hello world | grep world >> $output
+checkitneg optMain not echoing all extra parameters
+
+## Check CSTRING bug (was in v3.4, fixed in v3.5)
+echo . | testtypes -mhello --menu 2>&1 | grep hello >> $output
+checkit CSTRING bug 
+echo . | testtypes -lhi --menu 2>&1 | grep hi >> $output
+checkit VSTRING bug
+echo . | testtypes --menu 2>&1 | grep hello >> $output
+checkit VSTRING initialization bug
+
+## New feature, default options file
+echo '-y 98765' > testoptrc
+testopt | grep 98765 >> $output
+checkit optDefaultFile bug
+/bin/rm testoptrc
+
+## Test unsigned short/long
+testtypes -n -1 2>&1 | grep 'OPT Warn' >> $output
+checkit USHORT error failed to warn about negative unsigned
+testtypes -n -1 2>/dev/null | grep 65535 >> $output
+checkit USHORT error
+testtypes -o -1 2>/dev/null | grep 4294967295 >> $output
+checkit ULONG error
+
+## Test some strings
+tstring --vee=vvv | grep 'v-string = vvv' >> $output
+checkit VEESTRING error
+
+tstring -t ttt | grep 't-string = ttt' >> $output
+checkit TTTSTRING error
+
+## Test catching of null first argument
+tnull 2>&1 | grep 'OPT Fatal' >> $output
+checkit Failed to catch NULL first argument
+
+## Check for limitation on number of options
+n=`manyopts --help | wc -l`
+test $n -gt 1000
+checkit Failed to register a large number of options
+
+tarray --help | grep 'DOUBLE ARRAY' >> $output
+checkit Failed to register array option
+
+echo . | tarray -d, --menu | grep '1,2,3,4' >> $output
+checkit Failed to write array option
+
+## output will be lines '0 9' and '1 8' and '2 7' etc
+tarray --xarray='9+8+7+6+ 5+ 4+3+2+1' | grep '2 7' >> $output
+checkit Failed to read array from command line using --xarray
+
+tarray '9+8+7+6+ 5+ 4+3+2+1' | grep '2 7' >> $output
+checkit Failed to read array from command line
+
+tarray -dx '9x8x7x6x 5x 4x3x2x1' | grep '2 7' >> $output
+checkit Failed to read array from command line
+
+tarray -y Larry,Moe,Curley | grep 'STRING 1 Moe' >> $output
+checkit Failed to read string array from command line
+
+## Check handling of long options, values and description string
+testlong -x 10 |grep 'x = 10' >> $output
+checkit Couldn\'t run testlong
+
+testlong -x 42 |grep 'Opt has found the answer' >> $output
+checkit Basic testlong parsing failed
+
+testlong --this-is-a-ridiculously-long-option-for-the-x-value=42 |grep 'Opt has found the answer' >> $output
+checkit Parsing of very long option failed
+
+testlong --this-is-a-ridiculously-long-option-for-the-z-value="An exceptionally long value string to go with all these long options" |grep 'Opt can handle the big stuff' >> $output
+checkit Failed parsing of long option with very long string value
+
+testlong --help |grep 'it handles this one' >> $output
+checkit Failed --help with very long options and descriptions
+
+echo . | testlong --menu | grep 'it handles this one' >> $output
+checkit Failed --menu with very long options and descriptions
+
+birthday -m `perl -e 'print "A" x 1124'` >> $output 2>&1
+checkit Failed by producing a too-long non-numeric string
+
+
+echo "Done"
+if [ $errcount -eq 0 ]; then echo "PASSED"; else echo "$errcount errors"; fi
+exit $errcount
+    
+
+
