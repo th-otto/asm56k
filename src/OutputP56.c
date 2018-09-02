@@ -32,7 +32,7 @@ Author:     M.Buras (sqward)
 
 void P56_SaveData(FILE* output_file,int chunkIndex,int memtype, int offset, int skip)
 {
-    int j,size;
+    int j;
     unsigned char* pCode;
     unsigned char* pCodeCopy = NULL;
     unsigned char* pCodeOrig = NULL;

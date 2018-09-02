@@ -32,7 +32,9 @@ Author:     M.Buras (sqward)
 #include <OutputLod.h>
 #include <OutputP56.h>
 #include <OutputEmbededAsm.h>
+#include <StringBuffer.h>
 #include <opt.h>
+
 
 // -----------------------------------------------------------------------------------------------
 
@@ -42,8 +44,6 @@ int				g_errorCount;
 int				g_warnCount;
 int             g_LocalSerial = 0;
 jmp_buf         critical_error;
-
-int				yyparse();
 
 // -----------------------------------------------------------------------------------------------
 
@@ -58,7 +58,7 @@ void mtest(void* pMem,int Line,char* File_)
 
 // -----------------------------------------------------------------------------------------------
 
-void debugprint(char* pFmt, ... )
+void debugprint(const char* pFmt, ... )
 {
 #ifdef DEBUG
 	va_list arglist;
@@ -70,7 +70,7 @@ void debugprint(char* pFmt, ... )
 #endif
 };
 
-int yyerror(char* s, ... )
+int yyerror(const char* s, ... )
 {
 	char error_buf[512];
 	va_list arglist;
@@ -89,7 +89,7 @@ int yyerror(char* s, ... )
 	return 0;
 };
 
-int yywarning(char* s, ...)
+int yywarning(const char* s, ...)
 {
 	char warn_buf[512];
 	va_list arglist;
@@ -110,7 +110,7 @@ int yywarning(char* s, ...)
 
 // -----------------------------------------------------------------------------------------------
 
-void asm_abort()
+void asm_abort(void)
 {
 	printf(  "Terminating execution.\n" );
 	longjmp( critical_error, 1);
@@ -118,7 +118,7 @@ void asm_abort()
 
 // -----------------------------------------------------------------------------------------------
 
-void InitParserPass1()
+static void InitParserPass1(void)
 {
     g_LocalSerial = 0;
 	in_section=FALSE;
@@ -133,7 +133,7 @@ void InitParserPass1()
 	PushStream( g_tokens,inc_names[0] ,1, -1, 0);
 }
 
-void InitParserPass2()
+static void InitParserPass2(void)
 {
     g_LocalSerial = 0;
     in_section=FALSE;
@@ -164,7 +164,7 @@ int g_write_zero_sections=0;
 
 int asm56k(int argc,char* argv[])
 {
-	FILE* input;
+	FILE* input = NULL;
 	int	num_tokens = 0;
 
     if ( input_name == NULL )

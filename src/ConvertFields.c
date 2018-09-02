@@ -9,6 +9,7 @@ Author:     M.Buras (sqward)
 // -----------------------------------------------------------------------------------------------
 
 #include "ConvertFields.h"
+#include "export.h"
 
 char	_ddddd_2_ddddd[]={
 	0x4,0x5,0x6,0x7,0x8,0xc,0xa,0x9,0xd,0xb,0xe,0xf,	/* alu registers mapping */
@@ -361,7 +362,7 @@ char	_ddddd_2_ddddd2[]={
 
 int   ddddd_2_ddddd2(unsigned int code)
 { 
-    int test = _ddddd_2_ddddd2[50];
+    /* int test = _ddddd_2_ddddd2[50]; */
 	return _ddddd_2_ddddd2[code]; 
 }
 

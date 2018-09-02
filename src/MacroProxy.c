@@ -20,6 +20,7 @@ Author:     M.Buras (sqward)
 #include <export.h>
 #include <ErrorMessages.h>
 #include <StringBuffer.h>
+#include "export.h"
 
 // -----------------------------------------------------------------------------------------------
 /*
@@ -216,8 +217,6 @@ void Replay_Macro(hs* name)
 	TokenVal*	pStoreParam=g_pParamsPool;
 	TokenVal*	pFirst=pStoreParam;
 
-	int	repeat = TRUE;
-
 	*pParamArray++=pStoreParam;
 
 	while(1)
@@ -286,7 +285,7 @@ void Replay_Macro(hs* name)
 	g_pParamsArrayPool=pParamArray;
 	g_pParamsPool=pStoreParam;
 
-	debugprint("macro ptr 0x%X, nr of params: 0x%X\n",streamsStack[g_streamsStrackIndex].macro_ptr,params_count);
+	debugprint("macro ptr %p, nr of params: 0x%X\n",streamsStack[g_streamsStrackIndex].macro_ptr,params_count);
 }
 // -----------------------------------------------------------------------------------------------
 void MacroCall(const char* pString)

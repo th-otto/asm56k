@@ -38,7 +38,7 @@ void InitSymbolTable()
 	g_pSymbolSlot=(hs*)malloc(MAX_DESC*sizeof(hs));
 	mtest(g_pSymbolSlot,__LINE__,__FILE__);
 	free_slot=g_pSymbolSlot;
-	memset( (void*) hash_tab, sizeof(hash_tab),0);
+	memset( hash_tab, 0, sizeof(hash_tab));
 }
 // -----------------------------------------------------------------------------------------------
 /*  

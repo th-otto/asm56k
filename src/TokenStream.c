@@ -150,7 +150,7 @@ int GetToken(TokenVal** pTokenValue)
 	if ( token == TOKEN_NEW_PTR ) 
 	{
 		streamsStack[g_streamsStrackIndex].macro_ptr=(TokenVal*)pToken->data.pNextBlock;
-		debugprint("macro defragmentation in line: %d\nnew mc_tmp = 0x%X\n",g_currentLine, GetCurrentStreamPos() );
+		debugprint("macro defragmentation in line: %d\nnew mc_tmp = %p\n",g_currentLine, GetCurrentStreamPos() );
 		token = GetToken(pTokenValue);
 	}
 	else
@@ -175,7 +175,7 @@ int SkipToken()
 	if ( token == TOKEN_NEW_PTR ) 
 	{
 		streamsStack[g_streamsStrackIndex].macro_ptr=(TokenVal*)pToken->data.pNextBlock;
-		debugprint("macro defragmentation in line: %d\nnew mc_tmp = 0x%X\n",g_currentLine, GetCurrentStreamPos() );
+		debugprint("macro defragmentation in line: %d\nnew mc_tmp = %p\n",g_currentLine, GetCurrentStreamPos() );
 		token = SkipToken();
 	}
 	else
@@ -248,13 +248,13 @@ int PushNewFile(const char* pFileName)
 	char name_buf[512];
     FILE* pFile;
     const char* pDir;
-    int	dirnum = 0;
+    uint	dirnum = 0;
 
     inc_lines[g_incStackDeepth] = g_currentLine;
 
     while ( GetIncDir( &pDir,&dirnum ) )
     {
-        strncpy( name_buf, pDir, sizeof(name_buf) );
+        strcpy( name_buf, pDir);
         if ( name_buf[ strlen(name_buf)-1 ] != '\\' && name_buf[ strlen(name_buf)-1 ] != '/')
         {
             strncat( name_buf, "/", sizeof(name_buf) - strlen( name_buf ) );
@@ -364,7 +364,7 @@ void IncludeFile()
 
     if ( inc_temp_string[0] == '\"' )
     {
-        strncpy(inc_temp_string,inc_temp_string+1,sizeof(inc_temp_string) );
+        strcpy(inc_temp_string,inc_temp_string+1);
         if ( strrchr(inc_temp_string,'\"') != NULL )
         {
             *strrchr(inc_temp_string,'\"') = 0;

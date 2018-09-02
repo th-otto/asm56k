@@ -606,7 +606,7 @@ int
 opt_lineprocess(char *line)
 {
     int i,nargc;
-    char **nargv;
+    char **nargv = 0;
 
     if( line==NULL || *line=='\0') return(0);
  
@@ -906,10 +906,8 @@ opt_help(char *s)
 void
 opt_quit(void)
 {
-    int retval;
-
     if( opt_quit_fcn != NULL )
-        retval = (*opt_quit_fcn)();
+        (*opt_quit_fcn)();
 
     /* Let's free up memory */
     opt_free();

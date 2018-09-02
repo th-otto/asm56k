@@ -26,7 +26,7 @@ Author:     M.Buras (sqward)
 
 void SaveDataEmbeded(FILE* output_file,int chunkIndex, int MemType, int offset, int skip)
 {
-    int j,code_word;
+    int j;
     int mod_cnt;
     unsigned char* code;
 
@@ -84,7 +84,7 @@ void SaveFileEmbeded( const char* name )
 		return;
 	}
     
-    strncpy ( baseName,name, sizeof(baseName) );
+    strcpy ( baseName,name);
     pBaseName = strrchr ( baseName,'/' );
 
     if ( pBaseName == NULL )
@@ -135,11 +135,11 @@ void SaveFileEmbeded( const char* name )
         {
 		    switch(chunks[i].mem_type)
 		    {
-			    break; case P_MEM:  SaveDataEmbeded(output_file, i, chunks[i].mem_type, 0, 0 );
-			    break; case X_MEM:  SaveDataEmbeded(output_file, i, chunks[i].mem_type, 0, 0 );
-			    break; case Y_MEM:  SaveDataEmbeded(output_file, i, chunks[i].mem_type, 0, 0 );
-                break; case L_MEM:  SaveDataEmbeded(output_file, i, "X", 3, 3 );
-                                    SaveDataEmbeded(output_file, i, "Y", 0, 3 );
+			    case P_MEM:  SaveDataEmbeded(output_file, i, chunks[i].mem_type, 0, 0 ); break;
+			    case X_MEM:  SaveDataEmbeded(output_file, i, chunks[i].mem_type, 0, 0 ); break;
+			    case Y_MEM:  SaveDataEmbeded(output_file, i, chunks[i].mem_type, 0, 0 ); break;
+                case L_MEM:  SaveDataEmbeded(output_file, i, 'X', 3, 3 );
+                                    SaveDataEmbeded(output_file, i, 'Y', 0, 3 ); break;
             }
         }
 	}

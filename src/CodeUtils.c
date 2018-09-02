@@ -34,7 +34,7 @@ int in_section;
 	 if(in_section)
 	 {
 		 chunks[num_chunks2].code_len2=(c_ptr-chunks[num_chunks2].code_ptr);
-		 debugprint("d2 0x%x, 0x%x, 0x%x\n",c_ptr,chunks[num_chunks2].code_len2,chunks[num_chunks2].code_len);
+		 debugprint("d2 %p, 0x%x, 0x%x\n",c_ptr,chunks[num_chunks2].code_len2,chunks[num_chunks2].code_len);
 
 		 if(chunks[num_chunks2].code_len2==0)
 		 {
@@ -94,7 +94,8 @@ void close_chunk()
 	{
 		int	temp_len;
 		temp_len=chunks[num_chunks2].code_len2=(c_ptr-chunks[num_chunks2].code_ptr);
-		debugprint("d2 0x%x, 0x%x, 0x%x\n",c_ptr,chunks[num_chunks2].code_len2,chunks[num_chunks2].code_len);
+		(void)temp_len;
+		debugprint("d2 %p, 0x%x, 0x%x\n",c_ptr,chunks[num_chunks2].code_len2,chunks[num_chunks2].code_len);
 		if(chunks[num_chunks2].code_len2==0)
 		{
 			yywarning("Empty section defined.");
@@ -217,7 +218,7 @@ int GenAlign( Value val1 )
     if ( Val_CheckResolved ( val1 ) )
     {
         yyerror ( "Forward referenced symbols not allowed for ALIGN statement." );
-        return ; 
+        return 0; 
     }
 
     val = Val_GetAsInt( val1 );
@@ -360,7 +361,7 @@ void   InsertString(const char *pString,int str_len)
 	{
         int i = ( wordLength * 3 ) % str_len;
 
-		strcpy( c_ptr, pString ) ;
+		strcpy( (char *)c_ptr, pString ) ;
 
         c_ptr+=str_len;
 

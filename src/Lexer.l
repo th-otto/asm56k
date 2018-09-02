@@ -582,7 +582,8 @@ BEGIN(macro)
 								}
 
                                 sym = (first << 8) | second;
-
+								(void) sym;
+								
                                 if ( first == '/' && second == '*' )
                                 {
                                     nestLevel ++;

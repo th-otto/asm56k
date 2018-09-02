@@ -16,17 +16,17 @@ Author:     M.Buras (sqward)
 extern int		g_dsp_cpu;
 extern int	    g_passNum;
 extern int      g_write_zero_sections;
-extern void		asm_abort();
+extern void		asm_abort(void);
 
 extern int		dc_flag;        // this is form grammar.y
 extern int 		g_currentLine;
 extern int      g_LocalSerial;
-extern int		yyerror(char* s, ... );
-extern int      yywarning(char* s, ... );
-extern int		yylex();
-extern int		asmlex();
+extern int		yyerror(const char* s, ... ) __attribute__((format(printf, 1, 2)));
+extern int      yywarning(const char* s, ... ) __attribute__((format(printf, 1, 2)));
+extern int		yylex(void);
+extern int		asmlex(void);
 extern void		mtest(void* vector,int Line,char* File_);
-extern void		debug_print(char* s, ... );
+extern void		debugprint(const char* s, ... ) __attribute__((format(printf, 1, 2)));
 
 #ifdef _MSC_BUILD
 	#define snprintf sprintf_s
@@ -39,4 +39,4 @@ extern void		debug_print(char* s, ... );
 #define TRUE 1
 #define FALSE 0
 
-#endif //_EXPORT_H_
+#endif
