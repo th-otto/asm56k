@@ -58,4 +58,6 @@ udo_fo.*
 *.cnt
 *.rtf
 asm56k
-build/unix/cache
+build/Parser.c
+build/Parser.h
+build/Lexer.c
