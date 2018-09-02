@@ -26,10 +26,9 @@ extern int		asmlex(void);
 extern void		mtest(void* vector,int Line,char* File_);
 extern void		debugprint(const char* s, ... ) __attribute__((format(printf, 1, 2)));
 
-#ifdef _MSC_BUILD
+#ifdef _MSC_VER
 	#define snprintf sprintf_s
 	#include <malloc.h>
-    #include <crtdbg.h>
 #endif
 
 /*#define DEBUG */

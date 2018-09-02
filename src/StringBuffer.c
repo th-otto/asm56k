@@ -47,9 +47,5 @@ const char *StringBufferInsert(char *pStr)
 	memcpy(pStrBufCurrent, pStr, len + 1);
 	pStrBufCurrent += len + 1;
 
-#ifdef _MSC_BUILD
-	_ASSERT(_CrtCheckMemory());
-#endif
-
 	return pRetString;
 }

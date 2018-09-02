@@ -229,10 +229,6 @@ int PrefetchTokens(void)
 	}
 	while (token != OP_END);
 
-#ifdef _MSC_BUILD
-	_ASSERT(_CrtCheckMemory());
-#endif
-
 	return token_count;
 }
 

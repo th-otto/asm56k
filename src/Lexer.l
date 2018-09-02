@@ -39,7 +39,7 @@
 void ParseString( );
 int	atobin(char* string);
 
-#ifdef _MSC_BUILD
+#ifdef _MSC_VER
     #define strtoll( a,b,c ) _strtol_l(a, b, c, _get_current_locale());
 #endif
 

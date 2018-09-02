@@ -10,8 +10,7 @@ Author:     M.Buras (sqward)
 #include <stdarg.h>
 #include <setjmp.h>
 
-#ifdef _MSC_BUILD
-#include <crtdbg.h>
+#ifdef _MSC_VER
 #include <direct.h>
 #else
 #include <unistd.h>
@@ -275,14 +274,6 @@ int AddIncludePath(void *v)
 int main(int argc, char *argv[])
 {
 	int ret = 0;
-
-#ifdef _MSC_BUILD
-	int tmpFlag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
-
-	tmpFlag |= _CRTDBG_LEAK_CHECK_DF;
-	tmpFlag &= ~_CRTDBG_CHECK_CRT_DF;
-	_CrtSetDbgFlag(tmpFlag);
-#endif
 
 	optreg(&g_output_symbols, OPT_BOOL, 's', "Output symbols (in LOD).");
 

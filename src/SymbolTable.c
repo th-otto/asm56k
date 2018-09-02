@@ -65,10 +65,6 @@ hs *AddSymbol(const char *pString, int len, int forceCopy)
 	uint hash_val = hash(pString);
 	hs *pNewEntry;
 
-
-#ifdef _MSC_BUILD
-	_ASSERT(_CrtCheckMemory());
-#endif
 	/* check if the string is already defined */
 	if (FindSymbol(pString) != NULL)
 	{
@@ -92,17 +88,10 @@ hs *AddSymbol(const char *pString, int len, int forceCopy)
 	 * if a given hash slot level is not initialised yet
 	 * do it...
 	 */
-#ifdef _MSC_BUILD
-	_ASSERT(_CrtCheckMemory());
-#endif
-
 	if (forceCopy)
 	{
 		pString = StringBufferInsert((char *) pString);
 	}
-#ifdef _MSC_BUILD
-	_ASSERT(_CrtCheckMemory());
-#endif
 
 	if (hash_tab[hash_val].pHead == 0)
 	{
@@ -121,9 +110,6 @@ hs *AddSymbol(const char *pString, int len, int forceCopy)
 	pNewEntry->pNext = 0;
 	pNewEntry->mem_space = -1;
 
-#ifdef _MSC_BUILD
-	_ASSERT(_CrtCheckMemory());
-#endif
 	return pNewEntry;
 }
 
@@ -240,11 +226,6 @@ hs *AddSym(stext * pSymName, int forceCopy)
 	{
 		return FindSymbol(pSymName->ptr);
 	}
-
-
-#ifdef _MSC_BUILD
-	_ASSERT(_CrtCheckMemory());
-#endif
 }
 
 
