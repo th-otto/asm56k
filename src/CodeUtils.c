@@ -37,7 +37,9 @@ void allocate_chunk(int type)
 		if (chunks[num_chunks2].code_len2 == 0)
 		{
 			if (g_passNum)
-				yywarning("Empty section defined.");
+			{
+				/* yywarning("Empty section defined1."); */
+			}
 		}
 		num_chunks2++;
 	}
@@ -86,14 +88,11 @@ void close_chunk(void)
 {
 	if (in_section)
 	{
-		int temp_len;
-
-		temp_len = chunks[num_chunks2].code_len2 = (c_ptr - chunks[num_chunks2].code_ptr);
-		(void) temp_len;
+		chunks[num_chunks2].code_len2 = (c_ptr - chunks[num_chunks2].code_ptr);
 		debugprint("d2 %p, 0x%x, 0x%x\n", c_ptr, chunks[num_chunks2].code_len2, chunks[num_chunks2].code_len);
 		if (chunks[num_chunks2].code_len2 == 0)
 		{
-			yywarning("Empty section defined.");
+			/* yywarning("Empty section defined."); */
 		}
 		num_chunks2++;
 	}
