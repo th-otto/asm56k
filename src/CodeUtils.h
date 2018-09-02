@@ -57,43 +57,29 @@ extern int 	in_section;
 
 void	CreateOutputName(char* input_name,char** output_name);
 void	allocate_chunk(int type);
-void	close_chunk();
+void	close_chunk(void);
 void	allocate_vchunk(int type);
-void	close_vchunk();
-void	verify_code();
-int		GetCurrentMemType();
-int     GetCurrentPC();
-void	insert_code();
+void	close_vchunk(void);
+void	verify_code(void);
+int		GetCurrentMemType(void);
+int     GetCurrentPC(void);
+void	insert_code(void);
 void	insert_code_w(bcode *inst_code);
 void	InsertString(const char *string,int str_len);
-void	insert_vcode();
+void	insert_vcode(void);
 void	insert_vcode_w(bcode *inst_code);
 void	GenDc( Value data );
 void	GenDS( Value val1 );
 int		GenAlign( Value val1 );
 void	GenDSM( hs* pLabel, Value val1  );
 void	GenOrg(uint memSpace, uint address);
-void    CheckCodeInLMem();
-int		GetCurrentChunkBegin();
+void    CheckCodeInLMem(void);
+int		GetCurrentChunkBegin(void);
 void	retInit( raddr *ret );
 
 
-/* this stuff looks really dodgy, but it helps a lot in code generators. */
-
-#define PASS1 if(!g_passNum){
-#define PASS2 }else{ 
-#define PASSEND };
-
-#define PAR1 bcode move; move.sflag=0; move.w0 = 0; move.w1 = 0; if(!g_passNum){
-#define PAR2 }else{ 
-#define PAREND }; return move;
-
-#define IN_PASS1 if(!g_passNum){ bcode inst_code; inst_code.sflag = 0;  inst_code.w0 = 0; inst_code.w1 = 0;
-#define IN_PASS2 insert_vcode_w(&inst_code); }else{ bcode inst_code;  inst_code.sflag = 0; inst_code.w0 = 0; inst_code.w1 = 0;
-#define AFTER_PASSES insert_code_w(&inst_code); };
-
-#define DSP56301 if ( g_dsp_cpu != 56301 ) yyerror ("Illegal 56301 instruction. CPU is set to %d",g_dsp_cpu );
+#define DSP56301 if ( g_dsp_cpu != 56301 ) yyerror ("Illegal 56301 instruction. CPU is set to %d",g_dsp_cpu )
 /* this is a bit pointless... */
-#define DSP56001 if ( g_dsp_cpu != 56001 ) yyerror ("Illegal 56001 instruction. CPU is set to %d",g_dsp_cpu );
+#define DSP56001 if ( g_dsp_cpu != 56001 ) yyerror ("Illegal 56001 instruction. CPU is set to %d",g_dsp_cpu )
 
 #endif /* _CODEUTILS_H_ */

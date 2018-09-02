@@ -34,6 +34,6 @@ bcode GenParRegRegEaReg( uint src_reg1,uint dst_reg1,bcode *ea,uint dst_reg2 );
 bcode GenParRegRegRegEa( uint src_reg1,uint dst_reg1,uint dst_reg2,bcode *ea );
 bcode GenLMemReg(uint *opcodes,bcode *ea,uint dst_reg);
 bcode GenParXRegYReg(uint opcode,bcode *src_ea1,uint dst_reg1,bcode *src_ea2,uint dst_reg2);
-bcode GenParEmpty();
+bcode GenParEmpty(void);
 
 #endif /* _GENPARMOVES_H_ */

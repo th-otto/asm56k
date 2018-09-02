@@ -11,15 +11,14 @@ Author:     M.Buras (sqward)
 #define PURE_PARSER 0
 #define REPLAY_MACRO 1
 
-int		yylex();
-void 	InitMacroProxy();
+void 	InitMacroProxy(void);
 void 	Replay_Macro(hs* name);
 void 	Record_Macro(hs* temp);
-void 	Skip_Macro();
+void 	Skip_Macro(void);
 
 void 	MacroCall(const char* pString);
 void 	MacroRecord(const char* pString);
-void 	MacroError();
+void 	MacroError(void);
 
 void    ResetLocalLabel(const char* pString);
 

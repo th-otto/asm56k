@@ -11,4 +11,4 @@ Author:     M.Buras (sqward)
 
 void	SaveFileP56( char* name );
 
-#endif /*_OUTPUT_H_ */
+#endif /* _OUTPUT_H_ */

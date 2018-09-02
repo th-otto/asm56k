@@ -282,7 +282,7 @@ code
         |	OP_TRAPCC	                                            {   GenTrapcc($1);                          }
         |   OP_VSL ddddd TAG1 exp_int ',' LMEM  ea                  {   GenVsl($2,$4,&$7);                      }
         |	OP_MOVEM error                                          {   
-                                                                        PASS1 PASS2 yyerror("Illega movem operation."); PASSEND;
+                                                                        if(!g_passNum){ }else{ yyerror("Illega movem operation."); };
                                                                     }
         ;
 

@@ -11,7 +11,7 @@ Author:     M.Buras (sqward)
 #include <ErrorMessages.h>
 #include "GenBitOps.h"
 
-int bchg_patterns[]={
+int bchg_patterns[] = {
 	0xb0000,
 	0xb8000,
 	0x14000,
@@ -19,7 +19,8 @@ int bchg_patterns[]={
 	0xb4000,
 	0xbc040
 };
-int bclr_patterns[]={
+
+int bclr_patterns[] = {
 	0xa0000,
 	0xa8000,
 	0x10000,
@@ -27,7 +28,8 @@ int bclr_patterns[]={
 	0xa4000,
 	0xac040
 };
-int bset_patterns[]={
+
+int bset_patterns[] = {
 	0xa0020,
 	0xa8020,
 	0x10020,
@@ -35,7 +37,8 @@ int bset_patterns[]={
 	0xa4020,
 	0xac060
 };
-int btst_patterns[]={
+
+int btst_patterns[] = {
 	0xb0020,
 	0xb8020,
 	0x14020,
@@ -43,7 +46,8 @@ int btst_patterns[]={
 	0xb4060,
 	0xbc060
 };
-int brclr_patterns[]={
+
+int brclr_patterns[] = {
 	0xc8080,
 	0xcc000,
 	0x48000,
@@ -51,7 +55,8 @@ int brclr_patterns[]={
 	0xc8000,
 	0xcc080
 };
-int brset_patterns[]={
+
+int brset_patterns[] = {
 	0xc80a0,
 	0xcc020,
 	0x48020,
@@ -59,7 +64,8 @@ int brset_patterns[]={
 	0xc8020,
 	0xcc0a0
 };
-int bsclr_patterns[]={
+
+int bsclr_patterns[] = {
 	0xd8080,
 	0xdc000,
 	0x48080,
@@ -67,7 +73,8 @@ int bsclr_patterns[]={
 	0xd8000,
 	0xdc080
 };
-int bsset_patterns[]={
+
+int bsset_patterns[] = {
 	0xd80a0,
 	0xdc020,
 	0x480a0,
@@ -75,14 +82,15 @@ int bsset_patterns[]={
 	0xd8020,
 	0xdc0a0
 };
-int bra_patterns[]={
+
+int bra_patterns[] = {
 	0xb10c0,
 	0x50c00,
 	0xd18c0,
 };
 
 
-int extract_patterns[]={
+int extract_patterns[] = {
 	0xc1a00,
 	0xc1800,
 	0xc1a80,
@@ -92,143 +100,191 @@ int extract_patterns[]={
 };
 
 
-void GenBitOp( int *insn_patt,int val,int xory,bcode *ea  )
+void GenBitOp(int *insn_patt, int val, int xory, bcode * ea)
 {
-	IN_PASS1
-		inst_code.sflag=ea->sflag;
-	if(inst_code.sflag==2)
+	if (!g_passNum)
 	{
-		inst_code.sflag=0;
-	}
-	IN_PASS2
-		if(val>23)
+		bcode inst_code;
+
+		inst_code.sflag = 0;
+		inst_code.w0 = 0;
+		inst_code.w1 = 0;
+		inst_code.sflag = ea->sflag;
+		if (inst_code.sflag == 2)
+		{
+			inst_code.sflag = 0;
+		}
+		insert_vcode_w(&inst_code);
+	} else
+	{
+		bcode inst_code;
+
+		inst_code.sflag = 0;
+		inst_code.w0 = 0;
+		inst_code.w1 = 0;
+		if (val > 23)
 		{
 			yyerror("In operands filed: Immediate value to big: <0-23> range alowed.");
-			val=0;
+			val = 0;
 		}
-		if(ea->sflag==2)
+		if (ea->sflag == 2)
 		{
-			if(ea->w1<64)
+			if (ea->w1 < 64)
 			{
-				inst_code.w0=insn_patt[0]|(ea->w1<<8)|(val)|(xory<<6);
-			}            
-            else            
-            {          
-                ea->w1 |= 0xff0000;
-                if(ea->w1>=0xffffc0 && ea->w1<=0xffffff)
-			    {
-				    inst_code.w0=insn_patt[1]|((ea->w1-0xffffc0)<<8)|(val)|(xory<<6);
-			    }
-                else
-                {
-				    if(ea->w1>=0xffff80 && ea->w1<=0xffffbf)
-				    {
-					    inst_code.w0=insn_patt[2]|((ea->w1-0xffff80)<<8)|(val)|(xory<<6);
-				    }
-                    else
-				    {
-					    yyerror("Destination address out of range.");
-					    inst_code.w0=insn_patt[3]|(val)|(xory<<6);
-				    }
-			    }
-            }
-		 }
-	    else
-	    {
-		    inst_code.sflag=ea->sflag;
-		    inst_code.w0=insn_patt[4]|(val)|(xory<<6)|(ea->w0<<8);
-		    inst_code.w1=ea->w1;
-	    }
-		AFTER_PASSES
+				inst_code.w0 = insn_patt[0] | (ea->w1 << 8) | (val) | (xory << 6);
+			} else
+			{
+				ea->w1 |= 0xff0000;
+				if (ea->w1 >= 0xffffc0 && ea->w1 <= 0xffffff)
+				{
+					inst_code.w0 = insn_patt[1] | ((ea->w1 - 0xffffc0) << 8) | (val) | (xory << 6);
+				} else
+				{
+					if (ea->w1 >= 0xffff80 && ea->w1 <= 0xffffbf)
+					{
+						inst_code.w0 = insn_patt[2] | ((ea->w1 - 0xffff80) << 8) | (val) | (xory << 6);
+					} else
+					{
+						yyerror("Destination address out of range.");
+						inst_code.w0 = insn_patt[3] | (val) | (xory << 6);
+					}
+				}
+			}
+		} else
+		{
+			inst_code.sflag = ea->sflag;
+			inst_code.w0 = insn_patt[4] | (val) | (xory << 6) | (ea->w0 << 8);
+			inst_code.w1 = ea->w1;
+		}
+		insert_code_w(&inst_code);
+	}
 }
 
 
-void GenJccBitRel( int *insn_patt,int val,int xory,bcode *ea, raddr *rel_target )
+void GenJccBitRel(int *insn_patt, int val, int xory, bcode * ea, raddr * rel_target)
 {
-	IN_PASS1
-		inst_code.sflag=1;
-	IN_PASS2
+	if (!g_passNum)
+	{
+		bcode inst_code;
 
-		if(val>23)
+		inst_code.sflag = 0;
+		inst_code.w0 = 0;
+		inst_code.w1 = 0;
+		inst_code.sflag = 1;
+		insert_vcode_w(&inst_code);
+	} else
+	{
+		bcode inst_code;
+
+		inst_code.sflag = 0;
+		inst_code.w0 = 0;
+		inst_code.w1 = 0;
+
+		if (val > 23)
 		{
 			yyerror("In operands filed: Immediate value to big: [0-23] range allowed.");
-			val=0;
+			val = 0;
 		}
 
-		if(rel_target->type!=T_LONG)
+		if (rel_target->type != T_LONG)
 		{
 			yyerror("In operands field: Only long branches accepted.");
-			rel_target->value=0;
+			rel_target->value = 0;
 		}
 
-		if(ea->sflag==1)
+		if (ea->sflag == 1)
 		{
 			yyerror("In operands field: Illegal effective address specified.");
-			ea->w0=0;
-			ea->sflag=0;
+			ea->w0 = 0;
+			ea->sflag = 0;
 		}
 
-		inst_code.w1=rel_target->value;
+		inst_code.w1 = rel_target->value;
 
-		if(ea->sflag==2)
+		if (ea->sflag == 2)
 		{
-			if(ea->w1<64)
+			if (ea->w1 < 64)
 			{
-				inst_code.w0=insn_patt[0]|(ea->w1<<8)|(val)|(xory<<6);
-			}
-			else
+				inst_code.w0 = insn_patt[0] | (ea->w1 << 8) | (val) | (xory << 6);
+			} else
 			{
-				if(ea->w1>=0xffffc0 && ea->w1<=0xffffff)
+				if (ea->w1 >= 0xffffc0 && ea->w1 <= 0xffffff)
 				{
-					inst_code.w0=insn_patt[1]|((ea->w1-0xffffc0)<<8)|(val)|(xory<<6);
-				}
-				else
+					inst_code.w0 = insn_patt[1] | ((ea->w1 - 0xffffc0) << 8) | (val) | (xory << 6);
+				} else
 				{
-					if(ea->w1>=0xffff80 && ea->w1<=0xffffbf)
+					if (ea->w1 >= 0xffff80 && ea->w1 <= 0xffffbf)
 					{
-						inst_code.w0=insn_patt[2]|((ea->w1-0xffff80)<<8)|(val)|(xory<<6);
-					}
-					else
+						inst_code.w0 = insn_patt[2] | ((ea->w1 - 0xffff80) << 8) | (val) | (xory << 6);
+					} else
 					{
 						yyerror("Destenation address out of range.");
-						inst_code.w0=insn_patt[3]|(val)|(xory<<6);
+						inst_code.w0 = insn_patt[3] | (val) | (xory << 6);
 					}
 				}
 			}
-		}
-		else
+		} else
 		{
-			inst_code.w0=insn_patt[4]|(val)|(xory<<6)|(ea->w0<<8);
+			inst_code.w0 = insn_patt[4] | (val) | (xory << 6) | (ea->w0 << 8);
 		}
-		inst_code.sflag=1;
-		AFTER_PASSES
+		inst_code.sflag = 1;
+		insert_code_w(&inst_code);
+	}
 }
 
 
-void GenInsExt1(uint insn_patt,uint reg1,uint src_reg,uint dest_reg)
+void GenInsExt1(uint insn_patt, uint reg1, uint src_reg, uint dest_reg)
 {
-	DSP56301
-	IN_PASS1
-	IN_PASS2
-		reg1=ddddd_2_sss(reg1);
-		if(reg1==-1)
+	DSP56301;
+	if (!g_passNum)
+	{
+		bcode inst_code;
+
+		inst_code.sflag = 0;
+		inst_code.w0 = 0;
+		inst_code.w1 = 0;
+		insert_vcode_w(&inst_code);
+	} else
+	{
+		bcode inst_code;
+
+		inst_code.sflag = 0;
+		inst_code.w0 = 0;
+		inst_code.w1 = 0;
+		reg1 = ddddd_2_sss(reg1);
+		if (reg1 == -1)
 		{
 			yyerror(ERROR_1);
-			reg1=0;
+			reg1 = 0;
 		}
-		inst_code.w0=0xc1a00|(ddddd_2_d_src(src_reg)<<4)|(reg1<<1)|ddddd_2_d_dst(dest_reg);
-	AFTER_PASSES
+		inst_code.w0 = 0xc1a00 | (ddddd_2_d_src(src_reg) << 4) | (reg1 << 1) | ddddd_2_d_dst(dest_reg);
+		insert_code_w(&inst_code);
+	}
 }
 
 
-void GenInsExt2(uint insn_patt,uint val,uint src_reg,uint dest_reg)
+void GenInsExt2(uint insn_patt, uint val, uint src_reg, uint dest_reg)
 {
-	DSP56301
-	IN_PASS1
-		inst_code.sflag=1;
-	IN_PASS2
-		inst_code.w0=insn_patt|(ddddd_2_d_src(src_reg)<<4)|ddddd_2_d_dst(dest_reg);
-		inst_code.w1=val;
-		inst_code.sflag=1;
-	AFTER_PASSES
+	DSP56301;
+	if (!g_passNum)
+	{
+		bcode inst_code;
+
+		inst_code.sflag = 0;
+		inst_code.w0 = 0;
+		inst_code.w1 = 0;
+		inst_code.sflag = 1;
+		insert_vcode_w(&inst_code);
+	} else
+	{
+		bcode inst_code;
+
+		inst_code.sflag = 0;
+		inst_code.w0 = 0;
+		inst_code.w1 = 0;
+		inst_code.w0 = insn_patt | (ddddd_2_d_src(src_reg) << 4) | ddddd_2_d_dst(dest_reg);
+		inst_code.w1 = val;
+		inst_code.sflag = 1;
+		insert_code_w(&inst_code);
+	}
 }

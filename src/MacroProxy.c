@@ -9,7 +9,7 @@ Author:     M.Buras (sqward)
 #include <stdlib.h>
 #include <string.h>
 #include <asm_types.h>
-#include <CodeUtils.h>		/*eventually this will be removed */
+#include <CodeUtils.h>					/*eventually this will be removed */
 #include <SymbolTable.h>
 #include <Parser.h>
 #include <TokenStream.h>
@@ -52,134 +52,136 @@ encountered.*/
 void InitMacroProxy(void)
 {
 	ResetStream();
-	g_MacroNumInstances=0;
+	g_MacroNumInstances = 0;
 }
 
 int yylex(void)
 {
-    TokenVal* pTokenValue;
+	TokenVal *pTokenValue;
 	int token = GetToken(&pTokenValue);
 
-	switch(token)
+	switch (token)
 	{
-		case TOKEN_ENTER_FILE:
-			{
-				inc_lines[g_incStackDeepth]=g_currentLine;
-				g_currentLine=1;
-				g_incStackDeepth++;
-				inc_names[g_incStackDeepth]=yylval.text.ptr;
-				g_CurrentFile=inc_names[g_incStackDeepth];
+	case TOKEN_ENTER_FILE:
+		{
+			inc_lines[g_incStackDeepth] = g_currentLine;
+			g_currentLine = 1;
+			g_incStackDeepth++;
+			inc_names[g_incStackDeepth] = yylval.text.ptr;
+			g_CurrentFile = inc_names[g_incStackDeepth];
 
-				debugprint("leaving: %s in line: %d, entering: %s.\n",inc_names[g_incStackDeepth-1],inc_lines[g_incStackDeepth-1],inc_names[g_incStackDeepth]);
+			debugprint("leaving: %s in line: %d, entering: %s.\n", inc_names[g_incStackDeepth - 1],
+					   inc_lines[g_incStackDeepth - 1], inc_names[g_incStackDeepth]);
 
-				token = yylex();
-			}
-			break;
-		case TOKEN_LEAVE_FILE:
+			token = yylex();
+		}
+		break;
+	case TOKEN_LEAVE_FILE:
+		{
+			g_incStackDeepth--;
+			g_CurrentFile = inc_names[g_incStackDeepth];
+			g_currentLine = inc_lines[g_incStackDeepth];
+			debugprint("re-entering: %s in line: %d.\n", inc_names[g_incStackDeepth], g_currentLine);
+			token = yylex();
+		}
+		break;
+	case OP_END:
+
+		if (TopPosStream() > 0)
+		{
+			yyerror("Unexpected end of file (in macro).");
+			asm_abort();
+		}
+		break;
+
+	case OP_ENDM:
+		{
+			debugprint("end of macro\n");
+
+			if (PopStream() == -1)
 			{
-				g_incStackDeepth--;
-				g_CurrentFile=inc_names[g_incStackDeepth];
-				g_currentLine=inc_lines[g_incStackDeepth];
-				debugprint("re-entering: %s in line: %d.\n",inc_names[g_incStackDeepth],g_currentLine);
-				token = yylex();
-			}
-			break;
-		case OP_END:
-			
-			if ( TopPosStream() > 0 )
-			{
-				yyerror("Unexpected end of file (in macro).");
+				yyerror("Illegal use of ENDM directive. Maybe you've missed a \"macro\" keyword? ");
 				asm_abort();
 			}
-			break;
 
-		case OP_ENDM:
+			token = yylex();
+		}
+		break;
+
+	case SYM:
+	case SYM2:
+	case OP_STRING:
+		{
+			if (yylval.text.ptr[0] == '@' || yylval.text.ptr[0] == '.' || yylval.text.ptr[0] == '_')
 			{
-				debugprint("end of macro\n");
+				char temp_name[128];
+				int stamp = 0;
 
-				if ( PopStream() == -1 )
+				if (TopPosStream() == 0)
+				{						/* local label */
+					stamp = g_LocalSerial;
+				} else
+				{						/* macro local label */
+					stamp = streamsStack[g_streamsStrackIndex].instancesNumber;
+				}
+
+				snprintf(temp_name, sizeof(temp_name), "%s(%i)", yylval.text.ptr, stamp);
+
+				if (TopPosStream() == 0)
 				{
-					yyerror("Illegal use of ENDM directive. Maybe you've missed a \"macro\" keyword? ");
+					if (g_passNum == 0)
+					{					/* don't need to add twice */
+						yylval.text.ptr = pTokenValue->data.val.text.ptr = StringBufferInsert(temp_name);
+						yylval.text.len = pTokenValue->data.val.text.len = strlen(temp_name);
+					}
+				} else
+				{
+					yylval.text.ptr = StringBufferInsert(temp_name);
+					yylval.text.len = strlen(temp_name);
+				}
+			}
+
+		}
+		break;
+
+	case MACRO_PARAM:
+		{
+			int param_index = yylval.integer;
+
+			if (TopPosStream() == 0)
+			{
+				yyerror("Macro argument referenced outside of macro.");
+				Skip_line();
+			} else
+			{
+				debugprint("Macro param %d\n", param_index);
+
+				if (param_index > streamsStack[g_streamsStrackIndex].params_count)
+				{
+					yyerror("Invalid argument referred.");
 					asm_abort();
 				}
 
-				token = yylex();
-			} break;
-
-		case SYM:
-		case SYM2:
-		case OP_STRING:
-			{
-				if(yylval.text.ptr[0]=='@' || yylval.text.ptr[0]=='.' || yylval.text.ptr[0]=='_' )
-				{
-					char temp_name[128];
-                    int stamp = 0;
-
-                    if( TopPosStream() == 0)
-                    {                               /* local label */
-                        stamp = g_LocalSerial;
-                    }
-                    else
-                    {                               /* macro local label */
-                        stamp = streamsStack[g_streamsStrackIndex].instancesNumber;
-                    }
-                    
-					snprintf( temp_name, sizeof( temp_name ), "%s(%i)", yylval.text.ptr,stamp);
-
-                    if ( TopPosStream() == 0 )
-                    {
-                        if ( g_passNum == 0 )
-                        {                       /* don't need to add twice */
-                            yylval.text.ptr = pTokenValue->data.val.text.ptr = StringBufferInsert(temp_name);
-                            yylval.text.len = pTokenValue->data.val.text.len = strlen(temp_name);
-                        }
-                    }
-                    else
-                    {
-					    yylval.text.ptr=StringBufferInsert(temp_name);
-					    yylval.text.len=strlen(temp_name);
-                    }
-				}
-
-			}break;
-
-		case MACRO_PARAM:
-			{
-				int param_index=yylval.integer;
-
-				if( TopPosStream() == 0 )
-				{
-					yyerror("Macro argument referenced outside of macro.");
-					Skip_line();
-				}
-				else
-				{
-					debugprint("Macro param %d\n",param_index);
-
-					if( param_index > streamsStack[g_streamsStrackIndex].params_count )
-					{
-						yyerror("Invalid argument referred.");
-						asm_abort();
-					}
-
-					PushStream( streamsStack[g_streamsStrackIndex].params_array[param_index-1], inc_names[g_incStackDeepth] ,g_currentLine, -1 , 0);
-				}
-				token = yylex();
+				PushStream(streamsStack[g_streamsStrackIndex].params_array[param_index - 1],
+						   inc_names[g_incStackDeepth], g_currentLine, -1, 0);
 			}
+			token = yylex();
+		}
 	}
 
 	return token;
 }
 
 
-void Record_Macro(hs* temp)
+void Record_Macro(hs * temp)
 {
-	SymSetValueMacro(temp,T_MACRO,(void*)GetCurrentStreamPos(),(void*)inc_names[g_incStackDeepth],(int)g_currentLine);
+	SymSetValueMacro(temp, T_MACRO, (void *) GetCurrentStreamPos(), (void *) inc_names[g_incStackDeepth],
+					 (int) g_currentLine);
 	Skip_Macro();
 }
 
 
-void Skip_Macro()
+void Skip_Macro(void)
 {
 	int token;
 
@@ -187,167 +189,166 @@ void Skip_Macro()
 	{
 		token = SkipToken();
 
-		if( token==OP_END )
+		if (token == OP_END)
 		{
 			yyerror("Unexpected end of file (in macro).");
 			asm_abort();
 		}
 	}
-	while(token!=OP_ENDM);
+	while (token != OP_ENDM);
 }
 
 /*
  * Replay_Macro() inserts previously defined macro
  */
 
-void Replay_Macro(hs* name)
+void Replay_Macro(hs * name)
 {
-	int	token;
-	int params_count=0;
-	int	commas=0;
+	int token;
+	int params_count = 0;
+	int commas = 0;
 
-	TokenVal**	pParamArray=g_pParamsArrayPool;
-	TokenVal*	pStoreParam=g_pParamsPool;
-	TokenVal*	pFirst=pStoreParam;
+	TokenVal **pParamArray = g_pParamsArrayPool;
+	TokenVal *pStoreParam = g_pParamsPool;
+	TokenVal *pFirst = pStoreParam;
 
-	*pParamArray++=pStoreParam;
+	*pParamArray++ = pStoreParam;
 
-	while(1)
+	while (1)
 	{
 		token = yylex();
 
-		if ( pParamArray >= &params_pointers[MACRO_PARAMS_POINTER_BUFFER] )
+		if (pParamArray >= &params_pointers[MACRO_PARAMS_POINTER_BUFFER])
 		{
 			yyerror("Too heavy usage of macros! You can increase MACRO_PARAMS_POINTER_BUFFER if you really need ...");
 			asm_abort();
 		}
-		
-		if ( pStoreParam >= &macros_params[MACRO_PARAMS_TOKEN_BUFFER] )
+
+		if (pStoreParam >= &macros_params[MACRO_PARAMS_TOKEN_BUFFER])
 		{
 			yyerror("Too heavy usage of macros! You can increase MACRO_PARAMS_TOKEN_BUFFER if you really need ...");
 			asm_abort();
 		}
 
-		if ( ',' == token )
+		if (',' == token)
 		{
-			if( pFirst==pStoreParam )
+			if (pFirst == pStoreParam)
 			{
 				yyerror("Void macro parameter.");
-			}
-			else
+			} else
 			{
 				commas++;
 				params_count++;
 			}
 
-			pStoreParam->token=OP_ENDM;
+			pStoreParam->token = OP_ENDM;
 			pStoreParam++;
-			*pParamArray++=pStoreParam;
-		}
-		else if ( OP_END == token || EOL == token )
+			*pParamArray++ = pStoreParam;
+		} else if (OP_END == token || EOL == token)
 		{
-			if( pFirst == pStoreParam && commas>0 )
+			if (pFirst == pStoreParam && commas > 0)
 			{
 				yyerror("Void macro parameter.");
-			}
-			else
+			} else
 			{
 				params_count++;
 			}
 
-			pStoreParam->token=OP_ENDM;
+			pStoreParam->token = OP_ENDM;
 			pStoreParam++;
 			break;
-		}
-		else
+		} else
 		{
-			CopyToken(token,pStoreParam);
+			CopyToken(token, pStoreParam);
 			pStoreParam++;
 		}
 	};
 
-	debugprint("params_count = %d\n",params_count);
+	debugprint("params_count = %d\n", params_count);
 
 	g_MacroNumInstances++;
 
-	PushStream( (TokenVal*)name->m_data1,(char*)name->m_data2, g_currentLine, params_count, g_MacroNumInstances );
+	PushStream((TokenVal *) name->m_data1, (char *) name->m_data2, g_currentLine, params_count, g_MacroNumInstances);
 
-	g_CurrentFile=(char*)name->m_data2;
-	g_currentLine=name->m_data3;
+	g_CurrentFile = (char *) name->m_data2;
+	g_currentLine = name->m_data3;
 
-	g_pParamsArrayPool=pParamArray;
-	g_pParamsPool=pStoreParam;
+	g_pParamsArrayPool = pParamArray;
+	g_pParamsPool = pStoreParam;
 
-	debugprint("macro ptr %p, nr of params: 0x%X\n",streamsStack[g_streamsStrackIndex].macro_ptr,params_count);
+	debugprint("macro ptr %p, nr of params: 0x%X\n", streamsStack[g_streamsStrackIndex].macro_ptr, params_count);
 }
 
 
-void MacroCall(const char* pString)
+void MacroCall(const char *pString)
 {
-    hs* temp;
+	hs *temp;
 
-    temp=FindSymbol(pString);
+	temp = FindSymbol(pString);
 
-    if(temp==0)
-    {
-        if ( g_passNum )
+	if (temp == 0)
+	{
+		if (g_passNum)
 		{
-            yyerror(ERROR_20);
+			yyerror(ERROR_20);
 		}
-        Skip_line();
-    }
-    else
-    {
-        if(temp->type!=T_MACRO)
-        {	
-			if ( g_passNum )
+		Skip_line();
+	} else
+	{
+		if (temp->type != T_MACRO)
+		{
+			if (g_passNum)
 			{
-                yyerror(ERROR_21);
+				yyerror(ERROR_21);
 			}
-            Skip_line();
-        }
-        else
-        {	
-            Replay_Macro(temp);
-        }
-    }
+			Skip_line();
+		} else
+		{
+			Replay_Macro(temp);
+		}
+	}
 }
 
 
-void MacroRecord(const char* pString)
+void MacroRecord(const char *pString)
 {
-    dc_flag=FALSE;
-    PASS1
-    {
-        hs* temp = FindSymbol(pString);
-        if(!temp)
-        {
-            yyerror(ERROR_18);
-        }
-        Record_Macro(temp);
-    }
-    PASS2
-        Skip_Macro();
-    PASSEND
+	dc_flag = FALSE;
+	if (!g_passNum)
+	{
+		{
+			hs *temp = FindSymbol(pString);
+
+			if (!temp)
+			{
+				yyerror(ERROR_18);
+			}
+			Record_Macro(temp);
+		}
+	} else
+	{
+		Skip_Macro();
+	}
 }
 
 
-void MacroError()
+void MacroError(void)
 {
-    dc_flag=FALSE;
-    PASS1
-        yyerror(ERROR_19);
-        Skip_Macro();
-    PASS2
-        Skip_Macro();
-    PASSEND
+	dc_flag = FALSE;
+	if (!g_passNum)
+	{
+		yyerror(ERROR_19);
+		Skip_Macro();
+	} else
+	{
+		Skip_Macro();
+	}
 }
 
 
-void ResetLocalLabel(const char* pString)
+void ResetLocalLabel(const char *pString)
 {
-    if( TopPosStream() == 0 && ( pString[0] != '.' && pString[0] != '_' ) )
-    {
-        g_LocalSerial++;
-    }
+	if (TopPosStream() == 0 && (pString[0] != '.' && pString[0] != '_'))
+	{
+		g_LocalSerial++;
+	}
 }

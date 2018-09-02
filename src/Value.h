@@ -67,15 +67,15 @@ bool Val_Gte(Value val1,Value val2);
 bool Val_CheckResolved( Value val2 );
 bool Val_CheckResolved2( Value val1,Value val2 );
 
-Value Val_CreateUnresolved();
+Value Val_CreateUnresolved(void);
 Value Val_CreateFloat(double val);
 Value Val_CreateInt(s64 val);
 Value Val_CreateFract(double val);
 
 void EvalCondition(uint condition,Value val1,Value val2);
 void EvalDefined(const char* pStr,bool invert);
-void GenIfError();
-void GenElse();
+void GenIfError(void);
+void GenElse(void);
 void EvalIfOneArg( uint cond , Value val );
 
 int StrToInt(const char* pString);
