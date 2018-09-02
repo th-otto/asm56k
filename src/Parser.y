@@ -34,7 +34,7 @@ int dc_flag=0;
 %union{
     Value val;
     u64 integer;
-    int* pattern;
+    const int* pattern;
     int reg;
     double fp;
     hs* label;

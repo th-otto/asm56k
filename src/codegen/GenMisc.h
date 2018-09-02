@@ -12,26 +12,26 @@ Author:     M.Buras (sqward)
 #include <asm_types.h>
 #include <CodeUtils.h>
 
-uint jmp_pattern[2];
-uint jcc_pattern[2];
-uint jsr_pattern[2];
-uint jscc_pattern[2];
+uint const jmp_pattern[2];
+uint const jcc_pattern[2];
+uint const jsr_pattern[2];
+uint const jscc_pattern[2];
 
-int jclr_patterns[6];
-int jsclr_patterns[6];
-int jset_patterns[6];
-int jsset_patterns[6];
+int const jclr_patterns[6];
+int const jsclr_patterns[6];
+int const jset_patterns[6];
+int const jsset_patterns[6];
 
-uint movec_pattern1[2];
-uint movec_pattern2[2];
-uint movem_pattern1[2];
-uint movem_pattern2[2];
+uint const movec_pattern1[2];
+uint const movec_pattern2[2];
+uint const movem_pattern1[2];
+uint const movem_pattern2[2];
 
 void GenOneParamParMove(uint insn_patt,uint reg,bcode *par_move );
 void GenBccRelTarger(uint insn_patt, raddr *rel_target );
 
 void GenBraRelTarger(raddr *rel_target );
-void GenJccBitRel( int *insn_patt,int val,int xory,bcode *ea, raddr *rel_target );
+void GenJccBitRel( const int *insn_patt,int val,int xory,bcode *ea, raddr *rel_target );
 void GenJccBitRelReg( int insn_patt,int val,int dest_reg, raddr *rel_target );
 void GenBrkCC(int condition);
 void GenBscc(uint condition, raddr *rel_target);
@@ -48,18 +48,18 @@ void GenDor3(uint src_reg,raddr *rel_target );
 void GenDorForever(raddr *rel_target );
 void GenEnddo(void);
 void GenIllegal(void);
-void GenJmpJsrJsccJcc(uint *insn_patt,uint condition, bcode *ea );
-void GenJccBitAbs( int *insn_patt,int val,int xory,bcode *ea, raddr *rel_target);
+void GenJmpJsrJsccJcc(const uint *insn_patt,uint condition, bcode *ea );
+void GenJccBitAbs( const int *insn_patt,int val,int xory,bcode *ea, raddr *rel_target);
 void GenJccBitAbsReg( int insn_patt,int val, uint dest_reg, raddr *rel_target );
 void GenLra(raddr *rel_target, uint dest_reg);
 void GenLua1(uint mmrrr,uint dest_reg);
 void GenLua2(uint rreg,int val,uint dest_reg);
 void GenMerge(uint src_reg, uint dest_reg);
 void GenMove(bcode *par_move);
-void GenMovec1(uint *insn_patt,uint dir,uint xory,bcode *ea,uint dest_reg);
+void GenMovec1(const uint *insn_patt,uint dir,uint xory,bcode *ea,uint dest_reg);
 void GenMovec2(uint src_reg,uint dest_reg);
 void GenMovec3(uint sh,int val,uint dest_reg);
-void GenMovem(uint *insn_patt,uint dir,bcode *ea,uint reg);
+void GenMovem(const uint *insn_patt,uint dir,bcode *ea,uint reg);
 void GenMovep(uint src_xory,bcode *src_ea,uint dst_xory,bcode *dst_ea);
 void GenMovep2(uint rw,bcode *src_ea,uint dst_xory,bcode *dst_ea);
 void GenMovep3(int val,uint dst_xory,bcode *dst_ea);

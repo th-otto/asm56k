@@ -11,6 +11,45 @@ Author:     M.Buras (sqward)
 #include <export.h>
 #include <ErrorMessages.h>
 
+uint const xmem_reg_pattern1[] = {
+	0x408000,
+	0x40c000
+};
+
+uint const xmem_reg_pattern2[] = {
+	0x400000,
+	0x404000
+};
+
+uint const ymem_reg_pattern1[] = {
+	0x488000,
+	0x48c000
+};
+
+uint const ymem_reg_pattern2[] = {
+	0x480000,
+	0x484000
+};
+
+uint const lmem_reg_pattern1[] = {
+	0x408000,
+	0x40c000
+};
+
+uint const lmem_reg_pattern2[] = {
+	0x400000,
+	0x404000
+};
+
+uint const XRegYReg_pattern[] = {
+	0xc08000,
+	0x808000,
+	0xc00000,
+	0x900000
+};
+
+
+
 bcode GenParIFcc(uint condition, uint opcode)
 {
 	bcode move;
@@ -129,27 +168,7 @@ bcode GenParUpdate(uint update_op)
 }
 
 
-uint xmem_reg_pattern1[] = {
-	0x408000,
-	0x40c000
-};
-
-uint xmem_reg_pattern2[] = {
-	0x400000,
-	0x404000
-};
-
-uint ymem_reg_pattern1[] = {
-	0x488000,
-	0x48c000
-};
-
-uint ymem_reg_pattern2[] = {
-	0x480000,
-	0x484000
-};
-
-bcode GenMemReg(uint * opcodes, bcode * ea, uint dst_reg)
+bcode GenMemReg(const uint *opcodes, bcode * ea, uint dst_reg)
 {
 	bcode move;
 
@@ -436,17 +455,7 @@ bcode GenParRegRegRegEa(uint src_reg1, uint dst_reg1, uint dst_reg2, bcode * ea)
 }
 
 
-uint lmem_reg_pattern1[] = {
-	0x408000,
-	0x40c000
-};
-
-uint lmem_reg_pattern2[] = {
-	0x400000,
-	0x404000
-};
-
-bcode GenLMemReg(uint * opcodes, bcode * ea, uint dst_reg)
+bcode GenLMemReg(const uint * opcodes, bcode * ea, uint dst_reg)
 {
 	bcode move;
 
@@ -483,13 +492,6 @@ bcode GenLMemReg(uint * opcodes, bcode * ea, uint dst_reg)
 	return move;
 }
 
-
-uint XRegYReg_pattern[] = {
-	0xc08000,
-	0x808000,
-	0xc00000,
-	0x900000
-};
 
 bcode GenParXRegYReg(uint opcode, bcode * src_ea1, uint dst_reg1, bcode * src_ea2, uint dst_reg2)
 {

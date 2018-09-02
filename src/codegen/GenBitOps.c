@@ -11,7 +11,7 @@ Author:     M.Buras (sqward)
 #include <ErrorMessages.h>
 #include "GenBitOps.h"
 
-int bchg_patterns[] = {
+int const bchg_patterns[] = {
 	0xb0000,
 	0xb8000,
 	0x14000,
@@ -20,7 +20,7 @@ int bchg_patterns[] = {
 	0xbc040
 };
 
-int bclr_patterns[] = {
+int const bclr_patterns[] = {
 	0xa0000,
 	0xa8000,
 	0x10000,
@@ -29,7 +29,7 @@ int bclr_patterns[] = {
 	0xac040
 };
 
-int bset_patterns[] = {
+int const bset_patterns[] = {
 	0xa0020,
 	0xa8020,
 	0x10020,
@@ -38,7 +38,7 @@ int bset_patterns[] = {
 	0xac060
 };
 
-int btst_patterns[] = {
+int const btst_patterns[] = {
 	0xb0020,
 	0xb8020,
 	0x14020,
@@ -47,7 +47,7 @@ int btst_patterns[] = {
 	0xbc060
 };
 
-int brclr_patterns[] = {
+int const brclr_patterns[] = {
 	0xc8080,
 	0xcc000,
 	0x48000,
@@ -56,7 +56,7 @@ int brclr_patterns[] = {
 	0xcc080
 };
 
-int brset_patterns[] = {
+int const brset_patterns[] = {
 	0xc80a0,
 	0xcc020,
 	0x48020,
@@ -65,7 +65,7 @@ int brset_patterns[] = {
 	0xcc0a0
 };
 
-int bsclr_patterns[] = {
+int const bsclr_patterns[] = {
 	0xd8080,
 	0xdc000,
 	0x48080,
@@ -74,7 +74,7 @@ int bsclr_patterns[] = {
 	0xdc080
 };
 
-int bsset_patterns[] = {
+int const bsset_patterns[] = {
 	0xd80a0,
 	0xdc020,
 	0x480a0,
@@ -83,14 +83,14 @@ int bsset_patterns[] = {
 	0xdc0a0
 };
 
-int bra_patterns[] = {
+int const bra_patterns[] = {
 	0xb10c0,
 	0x50c00,
 	0xd18c0,
 };
 
 
-int extract_patterns[] = {
+int const extract_patterns[] = {
 	0xc1a00,
 	0xc1800,
 	0xc1a80,
@@ -100,7 +100,7 @@ int extract_patterns[] = {
 };
 
 
-void GenBitOp(int *insn_patt, int val, int xory, bcode * ea)
+void GenBitOp(const int *insn_patt, int val, int xory, bcode * ea)
 {
 	if (!g_passNum)
 	{
@@ -161,7 +161,7 @@ void GenBitOp(int *insn_patt, int val, int xory, bcode * ea)
 }
 
 
-void GenJccBitRel(int *insn_patt, int val, int xory, bcode * ea, raddr * rel_target)
+void GenJccBitRel(const int *insn_patt, int val, int xory, bcode * ea, raddr * rel_target)
 {
 	if (!g_passNum)
 	{

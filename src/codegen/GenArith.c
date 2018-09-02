@@ -11,67 +11,67 @@ Author:     M.Buras (sqward)
 #include <ErrorMessages.h>
 #include "GenArith.h"
 
-int add_patterns[] = {
+int const add_patterns[] = {
 	0x0,								/* add jjj,d */
 	0x14080,							/* add #>xx,d */
 	0x140c0,							/* add #xxxxx,d */
 };
 
-int sub_patterns[] = {
+int const sub_patterns[] = {
 	0x4,								/* as above */
 	0x14084,
 	0x140c4
 };
 
-int cmp_patterns[] = {
+int const cmp_patterns[] = {
 	0x5,								/* as above */
 	0x14085,
 	0x140c5
 };
 
-int and_patterns[] = {
+int const and_patterns[] = {
 	0x46,
 	0x14086,
 	0x140c6
 };
 
-int eor_patterns[] = {
+int const eor_patterns[] = {
 	0x43,
 	0x14083,
 	0x140c3
 };
 
-int or_patterns[] = {
+int const or_patterns[] = {
 	0x42,
 	0x14082,
 	0x140c2
 };
 
-int asl_patterns[] = {
+int const asl_patterns[] = {
 	0x32,
 	0xc1d00,
 	0xc1e40
 };
 
-int asr_patterns[] = {
+int const asr_patterns[] = {
 	0x22,
 	0xc1c00,
 	0xc1e60
 };
 
-int lsl_patterns[] = {
+int const lsl_patterns[] = {
 	0x33,
 	0xc1e80,
 	0xc1e10
 };
 
-int lsr_patterns[] = {
+int const lsr_patterns[] = {
 	0x23,
 	0xc1ec0,
 	0xc1e30
 };
 
-int incdec_patterns[] = {
+int const incdec_patterns[] = {
 	0x8,
 	0xa
 };
@@ -563,7 +563,7 @@ void GenDMac(uint modifier, uint plusminus, int val, uint dest_reg)
 }
 
 
-void GenLsxImmediate(int *insn_patt, int val, uint dest_reg)
+void GenLsxImmediate(const int *insn_patt, int val, uint dest_reg)
 {
 	DSP56301;
 	if (!g_passNum)
@@ -593,7 +593,7 @@ void GenLsxImmediate(int *insn_patt, int val, uint dest_reg)
 }
 
 
-void GenLsxReg(int *insn_patt, int src_reg, uint dest_reg)
+void GenLsxReg(const int *insn_patt, int src_reg, uint dest_reg)
 {
 	DSP56301;
 	if (!g_passNum)
@@ -624,33 +624,33 @@ void GenLsxReg(int *insn_patt, int src_reg, uint dest_reg)
 }
 
 
-uint mac_pattern[] = {
+uint const mac_pattern[] = {
 	0x82,
 	0x100c2,
 	0x141c2,
 	0x12680
 };
 
-uint mpy_pattern[] = {
+uint const mpy_pattern[] = {
 	0x80,
 	0x100c0,
 	0x141c0,
 	0x12780
 };
 
-uint macr_pattern[] = {
+uint const macr_pattern[] = {
 	0x83,
 	0x100c3,
 	0x141c3
 };
 
-uint mpyr_pattern[] = {
+uint const mpyr_pattern[] = {
 	0x81,
 	0x100c1,
 	0x141c1
 };
 
-void GenMul1(uint * insn_patt, uint plusminus, uint reg_pair, uint dest_reg, bcode * par_move)
+void GenMul1(const uint * insn_patt, uint plusminus, uint reg_pair, uint dest_reg, bcode * par_move)
 {
 	if (!g_passNum)
 	{
@@ -682,7 +682,7 @@ void GenMul1(uint * insn_patt, uint plusminus, uint reg_pair, uint dest_reg, bco
 }
 
 
-void GenMul2(uint * insn_patt, uint plusminus, uint src_reg, int val, uint dest_reg)
+void GenMul2(const uint * insn_patt, uint plusminus, uint src_reg, int val, uint dest_reg)
 {
 	if (!g_passNum)
 	{
@@ -718,7 +718,7 @@ void GenMul2(uint * insn_patt, uint plusminus, uint src_reg, int val, uint dest_
 }
 
 
-void GenMuli(uint * insn_patt, uint plusminus, int val, uint src_reg, uint dest_reg)
+void GenMuli(const uint * insn_patt, uint plusminus, int val, uint src_reg, uint dest_reg)
 {
 	if (!g_passNum)
 	{
@@ -751,7 +751,7 @@ void GenMuli(uint * insn_patt, uint plusminus, int val, uint src_reg, uint dest_
 }
 
 
-void GenMulxx(uint * insn_patt, uint code, uint plusminus, uint reg_pair, uint dest_reg)
+void GenMulxx(const uint * insn_patt, uint code, uint plusminus, uint reg_pair, uint dest_reg)
 {
 	if (!g_passNum)
 	{
@@ -780,7 +780,7 @@ void GenMulxx(uint * insn_patt, uint code, uint plusminus, uint reg_pair, uint d
 }
 
 
-uint max_pattern[] = {
+uint const max_pattern[] = {
 	0x1d,
 	0x15
 };

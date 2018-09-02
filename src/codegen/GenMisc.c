@@ -14,7 +14,7 @@ Author:     M.Buras (sqward)
 #include <CodeUtils.h>
 #include <SymbolTable.h>
 
-int jclr_patterns[] = {
+int const jclr_patterns[] = {
 	0xa0080,
 	0xa8080,
 	0x18080,
@@ -23,7 +23,7 @@ int jclr_patterns[] = {
 	0xac000
 };
 
-int jsclr_patterns[] = {
+int const jsclr_patterns[] = {
 	0xb0080,
 	0xb8080,
 	0x1c080,
@@ -32,7 +32,7 @@ int jsclr_patterns[] = {
 	0xbc000
 };
 
-int jset_patterns[] = {
+int const jset_patterns[] = {
 	0xa00a0,
 	0xa80a0,
 	0x180a0,
@@ -41,13 +41,56 @@ int jset_patterns[] = {
 	0xac020
 };
 
-int jsset_patterns[] = {
+int const jsset_patterns[] = {
 	0xb00a0,
 	0xb80a0,
 	0x1c0a0,
 	0xb80a0,
 	0xa40a0,
 	0xbc020
+};
+
+
+uint const jmp_pattern[] = {
+	0xc0000,
+	0xac080
+};
+
+uint const jcc_pattern[] = {
+	0xe0000,
+	0xac0a0
+};
+
+uint const jscc_pattern[] = {
+	0xf0000,
+	0xbc0a0
+};
+
+uint const jsr_pattern[] = {
+	0xd0000,
+	0xbc080
+};
+
+
+uint const movec_pattern1[] = {
+	0x58020,
+	0x5c020
+};
+
+uint const movec_pattern2[] = {
+	0x50020,
+	0x54020
+};
+
+
+uint const movem_pattern1[] = {
+	0x70000,
+	0x74080
+};
+
+uint const movem_pattern2[] = {
+	0x78000,
+	0x7c080
 };
 
 
@@ -723,27 +766,7 @@ void GenIllegal(void)
 }
 
 
-uint jmp_pattern[] = {
-	0xc0000,
-	0xac080
-};
-
-uint jcc_pattern[] = {
-	0xe0000,
-	0xac0a0
-};
-
-uint jscc_pattern[] = {
-	0xf0000,
-	0xbc0a0
-};
-
-uint jsr_pattern[] = {
-	0xd0000,
-	0xbc080
-};
-
-void GenJmpJsrJsccJcc(uint * insn_patt, uint condition, bcode * ea)
+void GenJmpJsrJsccJcc(const uint * insn_patt, uint condition, bcode * ea)
 {
 	if (!g_passNum)
 	{
@@ -834,7 +857,7 @@ void GenJccBitRelReg(int insn_patt, int val, int dest_reg, raddr * rel_target)
 0xa4080,
 0xac000
 */
-void GenJccBitAbs(int *insn_patt, int val, int xory, bcode * ea, raddr * rel_target)
+void GenJccBitAbs(const int *insn_patt, int val, int xory, bcode * ea, raddr * rel_target)
 {
 	if (!g_passNum)
 	{
@@ -1112,17 +1135,7 @@ void GenMove(bcode * par_move)
 }
 
 
-uint movec_pattern1[] = {
-	0x58020,
-	0x5c020
-};
-
-uint movec_pattern2[] = {
-	0x50020,
-	0x54020
-};
-
-void GenMovec1(uint * insn_patt, uint dir, uint xory, bcode * ea, uint dest_reg)
+void GenMovec1(const uint * insn_patt, uint dir, uint xory, bcode * ea, uint dest_reg)
 {
 	if (!g_passNum)
 	{
@@ -1256,17 +1269,7 @@ void GenMovec3(uint sh, int val, uint dest_reg)
 }
 
 
-uint movem_pattern1[] = {
-	0x70000,
-	0x74080
-};
-
-uint movem_pattern2[] = {
-	0x78000,
-	0x7c080
-};
-
-void GenMovem(uint * insn_patt, uint dir, bcode * ea, uint reg)
+void GenMovem(const uint *insn_patt, uint dir, bcode * ea, uint reg)
 {
 	if (!g_passNum)
 	{
