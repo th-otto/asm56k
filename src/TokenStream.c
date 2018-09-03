@@ -484,7 +484,7 @@ bool GetIncDir(const char **pDir, uint * pDirNum)
 	if (dirnum < g_IncDirsNum)
 	{
 		*pDir = g_IncDirs[dirnum];
-		return true;
+		return TRUE;
 	}
-	return false;
+	return FALSE;
 }

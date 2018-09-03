@@ -147,10 +147,8 @@ void GenDc(Value data)
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		if (GetCurrentMemType() == L_MEM)
-			inst_code.sflag = true;
+			inst_code.sflag = 1;
 		insert_vcode_w(&inst_code);
 	} else
 	{
@@ -163,7 +161,7 @@ void GenDc(Value data)
 		{
 			u64 raw_val = Val_GetAsFract48(data);
 
-			inst_code.sflag = true;
+			inst_code.sflag = 1;
 			inst_code.w0 = raw_val & 0xffffff;
 			inst_code.w1 = raw_val >> 24;
 		} else
@@ -401,7 +399,7 @@ void insert_vcode_w(const bcode *inst_code)
 }
 
 
-void retInit(raddr * ret)
+void retInit(raddr *ret)
 {
 	ret->sflag = 0;
 	ret->abs_value = 0;

@@ -164,8 +164,8 @@ _opcode
         |   OP_ALIGN exp										    {	GenAlign( $2 );							}
         |   OP_IFCC exp                                             {   EvalIfOneArg( $1, $2  );                }
         |	OP_IF 	exp condition exp   							{   EvalCondition($3,$2,$4);    			}
-        |	OP_IFDEF SYM											{   EvalDefined($2.ptr,false);				}
-        |	OP_IFNDEF SYM											{   EvalDefined($2.ptr,true);				}
+        |	OP_IFDEF SYM											{   EvalDefined($2.ptr,FALSE);				}
+        |	OP_IFNDEF SYM											{   EvalDefined($2.ptr,TRUE);				}
         |	OP_IF	exp error exp									{	GenIfError();							}
         |	OP_ELSE													{	GenElse();								}
         |	OP_ENDC													{   if_stack_l--;							}
@@ -304,10 +304,10 @@ plus_minus
         ;
 
 QQQ		
-        :	XREG ',' XREG											{ $$ = GetQQQ( $1, $3, false  );        }
-        |	XREG ',' YREG											{ $$ = GetQQQ( $1, $3 + 2, false  );    }
-        |	YREG ',' XREG											{ $$ = GetQQQ( $1 + 2, $3, false  );    }
-        |	YREG ',' YREG											{ $$ = GetQQQ( $1 + 2, $3 + 2, false  );}
+        :	XREG ',' XREG											{ $$ = GetQQQ( $1, $3, FALSE  );        }
+        |	XREG ',' YREG											{ $$ = GetQQQ( $1, $3 + 2, FALSE  );    }
+        |	YREG ',' XREG											{ $$ = GetQQQ( $1 + 2, $3, FALSE  );    }
+        |	YREG ',' YREG											{ $$ = GetQQQ( $1 + 2, $3 + 2, FALSE  );}
         ;
 
 QQQQ

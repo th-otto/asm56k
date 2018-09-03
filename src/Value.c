@@ -103,18 +103,18 @@ bool Val_CheckResolved(Value val2)
 {
 	if (val2.m_type == kUnresolved)
 	{
-		return true;
+		return TRUE;
 	}
-	return false;
+	return FALSE;
 }
 
 bool Val_CheckResolved2(Value val1, Value val2)
 {
 	if (val2.m_type == kUnresolved || val1.m_type == kUnresolved)
 	{
-		return true;
+		return TRUE;
 	}
-	return false;
+	return FALSE;
 }
 
 /* I think this might be flawed ... */
@@ -491,7 +491,7 @@ bool Val_Eq(Value val1, Value val2)
 
 		if (val1.m_value.m_int == rhs)
 		{
-			return true;
+			return TRUE;
 		}
 	} else if (val1.m_type == kFract)
 	{
@@ -500,7 +500,7 @@ bool Val_Eq(Value val1, Value val2)
 		yywarning("Comparing to fractionals for equality is a bit silly...");
 		if (val1.m_value.m_float == rhs)
 		{
-			return true;
+			return TRUE;
 		}
 	} else if (val1.m_type == kFloat)
 	{
@@ -509,10 +509,10 @@ bool Val_Eq(Value val1, Value val2)
 		yywarning("Comparing to floats for equality is a bit silly...");
 		if (val1.m_value.m_float == rhs)
 		{
-			return true;
+			return TRUE;
 		}
 	}
-	return false;
+	return FALSE;
 }
 
 bool Val_Ls(Value val1, Value val2)
@@ -523,7 +523,7 @@ bool Val_Ls(Value val1, Value val2)
 
 		if (val1.m_value.m_int < rhs)
 		{
-			return true;
+			return TRUE;
 		}
 	} else if (val1.m_type == kFract)
 	{
@@ -531,7 +531,7 @@ bool Val_Ls(Value val1, Value val2)
 
 		if (val1.m_value.m_float < rhs)
 		{
-			return true;
+			return TRUE;
 		}
 	} else if (val1.m_type == kFloat)
 	{
@@ -540,10 +540,10 @@ bool Val_Ls(Value val1, Value val2)
 		yywarning("Comparing to floats for equality is a bit silly...");
 		if (val1.m_value.m_float < rhs)
 		{
-			return true;
+			return TRUE;
 		}
 	}
-	return false;
+	return FALSE;
 }
 
 
