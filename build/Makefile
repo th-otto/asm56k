@@ -10,8 +10,8 @@ TARGETNAME=asm56k
 #-----------------------------------------------
 #srcdir is a path to your top level "buildfiles" file
 #-----------------------------------------------
-srcdir=../src
-opt_src=../src/opt/src
+srcdir = ../src
+testdir = ../test
 
 SRCS = \
 	$(srcdir)/CodeUtils.c \
@@ -73,7 +73,7 @@ OBJS = $(SRCS:.c=.o)
 
 LIBS = -lm
 
-CPPFLAGS = -I. -I$(srcdir) -I$(opt_src)
+CPPFLAGS = -I. -I$(srcdir)
 
 $(OBJS): Parser.h
 
@@ -85,25 +85,35 @@ Parser.c: $(srcdir)/Parser.y
 Lexer.c: $(srcdir)/Lexer.l
 	flex -Pasm -Cem -8 -o $@ $<
 
-#------------------------------------------------------------------------------------
-clean::
-	@echo Cleaning...
-	rm -f $(TARGETNAME) $(OBJS) Parser.c Parser.h Lexer.c
-
-#------------------------------------------------------------------------------------
-# Link ...
-#------------------------------------------------------------------------------------
-
 $(TARGETNAME): $(OBJS) 
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
 
-#------------------------------------------------------------------------------------
 
 
-
-test::
-	$(PYTHON) ./test.py
+check:: $(TARGETNAME)
+	@log=log.txt; \
+	$(RM) $$log; \
+	res=0; \
+	for file in $(testdir)/*.asm; do \
+		base=`basename $$file .asm`; \
+		echo "./$(TARGETNAME) -I$(testdir) -o $$base.lod -p $$base.p56 $$file" >> $$log; \
+		./$(TARGETNAME) -I$(testdir) -o $$base.lod -p $$base.p56 $$file >> $$log; \
+		status=$$?; \
+		if grep -q XFAIL $$file; then if test $$status = 0; then status=1; else status=0; fi; fi; \
+		if test $$status = 0; then \
+			echo "PASSED: $$file"; \
+		else \
+			echo "FAILED: $$file"; \
+			echo "FAILED: $$file" >> $$log; \
+			res=1; \
+		fi \
+	done; \
+	exit $$res
 
 install:: $(TARGETNAME)
 	cp $(TARGETNAME) $(DESTDIR)$(bindir)
+
+
+clean::
+	$(RM) $(TARGETNAME) $(OBJS) Parser.c Parser.h Lexer.c *.lod *.p56 log.txt
 

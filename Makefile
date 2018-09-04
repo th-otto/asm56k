@@ -1,2 +1,2 @@
-all clean test install::
+all clean check install::
 	$(MAKE) -C build $@
