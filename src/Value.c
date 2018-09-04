@@ -128,7 +128,7 @@ u32 Val_GetAsFract24(Value val)
 
 		if (raw > 1.0f || raw < -1.0f)
 		{
-			/* yywarning("Overflow when casting to 24bit fractional."); */
+			yywarning("Overflow when casting to 24bit fractional.");
 		}
 
 		return m_int;
@@ -229,6 +229,21 @@ Value Val_Div(Value val1, Value val2)
 
 	if (val1.m_type == kFract || val1.m_type == kFloat)
 	{
+		val2 = Val_CastToFloat(val2);
+		if (val2.m_value.m_float == 0)
+		{
+			if (g_passNum != 0)
+			{
+				yyerror("Division by zero.");
+			}
+			ret.m_value.m_float = 1;	/* ? */
+		} else
+		{
+			ret.m_value.m_float = val1.m_value.m_float / val2.m_value.m_float;
+		}
+	} else if (val2.m_type == kFract || val2.m_type == kFloat)
+	{
+		val1 = Val_CastToFloat(val1);
 		if (val2.m_value.m_float == 0)
 		{
 			if (g_passNum != 0)
@@ -271,7 +286,7 @@ static Value Val_Mod(Value val1, Value val2)
 		return Val_CreateUnresolved();
 	}
 
-	if (val1.m_type == kFract || val1.m_type == kFloat)
+	if (val1.m_type == kFract || val1.m_type == kFloat || val2.m_type == kFract || val2.m_type == kFloat)
 	{
 		ret.m_value.m_float = 0;
 		yyerror("Can't calculate modulo of float or fract type.");
@@ -329,7 +344,7 @@ Value Val_And(Value val1, Value val2)
 
 	ret.m_type = val1.m_type;
 
-	if (val1.m_type == kFract || val1.m_type == kFloat)
+	if (val1.m_type == kFract || val1.m_type == kFloat || val2.m_type == kFract || val2.m_type == kFloat)
 	{
 		ret.m_value.m_float = 0;
 		yyerror("Float not allowed for bitwise operations");
@@ -353,7 +368,7 @@ Value Val_Xor(Value val1, Value val2)
 
 	ret.m_type = val1.m_type;
 
-	if (val1.m_type == kFract || val1.m_type == kFloat)
+	if (val1.m_type == kFract || val1.m_type == kFloat || val2.m_type == kFract || val2.m_type == kFloat)
 	{
 		ret.m_value.m_float = 0;
 		yyerror("Float not allowed for bitwise operations");
@@ -377,7 +392,7 @@ Value Val_Or(Value val1, Value val2)
 
 	ret.m_type = val1.m_type;
 
-	if (val1.m_type == kFract || val1.m_type == kFloat)
+	if (val1.m_type == kFract || val1.m_type == kFloat || val2.m_type == kFract || val2.m_type == kFloat)
 	{
 		ret.m_value.m_float = 0;
 		yyerror("Float not allowed for bitwise operations");
@@ -406,13 +421,13 @@ Value Val_Lsr(Value val1, Value val2)
 		yyerror("Can't shift by float.");
 	}
 
-	if (val1.m_type == kFract || val1.m_type == kFloat)
+	if (val1.m_type == kFract || val1.m_type == kFloat || val2.m_type == kFract || val2.m_type == kFloat)
 	{
 		ret.m_value.m_float = 0;
 		yyerror("Float not allowed for bitwise operations");
 	} else
 	{
-		ret.m_value.m_int = (u64) val1.m_value.m_int >> (u64) val2.m_value.m_int;
+		ret.m_value.m_int = val1.m_value.m_int >> val2.m_value.m_int;
 	}
 
 	return ret;
@@ -435,13 +450,13 @@ Value Val_Lsl(Value val1, Value val2)
 		yyerror("Can't shift by float.");
 	}
 
-	if (val1.m_type == kFract || val1.m_type == kFloat)
+	if (val1.m_type == kFract || val1.m_type == kFloat || val2.m_type == kFract || val2.m_type == kFloat)
 	{
 		ret.m_value.m_float = 0;
 		yyerror("Float not allowed for bitwise operations");
 	} else
 	{
-		ret.m_value.m_int = (u64) val1.m_value.m_int << (u64) val2.m_value.m_int;
+		ret.m_value.m_int = val1.m_value.m_int << val2.m_value.m_int;
 	}
 
 	return ret;
@@ -505,7 +520,7 @@ bool Val_Eq(Value val1, Value val2)
 		}
 	} else if (val1.m_type == kFloat)
 	{
-		double rhs = Val_CastToFract(val2).m_value.m_float;
+		double rhs = Val_CastToFloat(val2).m_value.m_float;
 
 		yywarning("Comparing to floats for equality is a bit silly...");
 		if (val1.m_value.m_float == rhs)
@@ -536,7 +551,7 @@ bool Val_Ls(Value val1, Value val2)
 		}
 	} else if (val1.m_type == kFloat)
 	{
-		double rhs = Val_CastToFract(val2).m_value.m_float;
+		double rhs = Val_CastToFloat(val2).m_value.m_float;
 
 		yywarning("Comparing to floats for equality is a bit silly...");
 		if (val1.m_value.m_float < rhs)
