@@ -12,7 +12,7 @@ Author:     M.Buras (sqward)
 #include <asm_types.h>
 #include <export.h>
 #include <Value.h>
-#include <CodeUtils.h>					/*eventually this will be removed */
+#include <CodeUtils.h>
 #include <SymbolTable.h>
 #include <Parser.h>
 #include <TokenStream.h>
@@ -31,7 +31,7 @@ int node_len = 0;
 void InitSymbolTable(void)
 {
 	g_pSymbolSlot = (hs *) malloc(MAX_DESC * sizeof(hs));
-	mtest(g_pSymbolSlot, __LINE__, __FILE__);
+	MTEST(g_pSymbolSlot);
 	free_slot = g_pSymbolSlot;
 	memset(hash_tab, 0, sizeof(hash_tab));
 }
@@ -75,7 +75,7 @@ hs *AddSymbol(const char *pString, int len, int forceCopy)
 	if (node_len >= MAX_DESC)
 	{
 		g_pSymbolSlot = (hs *) malloc(MAX_DESC * sizeof(hs));
-		mtest(g_pSymbolSlot, __LINE__, __FILE__);
+		MTEST(g_pSymbolSlot);
 		free_slot = g_pSymbolSlot;
 		node_len = 0;
 	} else
@@ -137,7 +137,7 @@ hs *FindSymbol(const char *pString)
 
 /* set meaning of a given hash slot */
 
-void SymSetValue(hs * slot, int meaning, Value val)
+void SymSetValue(hs *slot, int meaning, Value val)
 {
 	if (Val_CheckResolved(val))
 	{
@@ -149,7 +149,7 @@ void SymSetValue(hs * slot, int meaning, Value val)
 	slot->m_val = val;
 }
 
-void SymSetValueMacro(hs * slot, int meaning, void *val1, void *val2, int val3)
+void SymSetValueMacro(hs *slot, int meaning, void *val1, void *val2, int val3)
 {
 	slot->type = (char) meaning;
 	slot->m_data1 = val1;
@@ -157,7 +157,7 @@ void SymSetValueMacro(hs * slot, int meaning, void *val1, void *val2, int val3)
 	slot->m_data3 = val3;
 }
 
-void SymbolSetMemSpace(hs * slot, int mem_space)
+void SymbolSetMemSpace(hs *slot, int mem_space)
 {
 	slot->mem_space = (char) mem_space;
 }
@@ -200,7 +200,7 @@ void SymSet(const char *pSymbol, Value val)
 }
 
 
-hs *AddSym(stext * pSymName, int forceCopy)
+hs *AddSym(const stext *pSymName, int forceCopy)
 {
 	if (g_passNum == 0)
 	{
@@ -248,7 +248,7 @@ Value GetSym(const char *pSymbolName)
 }
 
 
-hs *AddLabel(stext * pSymName)
+hs *AddLabel(const stext *pSymName)
 {
 	hs *ret = NULL;
 

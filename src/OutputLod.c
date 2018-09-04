@@ -19,30 +19,73 @@ Author:     M.Buras (sqward)
  * Generate output code in LOD format
  */
 
-static void LOD_OutputSymbols(FILE * output_file, int memspace)
-{
-	int i;
 
+static int symbol_cmp(const void *_s1, const void *_s2)
+{
+	const hs *const *s1 = (const hs *const *)_s1;
+	const hs *const *s2 = (const hs *const *)_s2;
+	int val1 = Val_GetAsInt((*s1)->m_val);
+	int val2 = Val_GetAsInt((*s2)->m_val);
+	return val1 - val2;
+}
+
+
+static void LOD_OutputSymbols(FILE *output_file, int memspace)
+{
+	size_t i;
+	size_t count;
+	hs **symbols;
+	size_t len, maxlen;
+	
+	count = 0;
+	maxlen = 0;
 	for (i = 0; i < HASH_SIZE; i++)
 	{
 		hs *pSymbol = hash_tab[i].pHead;
 
 		while (pSymbol != NULL)
 		{
-			if (pSymbol->mem_space == memspace && pSymbol->type == T_PTR)
+			if (pSymbol->mem_space == memspace && (pSymbol->type == T_PTR || memspace == L_MEM))
 			{
-				fprintf(output_file, "%s  I %.6X\r\n", pSymbol->pString, Val_GetAsInt(pSymbol->m_val));
+				count++;
+				len = strlen(pSymbol->pString);
+				if (len > maxlen)
+					maxlen = len;
 			}
 			pSymbol = pSymbol->pNext;
 		}
 	}
+	symbols = (hs **)malloc(count * sizeof(*symbols));
+	MTEST(symbols);
+	count = 0;
+	for (i = 0; i < HASH_SIZE; i++)
+	{
+		hs *pSymbol = hash_tab[i].pHead;
+
+		while (pSymbol != NULL)
+		{
+			if (pSymbol->mem_space == memspace && (pSymbol->type == T_PTR || memspace == L_MEM))
+			{
+				symbols[count++] = pSymbol;
+			}
+			pSymbol = pSymbol->pNext;
+		}
+	}
+	qsort(symbols, count, sizeof(*symbols), symbol_cmp);
+	for (i = 0; i < count; i++)
+	{
+		hs *pSymbol = symbols[i];
+		fprintf(output_file, "%-*s  I %.6X\r\n", (int)maxlen, pSymbol->pString, Val_GetAsInt(pSymbol->m_val));
+	}
+	free(symbols);
 }
+
 
 /*
  * offset and skip are used for L memory only
  */
 
-static void LOD_SaveData(FILE * output_file, int chunkIndex, const char *MemType, int offset, int skip)
+static void LOD_SaveData(FILE *output_file, int chunkIndex, const char *MemType, int offset, int skip)
 {
 	int j, code_word;
 	int mod_cnt;
@@ -133,12 +176,17 @@ void SaveFileLod(char *name, char *iname)
 		}
 	}
 
-	fprintf(output_file, "_SYMBOL X\r\n");
-	LOD_OutputSymbols(output_file, X_MEM);
-	fprintf(output_file, "_SYMBOL Y\r\n");
-	LOD_OutputSymbols(output_file, Y_MEM);
-	fprintf(output_file, "_SYMBOL P\r\n");
-	LOD_OutputSymbols(output_file, P_MEM);
+	if (g_output_symbols)
+	{
+		fprintf(output_file, "_SYMBOL P\r\n");
+		LOD_OutputSymbols(output_file, P_MEM);
+		fprintf(output_file, "_SYMBOL X\r\n");
+		LOD_OutputSymbols(output_file, X_MEM);
+		fprintf(output_file, "_SYMBOL Y\r\n");
+		LOD_OutputSymbols(output_file, Y_MEM);
+		fprintf(output_file, "_SYMBOL L\r\n");
+		LOD_OutputSymbols(output_file, L_MEM);
+	}
 
 	fprintf(output_file, "_END 0000\r\n");
 

@@ -23,7 +23,8 @@ extern int		yyerror(const char* s, ... ) __attribute__((format(printf, 1, 2)));
 extern int      yywarning(const char* s, ... ) __attribute__((format(printf, 1, 2)));
 extern int		yylex(void);
 extern int		asmlex(void);
-extern void		mtest(void* vector,int Line,char* File_);
+extern void		mtest(void *vector, const char* File, int Line);
+#define MTEST(v) mtest(v, __FILE__, __LINE__)
 extern void		debugprint(const char* s, ... ) __attribute__((format(printf, 1, 2)));
 
 #ifdef _MSC_VER

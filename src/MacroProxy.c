@@ -9,7 +9,7 @@ Author:     M.Buras (sqward)
 #include <stdlib.h>
 #include <string.h>
 #include <asm_types.h>
-#include <CodeUtils.h>					/*eventually this will be removed */
+#include <CodeUtils.h>
 #include <SymbolTable.h>
 #include <Parser.h>
 #include <TokenStream.h>

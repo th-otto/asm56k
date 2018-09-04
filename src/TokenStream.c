@@ -204,7 +204,7 @@ int PrefetchTokens(void)
 	TokenVal *tokens_bound;
 
 	g_tokens = store_tokens = (TokenVal *) malloc(TOKENS_BLOCK * sizeof(TokenVal));
-	mtest(store_tokens, __LINE__, __FILE__);
+	MTEST(store_tokens);
 	tokens_bound = store_tokens;
 	tokens_bound += (TOKENS_BLOCK - 2);
 
@@ -217,7 +217,7 @@ int PrefetchTokens(void)
 		{
 			TokenVal *store_tokens2 = (TokenVal *) malloc(TOKENS_BLOCK * sizeof(TokenVal));
 
-			mtest(store_tokens2, __LINE__, __FILE__);
+			MTEST(store_tokens2);
 			store_tokens->token = TOKEN_NEW_PTR;	/* "switch to next memory block" */
 			store_tokens->data.pNextBlock = store_tokens2;
 			tokens_bound = store_tokens2 + (TOKENS_BLOCK - 2);

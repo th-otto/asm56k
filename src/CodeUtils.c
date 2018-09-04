@@ -45,7 +45,7 @@ void allocate_chunk(int type)
 	}
 
 	pNewChunkMem = (unsigned char *) malloc(chunks[num_chunks2].code_len);
-	mtest(pNewChunkMem, __LINE__, __FILE__);
+	MTEST(pNewChunkMem);
 	c_ptr = chunks[num_chunks2].code_ptr = pNewChunkMem;
 	chunks[num_chunks2].mem_type = type;
 	chunks[num_chunks2].pc = pc;
@@ -126,6 +126,7 @@ void close_vchunk(void)
 	}
 }
 
+
 void GenOrg(uint memSpace, uint address)
 {
 	if (g_passNum == 0)
@@ -179,7 +180,6 @@ void GenDS(Value val1)
 {
 	int lmem = 1;
 	int size;
-
 	int val = 0;
 
 	if (Val_CheckResolved(val1))
@@ -213,10 +213,10 @@ void GenDS(Value val1)
 	}
 }
 
+
 int GenAlign(Value val1)
 {
 	int old_pc = pc;
-
 	int val = 0;
 
 	if (Val_CheckResolved(val1))
@@ -253,7 +253,8 @@ int GenAlign(Value val1)
 	return pc - old_pc;
 }
 
-void GenDSM(hs * pLabel, Value val1)
+
+void GenDSM(hs *pLabel, Value val1)
 {
 	int wasted = 0;
 	u32 align_mask = 0x80000000;
@@ -322,7 +323,7 @@ void verify_code(void)
 }
 
 
-void insert_code_w(bcode * inst_code)
+void insert_code_w(bcode *inst_code)
 {
 
 #if 0

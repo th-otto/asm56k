@@ -45,7 +45,7 @@ static char const program[] = "asm56k";
 static char const version[] = "0.92";
 
 
-void mtest(void *pMem, int Line, char *File_)
+void mtest(void *pMem, const char *File, int Line)
 {
 	if (pMem == NULL)
 	{

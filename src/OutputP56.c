@@ -39,7 +39,7 @@ static void P56_SaveData(FILE * output_file, int chunkIndex, int memtype, int of
 	j = (chunks[chunkIndex].code_len / 3) >> (skip ? 1 : 0);
 
 	pCodeOrig = pCodeCopy = malloc(chunks[chunkIndex].code_len + 9);
-	mtest(pCodeCopy, __LINE__, __FILE__);
+	MTEST(pCodeCopy);
 
 	*pCodeCopy++ = (u8) (memtype >> 16) & 0xff;
 	*pCodeCopy++ = (u8) (memtype >> 8) & 0xff;
