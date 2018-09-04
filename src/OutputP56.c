@@ -107,7 +107,6 @@ void SaveFileP56(char *name)
 			case X_MEM:
 			case Y_MEM:
 				P56_SaveData(output_file, i, chunks[i].mem_type, 0, 0);
-
 				break;
 			case L_MEM:
 				P56_SaveData(output_file, i, X_MEM, 3, 3);

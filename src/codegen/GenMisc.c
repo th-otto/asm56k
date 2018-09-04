@@ -138,22 +138,16 @@ void GenBccRelTarger(uint insn_patt, raddr * rel_target)
 		switch (rel_target->type)
 		{
 		case T_LONG:
-			{
-				inst_code.sflag = 1;
-				inst_code.w0 = 0xd0104 | insn_patt;
-				inst_code.w1 = rel_target->value;
-			}
+			inst_code.sflag = 1;
+			inst_code.w0 = 0xd0104 | insn_patt;
+			inst_code.w1 = rel_target->value;
 			break;
 		case T_SHORT:
-			{
-				inst_code.w0 =
-					0x50400 | ((rel_target->value & 0x1e0) << 6) | (rel_target->value & 0x1f) | (insn_patt << 11);
-			}
+			inst_code.w0 = 0x50400 | ((rel_target->value & 0x1e0) << 6) | (rel_target->value & 0x1f) | (insn_patt << 11);
 			break;
 		case T_REGISTER:
-			{
-				inst_code.w0 = 0xd1840 | (rel_target->value << 8) | insn_patt;
-			}
+			inst_code.w0 = 0xd1840 | (rel_target->value << 8) | insn_patt;
+			break;
 		}
 		insert_code_w(&inst_code);
 	}
@@ -211,23 +205,18 @@ void GenBraRelTarger(raddr * rel_target)
 		switch (rel_target->type)
 		{
 		case T_LONG:
-			{
-				inst_code.sflag = 1;
-				inst_code.w0 = 0xb10c0;
-				inst_code.w1 = rel_target->value;
-			}
+			inst_code.sflag = 1;
+			inst_code.w0 = 0xb10c0;
+			inst_code.w1 = rel_target->value;
 			break;
 		case T_SHORT:
-			{
-				inst_code.sflag = 0;
-				inst_code.w0 = 0x50c00 | ((rel_target->value & 0x1e0) << 6) | (rel_target->value & 0x1f);
-			}
+			inst_code.sflag = 0;
+			inst_code.w0 = 0x50c00 | ((rel_target->value & 0x1e0) << 6) | (rel_target->value & 0x1f);
 			break;
 		case T_REGISTER:
-			{
-				inst_code.sflag = 0;
-				inst_code.w0 = 0xd18c0 | (rel_target->value << 8);
-			}
+			inst_code.sflag = 0;
+			inst_code.w0 = 0xd18c0 | (rel_target->value << 8);
+			break;
 		}
 		insert_code_w(&inst_code);
 	}
@@ -274,24 +263,18 @@ void GenBscc(uint condition, raddr * rel_target)
 		switch (rel_target->type)
 		{
 		case T_LONG:
-			{
-				inst_code.sflag = 1;
-				inst_code.w0 = 0xb1000 | condition;
-				inst_code.w1 = rel_target->value;
-			}
+			inst_code.sflag = 1;
+			inst_code.w0 = 0xb1000 | condition;
+			inst_code.w1 = rel_target->value;
 			break;
 		case T_SHORT:
-			{
-				inst_code.sflag = 0;
-				inst_code.w0 =
-					0x50000 | ((rel_target->value & 0x1e0) << 6) | (rel_target->value & 0x1f) | (condition << 12);
-			}
+			inst_code.sflag = 0;
+			inst_code.w0 = 0x50000 | ((rel_target->value & 0x1e0) << 6) | (rel_target->value & 0x1f) | (condition << 12);
 			break;
 		case T_REGISTER:
-			{
-				inst_code.sflag = 0;
-				inst_code.w0 = 0xd1800 | (rel_target->value << 8) | condition;
-			}
+			inst_code.sflag = 0;
+			inst_code.w0 = 0xd1800 | (rel_target->value << 8) | condition;
+			break;
 		}
 		insert_code_w(&inst_code);
 	}
@@ -317,23 +300,18 @@ void GenBsr(raddr * rel_target)
 		switch (rel_target->type)
 		{
 		case T_LONG:
-			{
-				inst_code.sflag = 1;
-				inst_code.w0 = 0xd1080;
-				inst_code.w1 = rel_target->value;
-			}
+			inst_code.sflag = 1;
+			inst_code.w0 = 0xd1080;
+			inst_code.w1 = rel_target->value;
 			break;
 		case T_SHORT:
-			{
-				inst_code.sflag = 0;
-				inst_code.w0 = 0x50800 | ((rel_target->value & 0x1e0) << 6) | (rel_target->value & 0x1f);
-			}
+			inst_code.sflag = 0;
+			inst_code.w0 = 0x50800 | ((rel_target->value & 0x1e0) << 6) | (rel_target->value & 0x1f);
 			break;
 		case T_REGISTER:
-			{
-				inst_code.sflag = 0;
-				inst_code.w0 = 0xd1880 | (rel_target->value << 8);
-			}
+			inst_code.sflag = 0;
+			inst_code.w0 = 0xd1880 | (rel_target->value << 8);
+			break;
 		}
 		insert_code_w(&inst_code);
 	}
@@ -925,23 +903,17 @@ void GenLra(raddr * rel_target, uint dest_reg)
 		{
 		case T_LONG:
 		case T_SHORT:
-			{
-				inst_code.sflag = 1;
-				inst_code.w0 = 0x44040 | dest_reg;
-				inst_code.w1 = rel_target->value;
-			}
+			inst_code.sflag = 1;
+			inst_code.w0 = 0x44040 | dest_reg;
+			inst_code.w1 = rel_target->value;
 			break;
-
 		case T_REGISTER:
-			{
-				inst_code.sflag = 0;
-				inst_code.w0 = 0x4c000 | (rel_target->value << 8) | dest_reg;
-			}
+			inst_code.sflag = 0;
+			inst_code.w0 = 0x4c000 | (rel_target->value << 8) | dest_reg;
 			break;
 		default:
-			{
-				yyerror("Unsupported addressing mode.");
-			}
+			yyerror("Unsupported addressing mode.");
+			break;
 		}
 		insert_code_w(&inst_code);
 	}

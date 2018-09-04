@@ -63,30 +63,25 @@ int yylex(void)
 	switch (token)
 	{
 	case TOKEN_ENTER_FILE:
-		{
-			inc_lines[g_incStackDeepth] = g_currentLine;
-			g_currentLine = 1;
-			g_incStackDeepth++;
-			inc_names[g_incStackDeepth] = yylval.text.ptr;
-			g_CurrentFile = inc_names[g_incStackDeepth];
+		inc_lines[g_incStackDeepth] = g_currentLine;
+		g_currentLine = 1;
+		g_incStackDeepth++;
+		inc_names[g_incStackDeepth] = yylval.text.ptr;
+		g_CurrentFile = inc_names[g_incStackDeepth];
 
-			debugprint("leaving: %s in line: %d, entering: %s.\n", inc_names[g_incStackDeepth - 1],
-					   inc_lines[g_incStackDeepth - 1], inc_names[g_incStackDeepth]);
+		debugprint("leaving: %s in line: %d, entering: %s.\n", inc_names[g_incStackDeepth - 1],
+				   inc_lines[g_incStackDeepth - 1], inc_names[g_incStackDeepth]);
 
-			token = yylex();
-		}
+		token = yylex();
 		break;
 	case TOKEN_LEAVE_FILE:
-		{
-			g_incStackDeepth--;
-			g_CurrentFile = inc_names[g_incStackDeepth];
-			g_currentLine = inc_lines[g_incStackDeepth];
-			debugprint("re-entering: %s in line: %d.\n", inc_names[g_incStackDeepth], g_currentLine);
-			token = yylex();
-		}
+		g_incStackDeepth--;
+		g_CurrentFile = inc_names[g_incStackDeepth];
+		g_currentLine = inc_lines[g_incStackDeepth];
+		debugprint("re-entering: %s in line: %d.\n", inc_names[g_incStackDeepth], g_currentLine);
+		token = yylex();
 		break;
 	case OP_END:
-
 		if (TopPosStream() > 0)
 		{
 			yyerror("Unexpected end of file (in macro).");
@@ -95,52 +90,47 @@ int yylex(void)
 		break;
 
 	case OP_ENDM:
+		debugprint("end of macro\n");
+
+		if (PopStream() == -1)
 		{
-			debugprint("end of macro\n");
-
-			if (PopStream() == -1)
-			{
-				yyerror("Illegal use of ENDM directive. Maybe you've missed a \"macro\" keyword? ");
-				asm_abort();
-			}
-
-			token = yylex();
+			yyerror("Illegal use of ENDM directive. Maybe you've missed a \"macro\" keyword? ");
+			asm_abort();
 		}
+
+		token = yylex();
 		break;
 
 	case SYM:
 	case SYM2:
 	case OP_STRING:
+		if (yylval.text.ptr[0] == '@' || yylval.text.ptr[0] == '.' || yylval.text.ptr[0] == '_')
 		{
-			if (yylval.text.ptr[0] == '@' || yylval.text.ptr[0] == '.' || yylval.text.ptr[0] == '_')
-			{
-				char temp_name[128];
-				int stamp = 0;
+			char temp_name[128];
+			int stamp = 0;
 
-				if (TopPosStream() == 0)
-				{						/* local label */
-					stamp = g_LocalSerial;
-				} else
-				{						/* macro local label */
-					stamp = streamsStack[g_streamsStrackIndex].instancesNumber;
-				}
-
-				snprintf(temp_name, sizeof(temp_name), "%s(%i)", yylval.text.ptr, stamp);
-
-				if (TopPosStream() == 0)
-				{
-					if (g_passNum == 0)
-					{					/* don't need to add twice */
-						yylval.text.ptr = pTokenValue->data.val.text.ptr = StringBufferInsert(temp_name);
-						yylval.text.len = pTokenValue->data.val.text.len = strlen(temp_name);
-					}
-				} else
-				{
-					yylval.text.ptr = StringBufferInsert(temp_name);
-					yylval.text.len = strlen(temp_name);
-				}
+			if (TopPosStream() == 0)
+			{						/* local label */
+				stamp = g_LocalSerial;
+			} else
+			{						/* macro local label */
+				stamp = streamsStack[g_streamsStrackIndex].instancesNumber;
 			}
 
+			snprintf(temp_name, sizeof(temp_name), "%s(%i)", yylval.text.ptr, stamp);
+
+			if (TopPosStream() == 0)
+			{
+				if (g_passNum == 0)
+				{					/* don't need to add twice */
+					yylval.text.ptr = pTokenValue->data.val.text.ptr = StringBufferInsert(temp_name);
+					yylval.text.len = pTokenValue->data.val.text.len = strlen(temp_name);
+				}
+			} else
+			{
+				yylval.text.ptr = StringBufferInsert(temp_name);
+				yylval.text.len = strlen(temp_name);
+			}
 		}
 		break;
 
@@ -167,6 +157,7 @@ int yylex(void)
 			}
 			token = yylex();
 		}
+		break;
 	}
 
 	return token;

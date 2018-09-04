@@ -402,16 +402,13 @@ int SkipConditional(void)
 
 		switch (token)
 		{
-			break;
 		case OP_IF:
 			nest++;
-
 			if (nest > 1024)
 			{
 				yyerror("Conditional assembly nested too deep.\n");
 				asm_abort();
 			}
-
 			break;
 		case OP_ENDC:
 			if (nest == 0)
@@ -419,19 +416,17 @@ int SkipConditional(void)
 				return token;
 			}
 			nest--;
-
 			break;
 		case OP_ELSE:
-
 			if (nest == 0)
 			{
 				return token;
 			}
-
 			break;
 		case OP_END:
 			yyerror("Unexpected end of file (in conditional).");
 			asm_abort();
+			break;
 		}
 
 		if (nest < 0)
@@ -450,8 +445,7 @@ void Skip_line(void)
 	do
 	{
 		token = SkipToken();
-	}
-	while (token != EOL && token != OP_END);
+	} while (token != EOL && token != OP_END);
 }
 
 /* include dirs */

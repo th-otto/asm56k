@@ -116,7 +116,6 @@ void SaveFileLod(char *name, char *iname)
 		{
 			switch (chunks[i].mem_type)
 			{
-				break;
 			case P_MEM:
 				LOD_SaveData(output_file, i, "P", 0, 0);
 				break;
@@ -129,6 +128,7 @@ void SaveFileLod(char *name, char *iname)
 			case L_MEM:
 				LOD_SaveData(output_file, i, "X", 3, 3);
 				LOD_SaveData(output_file, i, "Y", 0, 3);
+				break;
 			}
 		}
 	}

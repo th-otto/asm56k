@@ -575,7 +575,6 @@ void EvalCondition(uint condition, Value val1, Value val2)
 
 	switch (condition)
 	{
-		break;
 	case EQUAL:
 		answer = Val_Eq(val1, val2);
 		break;
@@ -593,6 +592,7 @@ void EvalCondition(uint condition, Value val1, Value val2)
 		break;
 	case BIGGER_OR_EQUAL:
 		answer = Val_Ls(val2, val1) || Val_Eq(val1, val2);
+		break;
 	}
 
 	if_stack_l++;
@@ -672,7 +672,6 @@ void EvalIfOneArg(uint cond, Value val1)
 
 	switch (cond)
 	{
-		break;
 	case 0x1:
 		answer = val >= 0 ? 1 : 0;		/* GE */
 		break;
