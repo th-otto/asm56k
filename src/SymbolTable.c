@@ -145,13 +145,13 @@ void SymSetValue(hs *slot, int meaning, Value val)
 		return;
 	}
 
-	slot->type = (char) meaning;
+	slot->type = meaning;
 	slot->m_val = val;
 }
 
 void SymSetValueMacro(hs *slot, int meaning, void *val1, void *val2, int val3)
 {
-	slot->type = (char) meaning;
+	slot->type = meaning;
 	slot->m_data1 = val1;
 	slot->m_data2 = val2;
 	slot->m_data3 = val3;
@@ -159,7 +159,7 @@ void SymSetValueMacro(hs *slot, int meaning, void *val1, void *val2, int val3)
 
 void SymbolSetMemSpace(hs *slot, int mem_space)
 {
-	slot->mem_space = (char) mem_space;
+	slot->mem_space = mem_space;
 }
 
 /* debugging aid - lists the symbol (hash) table */
