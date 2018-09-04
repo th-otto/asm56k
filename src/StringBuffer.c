@@ -29,9 +29,9 @@ int StringBufferInit(int bufferSize)
 
 /* TODO: deduplication */
 
-const char *StringBufferInsert(char *pStr)
+const char *StringBufferInsert(const char *pStr)
 {
-	int len = strlen(pStr);
+	size_t len = strlen(pStr);
 	const char *pRetString;
 
 	if ((pStrBufPtr + StrBufBlockSize) < (pStrBufCurrent + len + 1))

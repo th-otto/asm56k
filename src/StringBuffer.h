@@ -9,6 +9,6 @@ Author:     M.Buras (sqward)
 #define _STRINGBUFFER_H_
 
 int StringBufferInit(int bufferSize);
-const char* StringBufferInsert(char* pStr);
+const char *StringBufferInsert(const char *pStr);
 
 #endif /*_STRINGBUFFER_H_ */

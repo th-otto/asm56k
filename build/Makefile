@@ -34,14 +34,6 @@ SRCS = \
 	\
 	Parser.c \
 	Lexer.c \
-	\
-	$(opt_src)/ag.c \
-	$(opt_src)/opt_menu.c \
-	$(opt_src)/opt_num.c \
-	$(opt_src)/opt_proc.c \
-	$(opt_src)/opt_reg.c \
-	$(opt_src)/opt_regt.c \
-	$(opt_src)/opt_util.c \
 	$(empty)
 
 #-----------------------------------------------

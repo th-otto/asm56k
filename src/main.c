@@ -30,7 +30,7 @@ Author:     M.Buras (sqward)
 #include <OutputP56.h>
 #include <OutputEmbededAsm.h>
 #include <StringBuffer.h>
-#include <opt.h>
+#include <getopt.h>
 
 
 
@@ -40,6 +40,9 @@ int g_errorCount;
 int g_warnCount;
 int g_LocalSerial = 0;
 jmp_buf critical_error;
+
+static char const program[] = "asm56k";
+static char const version[] = "0.92";
 
 
 void mtest(void *pMem, int Line, char *File_)
@@ -145,37 +148,35 @@ char *p56_output_name = NULL;
 char *embed_output_name = NULL;
 
 char *input_name = NULL;
-char *def_symbol = NULL;
-char *include_path = NULL;
 int g_dsp_cpu = 56001;
 int g_falcon = 0;
 int g_output_symbols = 0;
 int g_write_zero_sections = 0;
 
 
-static int asm56k(int argc, char *argv[])
+static int asm56k(void)
 {
 	FILE *input = NULL;
 	int num_tokens = 0;
 
 	if (input_name == NULL)
 	{
-		printf("No input file given.\n");
-		return -1;
+		fprintf(stderr, "No input file given.\n");
+		return EXIT_FAILURE;
 	}
 
 	if (lod_output_name == NULL && p56_output_name == NULL && embed_output_name == NULL)
 	{
-		printf("No output file given.\n");
-		return -1;
+		fprintf(stderr, "No output file given.\n");
+		return EXIT_FAILURE;
 	}
 
 	AddIncDir("./");
 
 	if (PushNewFile(input_name) != 0)
 	{
-		printf("File not found: '%s'\n", argv[1]);
-		return -1;
+		fprintf(stderr, "File not found: '%s'\n", input_name);
+		return EXIT_FAILURE;
 	}
 
 	debugprint("PASS1\n");
@@ -231,79 +232,155 @@ static int asm56k(int argc, char *argv[])
 		}
 	}
 
-	return g_errorCount;
+	return g_errorCount != 0 ? EXIT_FAILURE : EXIT_SUCCESS;
 }
 
 
-static int DefineSymbol(void *v)
+static void DefineSymbol(char *v)
 {
 	char *pSymbol;
 	char *pValue;
+	Value val;
+	stext symstr;
 
-	if (def_symbol)
+	pSymbol = v;
+	pValue = strchr(pSymbol, '=');
+	if (pValue)
 	{
-		stext symstr;
-
-		pSymbol = def_symbol;
-		pValue = strchr(pSymbol, '=');
-		if (pValue)
-		{
-			*pValue++ = 0;
-		}
-		symstr.len = strlen(pSymbol);
-		symstr.ptr = pSymbol;
-		AddSym(&symstr, 1);
-		if (pValue)
-		{
-			Value val = Val_CreateInt(atoi(pValue));
-
-			SymSet(pSymbol, val);
-		}
+		*pValue++ = 0;
 	}
-	return OPT_OK;
+	symstr.len = strlen(pSymbol);
+	symstr.ptr = pSymbol;
+	AddSym(&symstr, 1);
+	if (pValue)
+		val = Val_CreateInt(atoi(pValue));
+	else
+		val = Val_CreateInt(1);
+	SymSet(pSymbol, val);
 }
 
-static int AddIncludePath(void *v)
+static void AddIncludePath(const char *v)
 {
-	AddIncDir(include_path);
-	debugprint("adding incdir: %s\n", include_path);
-	return OPT_OK;
+	AddIncDir(v);
+	debugprint("adding incdir: %s\n", v);
+}
+
+
+enum opt {
+	OPT_FLAG_SET = 0,
+	OPT_HELP = 'h',
+	OPT_VERSION = 'V',
+	
+	OPT_EMBED = 'e',
+	OPT_OUTPUT = 'o',
+	OPT_P56 = 'p',
+	OPT_SYMBOLS = 's',
+	OPT_ZEROES = 'z',
+	OPT_DEFINE = 'D',
+	OPT_INCLUDE = 'I',
+	OPT_CPU = 'c'
+};
+
+static struct option const long_options[] = {
+	{ "lod-file", required_argument, NULL, OPT_OUTPUT },
+	{ "output", required_argument, NULL, OPT_OUTPUT },
+	{ "p56-file", required_argument, NULL, OPT_P56 },
+	{ "embed-file", required_argument, NULL, OPT_EMBED },
+	{ "symbols", no_argument, NULL, OPT_SYMBOLS },
+	{ "write-zero", no_argument, NULL, OPT_ZEROES },
+	{ "zero", no_argument, NULL, OPT_ZEROES },
+	{ "define", required_argument, NULL, OPT_DEFINE },
+	{ "include", required_argument, NULL, OPT_INCLUDE },
+	{ "cpu", required_argument, NULL, OPT_CPU },
+	{ "help", no_argument, NULL, OPT_HELP },
+	{ "version", no_argument, NULL, OPT_VERSION },
+	{ NULL, no_argument, NULL, 0 },
+};
+
+
+static void usage(FILE *fp, int status)
+{
+	fprintf(fp, "usage: %s [options] <input-file>\n", program);
+	fprintf(fp, "options:\n");
+	fprintf(fp, "  -o, --output <file>          LOD output file.\n");
+	fprintf(fp, "  -p, --p56-file <file>        P56 output file.\n");
+	fprintf(fp, "  -e, --embed-file <file>      Output devpac/vasm file.\n");
+	fprintf(fp, "  -s, --symbols                Output symbols (in LOD).\n");
+	fprintf(fp, "  -z, --write-zero             Output section even if it contains only zeros.\n");
+	fprintf(fp, "  -D, --define <name[=value]>  Define a symbol.\n");
+	fprintf(fp, "  -I, --include <dir>          Add include path.\n");
+	
+	exit(status);
 }
 
 
 int main(int argc, char *argv[])
 {
-	int ret = 0;
-
-	optreg(&g_output_symbols, OPT_BOOL, 's', "Output symbols (in LOD).");
-
-	optrega(&lod_output_name, OPT_STRING, 'o', "lod-file", "LOD output file.");
-	optrega(&p56_output_name, OPT_STRING, 'p', "p56-file", "P56 output file.");
-	optrega(&embed_output_name, OPT_STRING, 'e', "embed-file", "Output devpac/vasm file.");
-
-	optrega(&g_write_zero_sections, OPT_BOOL, 'z', "write-zero", "Output section even if it contains only zeros.");
-
-	optreg(&def_symbol, OPT_STRING, 'D', "Define a symbol: [-Dsymbolname[=val]]");
-	opthook(&def_symbol, DefineSymbol);
-
-	optreg(&include_path, OPT_STRING, 'I', "Add include path: [-Ipath]");
-	opthook(&include_path, AddIncludePath);
-
-	optrega(&g_dsp_cpu, OPT_INT, 'c', "cpu", "Sets CPU type. [--cpu=56301]");
-
-	optregp(&input_name, OPT_STRING, "input-file", "File to process");
-
-	optProgName("asm56k");
-	optVersion("0.92");
-	optUsage("[options] input-file");
-
+	int ret = EXIT_SUCCESS;
+	int c;
+	
 	StringBufferInit(0x8000);
 	InitSymbolTable();
 
-	opt(&argc, &argv);
+	while ((c = getopt_long(argc, argv, "c:e:o:p:szD:I:", long_options, NULL)) != -1)
+	{
+		switch ((enum opt) c)
+		{
+		case OPT_OUTPUT:
+			free(lod_output_name);
+			lod_output_name = strdup(optarg);
+			break;
 
-	ret = asm56k(argc, argv);
-	opt_free();
+		case OPT_P56:
+			free(p56_output_name);
+			p56_output_name = strdup(optarg);
+			break;
+
+		case OPT_EMBED:
+			free(embed_output_name);
+			embed_output_name = strdup(optarg);
+			break;
+
+		case OPT_SYMBOLS:
+			g_output_symbols = 1;
+			break;
+		
+		case OPT_ZEROES:
+			g_write_zero_sections = 1;
+			break;
+		
+		case OPT_DEFINE:
+			DefineSymbol(optarg);
+			break;
+		
+		case OPT_INCLUDE:
+			AddIncludePath(optarg);
+			break;
+		
+		case OPT_CPU:
+			g_dsp_cpu = (int)strtol(optarg, NULL, 10);
+			break;
+		
+		case OPT_VERSION:
+			fprintf(stdout, "%s version %s\n", program, version);
+			return EXIT_SUCCESS;
+		
+		case OPT_HELP:
+			usage(stdout, EXIT_SUCCESS);
+			break;
+		
+		case OPT_FLAG_SET:
+			break;
+		
+		default:
+			return EXIT_FAILURE;
+		}
+	}
+
+	if (optind < argc)
+		input_name = argv[optind];
+	
+	ret = asm56k();
 
 	return ret;
 }

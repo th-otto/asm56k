@@ -90,7 +90,7 @@ hs *AddSymbol(const char *pString, int len, int forceCopy)
 	 */
 	if (forceCopy)
 	{
-		pString = StringBufferInsert((char *) pString);
+		pString = StringBufferInsert(pString);
 	}
 
 	if (hash_tab[hash_val].pHead == 0)

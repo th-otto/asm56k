@@ -81,7 +81,7 @@ int     	PopFile(void);
 int         PushNewFile(const char* pFileName);
 void    	IncludeFile(void);
 
-void		AddIncDir(char* pDir);
+void		AddIncDir(const char* pDir);
 bool		GetIncDir(const char **pDir, uint* pDirNum);
 
 void Unput(int c);

@@ -461,7 +461,7 @@ void Skip_line(void)
 const char *g_IncDirs[MAX_INC_DIRS_LIST];
 int g_IncDirsNum = 0;
 
-void AddIncDir(char *pDir)
+void AddIncDir(const char *pDir)
 {
 	const char *pAddedDir = StringBufferInsert(pDir);
 
