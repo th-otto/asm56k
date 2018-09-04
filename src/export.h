@@ -16,7 +16,6 @@ extern int	    g_passNum;
 extern int      g_write_zero_sections;
 extern void		asm_abort(void);
 
-extern int		dc_flag;        /* this is form grammar.y */
 extern int 		g_currentLine;
 extern int      g_LocalSerial;
 extern int		yyerror(const char* s, ... ) __attribute__((format(printf, 1, 2)));

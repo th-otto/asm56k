@@ -123,7 +123,6 @@ static void InitParserPass1(void)
 	g_currentLine = 1;
 	num_chunks = 0;
 	num_chunks2 = 0;
-	dc_flag = 0;
 	if_stack_l = 0;
 	ResetStream();
 	PushStream(g_tokens, inc_names[0], 1, -1, 0);
@@ -135,7 +134,6 @@ static void InitParserPass2(void)
 	in_section = FALSE;
 	g_passNum = 1;						/* pass 2 */
 	pc = 0;
-	dc_flag = 0;
 	if_stack_l = 0;
 	g_currentLine = 1;
 	ResetStream();

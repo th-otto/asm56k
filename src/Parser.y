@@ -27,8 +27,6 @@ Author:     M.Buras (sqward)
 #include <codegen/GenControl.h>
 
 
-int dc_flag=0;
-
 %}
 
 %union{
@@ -98,15 +96,15 @@ input   :	/* empty */
         |	input line
         ;
 
-line    :	EOL                                         {   dc_flag=FALSE;          		}
+line    :	EOL                                         {   				          		}
         |   label OP_END                                {   YYACCEPT;               		}
         |   OP_END                                      {   YYACCEPT;               		}
         |	label OP_MACROCALL                          {   MacroCall($2.ptr);      		}
         |	OP_MACROCALL                                {   MacroCall($1.ptr);      		}
-        |	label EOL                                   {   dc_flag=FALSE;          		}
+        |	label EOL                                   {   				          		}
         |	_opcode EOL                                 {						    		}
         |	_opcode OP_END                              {   YYACCEPT;               		}
-        |	label _opcode EOL	                        {   dc_flag=FALSE;          		}
+        |	label _opcode EOL	                        {   				          		}
         |	label _opcode OP_END	                    {   YYACCEPT;               		}
         |	label OP_EQU exp OP_END						{   SymSet($1->pString,$3);      	}
         |	label OP_EQU exp EOL						{   SymSet($1->pString,$3);      	}

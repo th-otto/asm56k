@@ -258,10 +258,10 @@ BEGIN(macro)
 {C}{M}{P}{M}            				{	NOVAL(OP_CMPM);						}
 {C}{M}{P}{U}							{	NOVAL(OP_CMPU);						}
 
-{D}{C}                  				{	dc_flag=TRUE; NOVAL(OP_DC);			}
-{D}{S}                  				{	dc_flag=TRUE; NOVAL(OP_DS);			}
-{D}{S}{M}                  				{	dc_flag=TRUE; NOVAL(OP_DSM);		}
-{A}{L}{I}{G}{N}                         {	dc_flag=TRUE; NOVAL(OP_ALIGN);		}
+{D}{C}                  				{	NOVAL(OP_DC);						}
+{D}{S}                  				{	NOVAL(OP_DS);						}
+{D}{S}{M}                  				{	NOVAL(OP_DSM);						}
+{A}{L}{I}{G}{N}                         {	NOVAL(OP_ALIGN);					}
 
 {D}{E}{B}{U}{G}{C}{C}   				{	COND(0x0,OP_DEBUGCC);				}
 {D}{E}{B}{U}{G}{H}{S}   				{	COND(0x0,OP_DEBUGCC);				}

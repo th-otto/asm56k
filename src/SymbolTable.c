@@ -188,7 +188,6 @@ void SymSet(const char *pSymbol, Value val)
 {
 	hs *temp;
 
-	dc_flag = FALSE;
 	if ((temp = FindSymbol(pSymbol)) == 0)
 	{
 		char temp_str[512];

@@ -303,7 +303,6 @@ void MacroCall(const char *pString)
 
 void MacroRecord(const char *pString)
 {
-	dc_flag = FALSE;
 	if (g_passNum == 0)
 	{
 		hs *temp = FindSymbol(pString);
@@ -322,7 +321,6 @@ void MacroRecord(const char *pString)
 
 void MacroError(void)
 {
-	dc_flag = FALSE;
 	if (g_passNum == 0)
 	{
 		yyerror("Macro must have a name.");
