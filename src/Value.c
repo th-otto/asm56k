@@ -92,7 +92,7 @@ int Val_GetAsInt(Value val)
 {
 	if (val.m_type != kInt && val.m_type != kUnresolved)
 	{
-		yyerror("Integer value expected.");
+		yyerror("Integer value expected, not %d.", val.m_type);
 		return 0;
 	}
 	return Val_CastToInt(val).m_value.m_int;

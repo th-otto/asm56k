@@ -15,22 +15,32 @@ Author:     M.Buras (sqward)
 #include "CodeUtils.h"
 #include "OutputLod.h"
 
+#define L_EQU (L_MEM + 1)
+
 /*
  * Generate output code in LOD format
  */
+
+
+static int symbol_value(const hs *sym)
+{
+	if (sym->type == T_VALUE && (sym->m_val.m_type == kFract || sym->m_val.m_type == kFloat))
+		return Val_CastToInt(sym->m_val).m_value.m_int;
+	return Val_GetAsInt(sym->m_val);
+}
 
 
 static int symbol_cmp(const void *_s1, const void *_s2)
 {
 	const hs *const *s1 = (const hs *const *)_s1;
 	const hs *const *s2 = (const hs *const *)_s2;
-	int val1 = Val_GetAsInt((*s1)->m_val);
-	int val2 = Val_GetAsInt((*s2)->m_val);
+	int val1 = symbol_value(*s1);
+	int val2 = symbol_value(*s2);
 	return val1 - val2;
 }
 
 
-static void LOD_OutputSymbols(FILE *output_file, int memspace)
+static void LOD_OutputSymbols(FILE *output_file, int memspace, char type)
 {
 	size_t i;
 	size_t count;
@@ -45,7 +55,8 @@ static void LOD_OutputSymbols(FILE *output_file, int memspace)
 
 		while (pSymbol != NULL)
 		{
-			if (pSymbol->mem_space == memspace && (pSymbol->type == T_PTR || memspace == L_MEM))
+			if ((pSymbol->mem_space == memspace && (pSymbol->type == T_PTR || memspace == L_MEM)) ||
+				(memspace == L_EQU && pSymbol->type == T_VALUE))
 			{
 				count++;
 				len = strlen(pSymbol->pString);
@@ -55,6 +66,10 @@ static void LOD_OutputSymbols(FILE *output_file, int memspace)
 			pSymbol = pSymbol->pNext;
 		}
 	}
+
+	if (count == 0)
+		return;
+	
 	symbols = (hs **)malloc(count * sizeof(*symbols));
 	MTEST(symbols);
 	count = 0;
@@ -64,7 +79,8 @@ static void LOD_OutputSymbols(FILE *output_file, int memspace)
 
 		while (pSymbol != NULL)
 		{
-			if (pSymbol->mem_space == memspace && (pSymbol->type == T_PTR || memspace == L_MEM))
+			if ((pSymbol->mem_space == memspace && (pSymbol->type == T_PTR || memspace == L_MEM)) ||
+				(memspace == L_EQU && pSymbol->type == T_VALUE))
 			{
 				symbols[count++] = pSymbol;
 			}
@@ -72,10 +88,11 @@ static void LOD_OutputSymbols(FILE *output_file, int memspace)
 		}
 	}
 	qsort(symbols, count, sizeof(*symbols), symbol_cmp);
+	fprintf(output_file, "_SYMBOL %c\r\n", type);
 	for (i = 0; i < count; i++)
 	{
 		hs *pSymbol = symbols[i];
-		fprintf(output_file, "%-*s  I %.6X\r\n", (int)maxlen, pSymbol->pString, Val_GetAsInt(pSymbol->m_val));
+		fprintf(output_file, "%-*s  I %.6X\r\n", (int)maxlen, pSymbol->pString, symbol_value(pSymbol));
 	}
 	free(symbols);
 }
@@ -91,9 +108,7 @@ static void LOD_SaveData(FILE *output_file, int chunkIndex, const char *MemType,
 	int mod_cnt;
 	unsigned char *code;
 
-	fprintf(output_file, "_DATA ");
-
-	fprintf(output_file, "%s %.4X\r\n", MemType, chunks[chunkIndex].pc);
+	fprintf(output_file, "_DATA %s %.4X\r\n", MemType, chunks[chunkIndex].pc);
 
 	mod_cnt = 0;
 	code = chunks[chunkIndex].code_ptr + offset;
@@ -178,14 +193,11 @@ void SaveFileLod(char *name, char *iname)
 
 	if (g_output_symbols)
 	{
-		fprintf(output_file, "_SYMBOL P\r\n");
-		LOD_OutputSymbols(output_file, P_MEM);
-		fprintf(output_file, "_SYMBOL X\r\n");
-		LOD_OutputSymbols(output_file, X_MEM);
-		fprintf(output_file, "_SYMBOL Y\r\n");
-		LOD_OutputSymbols(output_file, Y_MEM);
-		fprintf(output_file, "_SYMBOL L\r\n");
-		LOD_OutputSymbols(output_file, L_MEM);
+		LOD_OutputSymbols(output_file, P_MEM, 'P');
+		LOD_OutputSymbols(output_file, X_MEM, 'X');
+		LOD_OutputSymbols(output_file, Y_MEM, 'Y');
+		LOD_OutputSymbols(output_file, L_MEM, 'L');
+		LOD_OutputSymbols(output_file, L_EQU, 'N');
 	}
 
 	fprintf(output_file, "_END 0000\r\n");
