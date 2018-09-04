@@ -392,13 +392,13 @@ imm_ea	:  exp_int										{   $$ = GenImmLong( 0x30, $1 );		}
         |	'<' exp_int									{	$$ = GenImmShortAbs( 0x30, $2 );	}	
         ;
 
-ea      :	'(' RREG ')' MINUS_N 						{	$$ = GenEA1( 0,$2, $4 );		}
-        |	'(' RREG ')' PLUS_N	 						{	$$ = GenEA1( 0x1<<3,$2, $4 );	}
+ea      :	'(' RREG ')' MINUS_N 						{	$$ = GenEA1( 0x00, $2, $4 );	}
+        |	'(' RREG ')' PLUS_N	 						{	$$ = GenEA1( 0x08, $2, $4 );	}
         |	'(' RREG ')' '-'							{	$$ = GenEA2( 0x10, $2 );		}
         |	'(' RREG ')' '+'							{	$$ = GenEA2( 0x18, $2 );		}
         |	'(' RREG ')'								{	$$ = GenEA2( 0x20, $2 );		}
-        |	'(' RREG PLUS_N ')'							{	$$ = GenEA1( 0x28,$2, $3 );		}
-        |	'-' '(' RREG ')'							{	$$ = GenEA2( 0x38,$3);			}
+        |	'(' RREG PLUS_N ')'							{	$$ = GenEA1( 0x28, $2, $3 );	}
+        |	'-' '(' RREG ')'							{	$$ = GenEA2( 0x38, $3);			}
         |   imm_ea										{   $$ = $1;						}
         ;
 

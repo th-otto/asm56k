@@ -45,7 +45,7 @@ uint const XRegYReg_pattern[] = {
 	0xc08000,
 	0x808000,
 	0xc00000,
-	0x900000
+	0x800000
 };
 
 
