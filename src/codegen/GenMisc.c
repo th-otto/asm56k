@@ -95,7 +95,7 @@ uint const movem_pattern2[] = {
 };
 
 
-void GenOneParamParMove(uint insn_patt, uint reg, bcode * par_move)
+void GenOneParamParMove(uint insn_patt, uint reg, bcode *par_move)
 {
 	if (g_passNum == 0)
 	{
@@ -119,7 +119,7 @@ void GenOneParamParMove(uint insn_patt, uint reg, bcode * par_move)
 }
 
 
-void GenBccRelTarger(uint insn_patt, raddr * rel_target)
+void GenBccRelTarger(uint insn_patt, raddr *rel_target)
 {
 	DSP56301;
 	if (g_passNum == 0)
@@ -186,7 +186,7 @@ void GenBitOpReg(uint insn_patt, int val, int dest_reg)
 }
 
 
-void GenBraRelTarger(raddr * rel_target)
+void GenBraRelTarger(raddr *rel_target)
 {
 	DSP56301;
 	if (g_passNum == 0)
@@ -244,7 +244,7 @@ void GenBrkCC(int condition)
 }
 
 
-void GenBscc(uint condition, raddr * rel_target)
+void GenBscc(uint condition, raddr *rel_target)
 {
 	DSP56301;
 	if (g_passNum == 0)
@@ -281,7 +281,7 @@ void GenBscc(uint condition, raddr * rel_target)
 }
 
 
-void GenBsr(raddr * rel_target)
+void GenBsr(raddr *rel_target)
 {
 	if (g_passNum == 0)
 	{
@@ -360,7 +360,7 @@ void GenDebug(uint inst_patt, uint condition)
 }
 
 
-void GenDo1(uint xory, bcode * ea, raddr * rel_target)
+void GenDo1(uint xory, bcode *ea, raddr *rel_target)
 {
 	if (g_passNum == 0)
 	{
@@ -407,7 +407,7 @@ void GenDo1(uint xory, bcode * ea, raddr * rel_target)
 }
 
 
-void GenDo2(int val, raddr * rel_target)
+void GenDo2(int val, raddr *rel_target)
 {
 	if (g_passNum == 0)
 	{
@@ -441,7 +441,7 @@ void GenDo2(int val, raddr * rel_target)
 }
 
 
-void GenDo3(uint src_reg, raddr * rel_target)
+void GenDo3(uint src_reg, raddr *rel_target)
 {
 	if (g_passNum == 0)
 	{
@@ -476,7 +476,7 @@ void GenDo3(uint src_reg, raddr * rel_target)
 }
 
 
-void GenDoForever(raddr * rel_target)
+void GenDoForever(raddr *rel_target)
 {
 	if (g_passNum == 0)
 	{
@@ -505,7 +505,7 @@ void GenDoForever(raddr * rel_target)
 }
 
 
-void GenDor1(uint xory, bcode * ea, raddr * rel_target)
+void GenDor1(uint xory, bcode *ea, raddr *rel_target)
 {
 	if (g_passNum == 0)
 	{
@@ -552,7 +552,7 @@ void GenDor1(uint xory, bcode * ea, raddr * rel_target)
 }
 
 
-void GenDor2(int val, raddr * rel_target)
+void GenDor2(int val, raddr *rel_target)
 {
 	if (g_passNum == 0)
 	{
@@ -586,7 +586,7 @@ void GenDor2(int val, raddr * rel_target)
 }
 
 
-void GenDor3(uint src_reg, raddr * rel_target)
+void GenDor3(uint src_reg, raddr *rel_target)
 {
 	if (g_passNum == 0)
 	{
@@ -621,7 +621,7 @@ void GenDor3(uint src_reg, raddr * rel_target)
 }
 
 
-void GenDorForever(raddr * rel_target)
+void GenDorForever(raddr *rel_target)
 {
 	if (g_passNum == 0)
 	{
@@ -730,7 +730,7 @@ void GenJmpJsrJsccJcc(const uint *insn_patt, uint condition, bcode *ea)
 }
 
 
-void GenJccBitRelReg(int insn_patt, int val, int dest_reg, raddr * rel_target)
+void GenJccBitRelReg(int insn_patt, int val, int dest_reg, raddr *rel_target)
 {
 	if (g_passNum == 0)
 	{
@@ -778,7 +778,7 @@ void GenJccBitRelReg(int insn_patt, int val, int dest_reg, raddr * rel_target)
 0xa4080,
 0xac000
 */
-void GenJccBitAbs(const int *insn_patt, int val, int xory, bcode * ea, raddr * rel_target)
+void GenJccBitAbs(const int *insn_patt, int val, int xory, bcode *ea, raddr *rel_target)
 {
 	if (g_passNum == 0)
 	{
@@ -842,7 +842,7 @@ void GenJccBitAbs(const int *insn_patt, int val, int xory, bcode * ea, raddr * r
 }
 
 
-void GenJccBitAbsReg(int insn_patt, int val, uint dest_reg, raddr * rel_target)
+void GenJccBitAbsReg(int insn_patt, int val, uint dest_reg, raddr *rel_target)
 {
 	if (g_passNum == 0)
 	{
@@ -876,7 +876,7 @@ void GenJccBitAbsReg(int insn_patt, int val, uint dest_reg, raddr * rel_target)
 }
 
 
-void GenLra(raddr * rel_target, uint dest_reg)
+void GenLra(raddr *rel_target, uint dest_reg)
 {
 	if (g_passNum == 0)
 	{
@@ -1009,7 +1009,7 @@ void GenMerge(uint src_reg, uint dest_reg)
 }
 
 
-void GenMove(bcode * par_move)
+void GenMove(bcode *par_move)
 {
 	if (g_passNum == 0)
 	{
@@ -1032,7 +1032,7 @@ void GenMove(bcode * par_move)
 }
 
 
-void GenMovec1(const uint * insn_patt, uint dir, uint xory, bcode * ea, uint dest_reg)
+void GenMovec1(const uint *insn_patt, uint dir, uint xory, bcode *ea, uint dest_reg)
 {
 	if (g_passNum == 0)
 	{
@@ -1158,7 +1158,7 @@ void GenMovec3(uint sh, int val, uint dest_reg)
 }
 
 
-void GenMovem(const uint *insn_patt, uint dir, bcode * ea, uint reg)
+void GenMovem(const uint *insn_patt, uint dir, bcode *ea, uint reg)
 {
 	if (g_passNum == 0)
 	{
@@ -1203,7 +1203,7 @@ void GenMovem(const uint *insn_patt, uint dir, bcode * ea, uint reg)
 }
 
 
-void GenMovep(uint src_xory, bcode * src_ea, uint dst_xory, bcode * dst_ea)
+void GenMovep(uint src_xory, bcode *src_ea, uint dst_xory, bcode *dst_ea)
 {
 	if (g_passNum == 0)
 	{
@@ -1284,7 +1284,7 @@ void GenMovep(uint src_xory, bcode * src_ea, uint dst_xory, bcode * dst_ea)
 }
 
 
-void GenMovep2(uint rw, bcode * src_ea, uint dst_xory, bcode * dst_ea)
+void GenMovep2(uint rw, bcode *src_ea, uint dst_xory, bcode *dst_ea)
 {
 	if (g_passNum == 0)
 	{
@@ -1326,7 +1326,7 @@ void GenMovep2(uint rw, bcode * src_ea, uint dst_xory, bcode * dst_ea)
 }
 
 
-void GenMovep3(int val, uint dst_xory, bcode * dst_ea)
+void GenMovep3(int val, uint dst_xory, bcode *dst_ea)
 {
 	if (g_passNum == 0)
 	{
@@ -1375,7 +1375,7 @@ void GenMovep3(int val, uint dst_xory, bcode * dst_ea)
 }
 
 
-void GenMovep4(uint rw, uint xory, bcode * ea, uint reg)
+void GenMovep4(uint rw, uint xory, bcode *ea, uint reg)
 {
 	if (g_passNum == 0)
 	{
@@ -1455,7 +1455,7 @@ void GenNoArgOpcode(uint opcode)
 
 
 
-void GenPlockPunloc(uint opcode, bcode * ea)
+void GenPlockPunloc(uint opcode, bcode *ea)
 {
 	DSP56301;
 	if (g_passNum == 0)
@@ -1479,7 +1479,7 @@ void GenPlockPunloc(uint opcode, bcode * ea)
 }
 
 
-void GenPlockrPunlockr(uint opcode, raddr * rel_target)
+void GenPlockrPunlockr(uint opcode, raddr *rel_target)
 {
 	DSP56301;
 	if (g_passNum == 0)
@@ -1508,7 +1508,7 @@ void GenPlockrPunlockr(uint opcode, raddr * rel_target)
 }
 
 
-void GenRep1(uint xory, bcode * ea)
+void GenRep1(uint xory, bcode *ea)
 {
 	if (g_passNum == 0)
 	{
@@ -1697,7 +1697,7 @@ void GenTcc2(uint condition, uint src_reg1, uint dst_reg1, uint src_reg2, uint d
 }
 
 
-void GenTfr(uint src_reg, uint dst_reg, bcode * par_move)
+void GenTfr(uint src_reg, uint dst_reg, bcode *par_move)
 {
 	if (g_passNum == 0)
 	{
@@ -1753,7 +1753,7 @@ void GenTrapcc(uint condition)
 }
 
 
-void GenVsl(uint reg, int val, bcode * ea)
+void GenVsl(uint reg, int val, bcode *ea)
 {
 	if (g_passNum == 0)
 	{

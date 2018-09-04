@@ -101,7 +101,7 @@ int const extract_patterns[] = {
 };
 
 
-void GenBitOp(const int *insn_patt, int val, int xory, bcode * ea)
+void GenBitOp(const int *insn_patt, int val, int xory, bcode *ea)
 {
 	if (g_passNum == 0)
 	{
@@ -159,7 +159,7 @@ void GenBitOp(const int *insn_patt, int val, int xory, bcode * ea)
 }
 
 
-void GenJccBitRel(const int *insn_patt, int val, int xory, bcode * ea, raddr * rel_target)
+void GenJccBitRel(const int *insn_patt, int val, int xory, bcode *ea, raddr *rel_target)
 {
 	if (g_passNum == 0)
 	{

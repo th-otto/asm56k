@@ -77,7 +77,7 @@ int const incdec_patterns[] = {
 };
 
 
-void GenAndEorOr(uint insn_patt, uint src_reg, uint dest_reg, bcode * par_move)
+void GenAndEorOr(uint insn_patt, uint src_reg, uint dest_reg, bcode *par_move)
 {
 	if (g_passNum == 0)
 	{
@@ -105,7 +105,7 @@ void GenAndEorOr(uint insn_patt, uint src_reg, uint dest_reg, bcode * par_move)
 }
 
 
-void GenAdcSbc(uint insn_patt, uint src_reg, uint dest_reg, bcode * par_move)
+void GenAdcSbc(uint insn_patt, uint src_reg, uint dest_reg, bcode *par_move)
 {
 	if (g_passNum == 0)
 	{
@@ -146,7 +146,7 @@ void GenAdcSbc(uint insn_patt, uint src_reg, uint dest_reg, bcode * par_move)
 }
 
 
-void GenAddSub(uint insn_patt, uint src_reg, uint dest_reg, bcode * par_move)
+void GenAddSub(uint insn_patt, uint src_reg, uint dest_reg, bcode *par_move)
 {
 	if (g_passNum == 0)
 	{
@@ -184,7 +184,7 @@ void GenAddSub(uint insn_patt, uint src_reg, uint dest_reg, bcode * par_move)
 }
 
 
-void GenCmp(uint insn_patt, uint src_reg, uint dest_reg, bcode * par_move)
+void GenCmp(uint insn_patt, uint src_reg, uint dest_reg, bcode *par_move)
 {
 	if (g_passNum == 0)
 	{
@@ -273,7 +273,7 @@ void GenAddSubEorOrShort(uint insn_patt, int val, uint dest_reg)
 }
 
 
-void GenAddxSubx(uint insn_patt, uint src_reg, uint dest_reg, bcode * par_move)
+void GenAddxSubx(uint insn_patt, uint src_reg, uint dest_reg, bcode *par_move)
 {
 	if (g_passNum == 0)
 	{
@@ -392,7 +392,7 @@ void GenAsxReg(uint insn_patt, int val_reg, uint src_reg, uint dest_reg)
 }
 
 
-void GenCmpm(uint src_reg, uint dest_reg, bcode * par_move)
+void GenCmpm(uint src_reg, uint dest_reg, bcode *par_move)
 {
 	if (g_passNum == 0)
 	{
@@ -609,7 +609,7 @@ uint const mpyr_pattern[] = {
 	0x141c1
 };
 
-void GenMul1(const uint * insn_patt, uint plusminus, uint reg_pair, uint dest_reg, bcode * par_move)
+void GenMul1(const uint *insn_patt, uint plusminus, uint reg_pair, uint dest_reg, bcode *par_move)
 {
 	if (g_passNum == 0)
 	{
@@ -638,7 +638,7 @@ void GenMul1(const uint * insn_patt, uint plusminus, uint reg_pair, uint dest_re
 }
 
 
-void GenMul2(const uint * insn_patt, uint plusminus, uint src_reg, int val, uint dest_reg)
+void GenMul2(const uint *insn_patt, uint plusminus, uint src_reg, int val, uint dest_reg)
 {
 	if (g_passNum == 0)
 	{
@@ -672,7 +672,7 @@ void GenMul2(const uint * insn_patt, uint plusminus, uint src_reg, int val, uint
 }
 
 
-void GenMuli(const uint * insn_patt, uint plusminus, int val, uint src_reg, uint dest_reg)
+void GenMuli(const uint *insn_patt, uint plusminus, int val, uint src_reg, uint dest_reg)
 {
 	if (g_passNum == 0)
 	{
@@ -702,7 +702,7 @@ void GenMuli(const uint * insn_patt, uint plusminus, int val, uint src_reg, uint
 }
 
 
-void GenMulxx(const uint * insn_patt, uint code, uint plusminus, uint reg_pair, uint dest_reg)
+void GenMulxx(const uint *insn_patt, uint code, uint plusminus, uint reg_pair, uint dest_reg)
 {
 	if (g_passNum == 0)
 	{
@@ -734,7 +734,7 @@ uint const max_pattern[] = {
 	0x15
 };
 
-void GenMax(uint insn_patt, uint src_reg, uint dst_reg, bcode * par_move)
+void GenMax(uint insn_patt, uint src_reg, uint dst_reg, bcode *par_move)
 {
 	if (g_passNum == 0)
 	{

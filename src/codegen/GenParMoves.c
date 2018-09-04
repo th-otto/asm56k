@@ -168,7 +168,7 @@ bcode GenParUpdate(uint update_op)
 }
 
 
-bcode GenMemReg(const uint *opcodes, bcode * ea, uint dst_reg)
+bcode GenMemReg(const uint *opcodes, bcode *ea, uint dst_reg)
 {
 	bcode move;
 
@@ -219,7 +219,7 @@ bcode GenParExpRegRegReg(int val, uint dst_reg1, uint src_reg2, uint dst_reg2)
 }
 
 
-bcode GenParEaRegRegReg(bcode * ea, uint dst_reg1, uint src_reg2, uint dst_reg2)
+bcode GenParEaRegRegReg(bcode *ea, uint dst_reg1, uint src_reg2, uint dst_reg2)
 {
 	bcode move;
 
@@ -266,7 +266,7 @@ bcode GenParEaRegRegReg(bcode * ea, uint dst_reg1, uint src_reg2, uint dst_reg2)
 }
 
 
-bcode GenParRegEaRegReg(uint src_reg1, bcode * ea, uint src_reg2, uint dst_reg2)
+bcode GenParRegEaRegReg(uint src_reg1, bcode *ea, uint src_reg2, uint dst_reg2)
 {
 	bcode move;
 
@@ -348,7 +348,7 @@ bcode GenParRegRegExpReg(uint src_reg1, uint dst_reg1, int val, uint dst_reg2)
 	return GenParRegRegEaReg(src_reg1, dst_reg1, &ea, dst_reg2);
 }
 
-bcode GenParRegRegEaReg(uint src_reg1, uint dst_reg1, bcode * ea, uint dst_reg2)
+bcode GenParRegRegEaReg(uint src_reg1, uint dst_reg1, bcode *ea, uint dst_reg2)
 {
 	bcode move;
 
@@ -387,7 +387,7 @@ bcode GenParRegRegEaReg(uint src_reg1, uint dst_reg1, bcode * ea, uint dst_reg2)
 }
 
 
-bcode GenParRegRegRegEa(uint src_reg1, uint dst_reg1, uint dst_reg2, bcode * ea)
+bcode GenParRegRegRegEa(uint src_reg1, uint dst_reg1, uint dst_reg2, bcode *ea)
 {
 	bcode move;
 
@@ -455,7 +455,7 @@ bcode GenParRegRegRegEa(uint src_reg1, uint dst_reg1, uint dst_reg2, bcode * ea)
 }
 
 
-bcode GenLMemReg(const uint * opcodes, bcode * ea, uint dst_reg)
+bcode GenLMemReg(const uint *opcodes, bcode *ea, uint dst_reg)
 {
 	bcode move;
 
@@ -493,7 +493,7 @@ bcode GenLMemReg(const uint * opcodes, bcode * ea, uint dst_reg)
 }
 
 
-bcode GenParXRegYReg(uint opcode, bcode * src_ea1, uint dst_reg1, bcode * src_ea2, uint dst_reg2)
+bcode GenParXRegYReg(uint opcode, bcode *src_ea1, uint dst_reg1, bcode *src_ea2, uint dst_reg2)
 {
 	bcode move;
 
