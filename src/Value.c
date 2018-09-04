@@ -124,13 +124,14 @@ u32 Val_GetAsFract24(Value val)
 	if (val.m_type == kFract || val.m_type == kFloat)
 	{
 		double raw = val.m_value.m_float;
+		u32 m_int = (u32) round(raw * 0x800000);
 
 		if (raw > 1.0f || raw < -1.0f)
 		{
 			/* yywarning("Overflow when casting to 24bit fractional."); */
 		}
 
-		return (u32) floor(raw * 0x800000);
+		return m_int;
 	} else if (val.m_type == kInt)
 	{
 		return val.m_value.m_int;
@@ -150,7 +151,7 @@ u64 Val_GetAsFract48(Value val)
 			yywarning("Overflow when casting to 24bit fractional.");
 		}
 
-		return (u64) floor(raw * 0x80000000000000LL);	/* ?? */
+		return (u64) round(raw * 0x80000000000000LL);	/* ?? */
 	} else if (val.m_type == kInt)
 	{
 		return val.m_value.m_int;
