@@ -45,17 +45,11 @@ int g_MacroNumInstances;
 TokenVal *params_pointers[MACRO_PARAMS_POINTER_BUFFER];
 TokenVal macros_params[MACRO_PARAMS_TOKEN_BUFFER];
 
-/* interfacing with lex */
+static int skipping;
 
-void *asm_create_buffer(FILE *, int);
-void asm_delete_buffer(void *);
-void asm_flush_buffer(void *);
-void asm_switch_to_buffer(void *);
 
-int Input(void);
-void Unput(int c);
 
-void InitTokenStream(FILE * input, const char *file_name)
+void InitTokenStream(FILE *input, const char *file_name)
 {
 #if 0
 	buffer = (void *) asm_create_buffer(input, LEX_BUFFER);
@@ -67,7 +61,7 @@ void InitTokenStream(FILE * input, const char *file_name)
 }
 
 
-TokenVal *CopyToken(int token, TokenVal * pToken)
+TokenVal *CopyToken(int token, TokenVal *pToken)
 {
 	pToken->token = token;
 	pToken->data.val = yylval;
@@ -75,7 +69,7 @@ TokenVal *CopyToken(int token, TokenVal * pToken)
 }
 
 
-void PushStream(TokenVal * pMacro, const char *pFileName, int curline, int params_count, int instancesNumber)
+void PushStream(TokenVal *pMacro, const char *pFileName, int curline, int params_count, int instancesNumber)
 {
 	g_streamsStrackIndex++;
 
@@ -131,7 +125,7 @@ TokenVal *GetCurrentStreamPos(void)
 	return streamsStack[g_streamsStrackIndex].macro_ptr;
 }
 
-int GetToken(TokenVal ** pTokenValue)
+int GetToken(TokenVal **pTokenValue)
 {
 	TokenVal *pToken = streamsStack[g_streamsStrackIndex].macro_ptr;
 	int token = pToken->token;
@@ -165,6 +159,7 @@ int SkipToken(void)
 	TokenVal *pToken = streamsStack[g_streamsStrackIndex].macro_ptr;
 	int token = pToken->token;
 
+	skipping = TRUE;
 	if (token == TOKEN_NEW_PTR)
 	{
 		streamsStack[g_streamsStrackIndex].macro_ptr = (TokenVal *) pToken->data.pNextBlock;
@@ -180,6 +175,7 @@ int SkipToken(void)
 		g_currentLine = pToken->data.val.integer;
 	}
 
+	skipping = FALSE;
 	return token;
 }
 
@@ -242,32 +238,37 @@ int PushNewFile(const char *pFileName)
 
 	inc_lines[g_incStackDeepth] = g_currentLine;
 
-	while (GetIncDir(&pDir, &dirnum))
+	pFile = fopen(pFileName, "r");
+	if (pFile == NULL)
 	{
-		strcpy(name_buf, pDir);
-		if (name_buf[strlen(name_buf) - 1] != '\\' && name_buf[strlen(name_buf) - 1] != '/')
+		while (GetIncDir(&pDir, &dirnum))
 		{
-			strncat(name_buf, "/", sizeof(name_buf) - strlen(name_buf));
-		}
-		strncat(name_buf, pFileName, sizeof(name_buf) - strlen(name_buf));
-
-		pFile = fopen(name_buf, "r");
-
-		if (pFile != 0)
-		{
-			g_incStackDeepth++;
-			inc_handles[g_incStackDeepth] = pFile;
-			break;
+			strcpy(name_buf, pDir);
+			if (name_buf[strlen(name_buf) - 1] != '\\' && name_buf[strlen(name_buf) - 1] != '/')
+			{
+				strncat(name_buf, "/", sizeof(name_buf) - strlen(name_buf));
+			}
+			strncat(name_buf, pFileName, sizeof(name_buf) - strlen(name_buf));
+	
+			pFile = fopen(name_buf, "r");
+	
+			if (pFile != NULL)
+			{
+				pFileName = name_buf;
+				break;
+			}
 		}
 	}
-
+	
 	if (pFile == NULL)
 	{
 		return -1;
 	}
 
+	g_incStackDeepth++;
+	inc_handles[g_incStackDeepth] = pFile;
 	inc_buffers[g_incStackDeepth] = (void *) asm_create_buffer(inc_handles[g_incStackDeepth], LEX_BUFFER);
-	inc_names[g_incStackDeepth] = StringBufferInsert(name_buf);
+	inc_names[g_incStackDeepth] = StringBufferInsert(pFileName);
 
 	g_currentLine = 1;
 
@@ -279,8 +280,8 @@ int PushNewFile(const char *pFileName)
 	 * is invalid (this is for error reporting)
 	 */
 
-	yylval.text.len = 0;				/*fake string */
-	yylval.text.ptr = (char *) StringBufferInsert(name_buf);
+	yylval.text.len = 0;				/* fake string */
+	yylval.text.ptr = StringBufferInsert(pFileName);
 
 	debugprint("Include_file(%s);\n", pFileName);
 
@@ -294,7 +295,7 @@ int PushNewFile(const char *pFileName)
 void IncludeFile(void)
 {
 	int i;
-	char inc_temp_string[256];
+	char inc_temp_string[512];
 	char *sptr = inc_temp_string;
 	int len_str = 0;
 
@@ -304,7 +305,10 @@ void IncludeFile(void)
 		asm_abort();
 	}
 
-	while (1)
+	if (skipping)
+		return;
+
+	for (;;)
 	{
 		i = Input();
 
@@ -321,7 +325,7 @@ void IncludeFile(void)
 		}
 	}
 
-	while (1)
+	for (;;)
 	{
 		if (EOF == i)
 		{
@@ -452,24 +456,22 @@ void Skip_line(void)
 
 #define			MAX_INC_DIRS_LIST 32
 
-const char *g_IncDirs[MAX_INC_DIRS_LIST];
-int g_IncDirsNum = 0;
+static const char *g_IncDirs[MAX_INC_DIRS_LIST];
+static int g_IncDirsNum = 0;
 
 void AddIncDir(const char *pDir)
 {
-	const char *pAddedDir = StringBufferInsert(pDir);
-
-	g_IncDirs[g_IncDirsNum] = pAddedDir;
-
 	if (g_IncDirsNum >= MAX_INC_DIRS_LIST)
 	{
 		yyerror("To many include directories... MAX_INC_DIRS = %d\n", MAX_INC_DIRS_LIST);
+	} else
+	{
+		g_IncDirs[g_IncDirsNum] = strdup(pDir);
+		g_IncDirsNum++;
 	}
-
-	g_IncDirsNum++;
 }
 
-bool GetIncDir(const char **pDir, uint * pDirNum)
+bool GetIncDir(const char **pDir, uint *pDirNum)
 {
 	uint dirnum = *pDirNum;
 

@@ -84,6 +84,15 @@ void    	IncludeFile(void);
 void		AddIncDir(const char* pDir);
 bool		GetIncDir(const char **pDir, uint* pDirNum);
 
+/* interfacing with lex */
+
+struct yy_buffer_state;
+
+struct yy_buffer_state *asm_create_buffer(FILE *, int);
+void asm_delete_buffer(struct yy_buffer_state *);
+void asm_flush_buffer(struct yy_buffer_state *);
+void asm_switch_to_buffer(struct yy_buffer_state *);
+
 void Unput(int c);
 int Input(void);
 

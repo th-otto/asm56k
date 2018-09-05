@@ -33,8 +33,8 @@
 #define INTEG(x,y) yylval.integer = x ;BEGIN(symbol);  return y;
 #define PATT(x,y) yylval.pattern = x ;BEGIN(symbol);  return y;
 #define NOVAL(y) BEGIN(symbol);  return y;
-#define ADD_STRING(x) BEGIN(x); yylval.text.ptr=(char*)StringBufferInsert(asmtext); yylval.text.len=asmleng;
-#define ADD_STRING2() yylval.text.ptr=(char*)StringBufferInsert(asmtext); yylval.text.len=asmleng;
+#define ADD_STRING(x) BEGIN(x); yylval.text.ptr = StringBufferInsert(asmtext); yylval.text.len=asmleng;
+#define ADD_STRING2() yylval.text.ptr = StringBufferInsert(asmtext); yylval.text.len=asmleng;
 
 static void ParseString(void);
 static int atobin(const char *string);
@@ -687,6 +687,6 @@ static void ParseString(void)
 		}
 	}
 
-	yylval.text.ptr=(char*)StringBufferInsert(string);
+	yylval.text.ptr = StringBufferInsert(string);
 	yylval.text.len=len_str;
 }
