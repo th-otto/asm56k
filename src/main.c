@@ -42,7 +42,7 @@ int g_LocalSerial = 0;
 jmp_buf critical_error;
 
 static char const program[] = "asm56k";
-static char const version[] = "0.92";
+static char const version[] = "0.93";
 
 
 void mtest(void *pMem, const char *File, int Line)

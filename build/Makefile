@@ -46,18 +46,20 @@ SRCS = \
 ifeq ($(CROSS),yes)
 
 CROSSPREFIX=m68k-atari-mint-
+CPU=-m68020-60
 
 NATIVECC = gcc
 
 else
 
 NATIVECC = $(CC)
+CPU=
 
 endif
 
 
 CC=$(CROSSPREFIX)gcc
-CFLAGS=-O2 -Wall -Wstrict-prototypes -Wmissing-prototypes
+CFLAGS=$(CPU) -O2 -Wall -Wstrict-prototypes -Wmissing-prototypes
 
 LDFLAGS=-s
 LD=$(CC)

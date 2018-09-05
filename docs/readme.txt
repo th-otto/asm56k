@@ -3,6 +3,17 @@ THIS IS WORK IN PROGRESS...
 Why and what ?
 ==============
 
+This is a rewritten version of a DSP assembler, based on work from
+sqward, which in turn based on work from Quinn C. Jensen.
+
+It fixes quite some build problems in newer environments, removes to the
+of python so it can easier be natively compiled on Atari, and also
+fixes a few bugs i found.
+
+Thorsten Otto, Sep 2018
+
+(original statement from sqward)
+
 This is a new partially rewritten version of DSP assembler I wrote almost 10 years ago for Deesse project.
 I've undig dig this code on my harddrive some time ago and upon closer inspecion it turned out to be very 
 low quality. I decided to release it and hence the rewrite. It's supposed to be a cross assembler that 
@@ -36,10 +47,6 @@ Lexer was base on similar assembler done by Quinn C. Jensen, here the copyright:
  *
  */
 
-I'm also using Opt library, full lincence and copyright can be found in the folder
-
-/src/opt/
- 
 
  
 Building
@@ -48,16 +55,15 @@ Building
 You have 2 options, depending on your platform:
 
 1. Unix:
-Go to build/unix folder and type “../build”. This should build you a version as long as you have a python
-and gcc installed. 
+Go to build folder and type “make”. This should build you a version as long as you have a gcc installed. 
 
 To install type
-sudo ../build install
+sudo make install
 
 (Skip sudo for cygwin..)
 
-If you have Vincents gcc cross compiler then you can crosscompile a version that runs on a real atari.
-To do so, go to build/cross_atari and type "../build"
+If you have a gcc cross compiler then you can crosscompile a version that runs on a real atari.
+To do so, go to build and type "make CROSS=yes"
 
 2. Windows:
 
@@ -68,8 +74,14 @@ need GNU tools for win32 installed (flex, bison and m4).
 Testing
 =======
 
-Go to “build/unix” folder and type “../build test”. It will run some tests and if anything fails you should 
+Go to “build” folder and type “make check”. It will run some tests and if anything fails you should 
 debug it and send me a path :)
+
+Known bugs
+==========
+include statements inside conditionals don't work as expected, the file will
+be included regardless of the result of the conditional expression
+(that also causes the test_include_fail.asm test to fail).
 
 Invoking
 ========
