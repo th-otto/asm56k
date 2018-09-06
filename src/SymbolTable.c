@@ -116,7 +116,6 @@ hs *AddSymbol(const char *pString, int len, int forceCopy)
 /* 
 	Find a string in the hash table. If not found, warn. If found, return slot pointer.             
 */
-
 hs *FindSymbol(const char *pString)
 {
 	int hash_val = hash(pString);

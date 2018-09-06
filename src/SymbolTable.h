@@ -67,6 +67,6 @@ void ListSymbolTable(void);
 void SymSet(const char *pSymbol, Value val);
 hs *AddSym(const stext *pSymName, int forceCopy);
 Value GetSym(const char *pString);
-hs *AddLabel(const stext *pSymName );
+hs *AddLabel(const stext *pSymName);
 
 #endif /* _SYMBOLTABLE_H_ */

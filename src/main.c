@@ -29,6 +29,8 @@ Author:     M.Buras (sqward)
 #include <OutputLod.h>
 #include <OutputP56.h>
 #include <OutputEmbededAsm.h>
+#include <OutputEmbededC.h>
+#include <PipeLineRestriction.h>
 #include <StringBuffer.h>
 #include <getopt.h>
 
@@ -125,6 +127,7 @@ static void InitParserPass1(void)
 	num_chunks2 = 0;
 	if_stack_l = 0;
 	ResetStream();
+	PipeLineReset();
 	PushStream(g_tokens, inc_names[0], 1, -1, 0);
 }
 
@@ -137,15 +140,17 @@ static void InitParserPass2(void)
 	if_stack_l = 0;
 	g_currentLine = 1;
 	ResetStream();
+	PipeLineReset();
 	PushStream(g_tokens, inc_names[0], 1, -1, 0);
 }
 
 
-char *lod_output_name = NULL;
-char *p56_output_name = NULL;
-char *embed_output_name = NULL;
+static char *lod_output_name = NULL;
+static char *p56_output_name = NULL;
+static char *embed_asm_output_name = NULL;
+static char *embed_c_output_name = NULL;
 
-char *input_name = NULL;
+static char *input_name = NULL;
 int g_dsp_cpu = 56001;
 int g_falcon = 0;
 int g_output_symbols = 0;
@@ -154,7 +159,6 @@ int g_write_zero_sections = 0;
 
 static int asm56k(void)
 {
-	FILE *input = NULL;
 	int num_tokens = 0;
 
 	if (input_name == NULL)
@@ -163,7 +167,10 @@ static int asm56k(void)
 		return EXIT_FAILURE;
 	}
 
-	if (lod_output_name == NULL && p56_output_name == NULL && embed_output_name == NULL)
+	if (lod_output_name == NULL &&
+		p56_output_name == NULL &&
+		embed_asm_output_name == NULL &&
+		embed_c_output_name == NULL)
 	{
 		fprintf(stderr, "No output file given.\n");
 		return EXIT_FAILURE;
@@ -177,16 +184,14 @@ static int asm56k(void)
 		return EXIT_FAILURE;
 	}
 
-	debugprint("PASS1\n");
-
 	if (setjmp(critical_error) == 0)
 	{
-
-		InitTokenStream(input, input_name);
+		InitTokenStream(input_name);
 		InitMacroProxy();
 
 		num_tokens = PrefetchTokens();
 
+		debugprint("PASS1\n");
 		InitParserPass1();
 		debugprint("%d tokens fetched\n", num_tokens);
 
@@ -222,11 +227,15 @@ static int asm56k(void)
 				SaveFileP56(p56_output_name);
 			}
 
-			if (NULL != embed_output_name)
+			if (NULL != embed_asm_output_name)
 			{
-				SaveFileEmbeded(embed_output_name);
+				SaveFileEmbeded(embed_asm_output_name);
 			}
 
+			if (NULL != embed_c_output_name)
+			{
+				SaveFileEmbededC(embed_c_output_name);
+			}
 		}
 	}
 
@@ -269,7 +278,8 @@ enum opt {
 	OPT_HELP = 'h',
 	OPT_VERSION = 'V',
 	
-	OPT_EMBED = 'e',
+	OPT_EMBED_ASM = 'e',
+	OPT_EMBED_C = 'v',
 	OPT_OUTPUT = 'o',
 	OPT_P56 = 'p',
 	OPT_SYMBOLS = 's',
@@ -283,7 +293,8 @@ static struct option const long_options[] = {
 	{ "lod-file", required_argument, NULL, OPT_OUTPUT },
 	{ "output", required_argument, NULL, OPT_OUTPUT },
 	{ "p56-file", required_argument, NULL, OPT_P56 },
-	{ "embed-file", required_argument, NULL, OPT_EMBED },
+	{ "embed-asm-file", required_argument, NULL, OPT_EMBED_ASM },
+	{ "embed-c-file", required_argument, NULL, OPT_EMBED_C },
 	{ "symbols", no_argument, NULL, OPT_SYMBOLS },
 	{ "write-zero", no_argument, NULL, OPT_ZEROES },
 	{ "zero", no_argument, NULL, OPT_ZEROES },
@@ -302,11 +313,13 @@ static void usage(FILE *fp, int status)
 	fprintf(fp, "options:\n");
 	fprintf(fp, "  -o, --output <file>          LOD output file.\n");
 	fprintf(fp, "  -p, --p56-file <file>        P56 output file.\n");
-	fprintf(fp, "  -e, --embed-file <file>      Output devpac/vasm file.\n");
+	fprintf(fp, "  -e, --embed-asm-file <file>  Output devpac/vasm file.\n");
+	fprintf(fp, "  -v, --embed-c-file <file>    Output C file.\n");
 	fprintf(fp, "  -s, --symbols                Output symbols (in LOD).\n");
 	fprintf(fp, "  -z, --write-zero             Output section even if it contains only zeros.\n");
 	fprintf(fp, "  -D, --define <name[=value]>  Define a symbol.\n");
 	fprintf(fp, "  -I, --include <dir>          Add include path.\n");
+	fprintf(fp, "  -c, --cpu <type>             Sets CPU type.\n");
 	
 	exit(status);
 }
@@ -320,7 +333,7 @@ int main(int argc, char *argv[])
 	StringBufferInit(0x8000);
 	InitSymbolTable();
 
-	while ((c = getopt_long(argc, argv, "c:e:o:p:szD:I:", long_options, NULL)) != -1)
+	while ((c = getopt_long(argc, argv, "c:e:o:p:svzD:I:", long_options, NULL)) != -1)
 	{
 		switch ((enum opt) c)
 		{
@@ -334,9 +347,14 @@ int main(int argc, char *argv[])
 			p56_output_name = strdup(optarg);
 			break;
 
-		case OPT_EMBED:
-			free(embed_output_name);
-			embed_output_name = strdup(optarg);
+		case OPT_EMBED_ASM:
+			free(embed_asm_output_name);
+			embed_asm_output_name = strdup(optarg);
+			break;
+
+		case OPT_EMBED_C:
+			free(embed_c_output_name);
+			embed_c_output_name = strdup(optarg);
 			break;
 
 		case OPT_SYMBOLS:

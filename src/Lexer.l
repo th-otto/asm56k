@@ -154,6 +154,7 @@ BEGIN(macro)
 ":"										{	return ':';																		}
 ">"										{	return '>';																		}
 "<"										{	return '<';																		}
+"|"										{	return '|';																		}
 "="										{	return '=';																		}
 "!"										{	return '!';																		}
 "&"										{	return '&';																		}
@@ -360,8 +361,10 @@ BEGIN(macro)
 
 {I}{L}{L}{E}{G}{A}{L}					{	NOVAL(OP_ILLEGAL);					}
 {I}{N}{C}{L}{U}{D}{E} 					{
-											IncludeFile();
-											NOVAL(TOKEN_ENTER_FILE);
+											if ( IncludeFile() )
+											{
+												NOVAL(TOKEN_ENTER_FILE);
+											}
 										}
 {I}{N}{C}								{	PATT(incdec_patterns,OP_INC);		}
 {I}{N}{S}{E}{R}{T}						{	PATT(extract_patterns,OP_INSERT);	}
@@ -580,7 +583,7 @@ BEGIN(macro)
 
                                 sym = (first << 8) | second;
 								(void) sym;
-								
+
                                 if ( first == '/' && second == '*' )
                                 {
                                     nestLevel ++;
@@ -623,70 +626,72 @@ BEGIN(macro)
 
 %%
  /* -------------------------------------------------------------------------------------------------------- */
-
+/* make input() visible outside lexer. */
 int Input(void) { return input(); }
 void Unput(int c) { unput(c); }
 
-static int atobin(const char* string)
+static int atobin(const char *string)
 {
-	int temp=0;
-	int cnt=24;
+	int temp = 0;
+	int cnt = 24;
 
 	do
 	{
-		temp<<=1;
-		temp|=(*string++)&1;
+		temp <<= 1;
+		temp |= (*string++) & 1;
 		cnt--;
-		if(cnt<=0)
+		if (cnt <= 0)
 		{
 			yyerror("Binary constant out of range.");
 			return temp;
 		}
 
-	}while(*string!=0);
+	} while (*string != 0);
 
 	return temp;
 }
 
+
 static void ParseString(void)
 {
-	char	string[512],*sptr=&string[0];
-	char	c;
-	char	quote = asmtext[0];
-	int		len_str=0;
+	char string[512];
+	char *sptr = string;
+	char c;
+	char quote = asmtext[0];
+	int len_str = 0;
 
 
-	for(;;)
+	for (;;)
 	{
-		c=input();
+		c = input();
 
-		if ( c == quote )
+		if (c == quote)
 		{
-			*sptr++=0;
+			*sptr = '\0';
 			break;
-		}else if ( c == EOF )
+		} else if (c == EOF)
 		{
 			yyerror("String spans the input file.");
 			break;
-		}else if ( c == '\n' )
+		} else if (c == '\n')
 		{
 			yyerror("Unterminated quotation.");
 			g_currentLine++;
 			break;
-		}else
+		} else
 		{
-			*sptr++=c;
+			*sptr++ = c;
 			len_str++;
 		}
 
-		if( len_str >=511 )
+		if (len_str >= (sizeof(string) - 1))
 		{
 			yyerror("String too long.");
-			*sptr++=0;
+			*sptr = '\0';
 			break;
 		}
 	}
 
 	yylval.text.ptr = StringBufferInsert(string);
-	yylval.text.len=len_str;
+	yylval.text.len = len_str;
 }

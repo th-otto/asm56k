@@ -19,8 +19,10 @@ SRCS = \
 	$(srcdir)/ErrorMessages.c \
 	$(srcdir)/MacroProxy.c \
 	$(srcdir)/OutputEmbededAsm.c \
+	$(srcdir)/OutputEmbededC.c \
 	$(srcdir)/OutputLod.c \
 	$(srcdir)/OutputP56.c \
+	$(srcdir)/PipeLineRestriction.c \
 	$(srcdir)/StringBuffer.c \
 	$(srcdir)/SymbolTable.c \
 	$(srcdir)/TokenStream.c \

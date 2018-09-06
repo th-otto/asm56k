@@ -427,6 +427,7 @@ void GenCmpm(uint src_reg, uint dest_reg, bcode *par_move)
 	}
 }
 
+
 void GenCmpu(uint src_reg, uint dest_reg)
 {
 	if (g_passNum == 0)
@@ -518,9 +519,7 @@ void GenDMac(uint modifier, uint plusminus, int val, uint dest_reg)
 		inst_code.sflag = 0;
 		inst_code.w0 = 0;
 		inst_code.w1 = 0;
-		inst_code.w0 =
-			0x12480 | ((modifier & 2) << 7) | ((modifier & 1) << 6) | (ddddd_2_d_dst(dest_reg) << 5) | (plusminus << 4)
-			| val;
+		inst_code.w0 = 0x12480 | ((modifier & 2) << 7) | ((modifier & 1) << 6) | (ddddd_2_d_dst(dest_reg) << 5) | (plusminus << 4) | val;
 		insert_code_w(&inst_code);
 	}
 }

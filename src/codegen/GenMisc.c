@@ -7,12 +7,13 @@ Author:     M.Buras (sqward)
 */
 #include <stdio.h>
 #include <stdlib.h>
-#include <ConvertFields.h>
 #include <export.h>
+#include <ConvertFields.h>
 #include <ErrorMessages.h>
 #include "GenMisc.h"
 #include "GenBitOps.h"
 #include <CodeUtils.h>
+#include <PipeLineRestriction.h>
 #include <SymbolTable.h>
 
 int const jclr_patterns[] = {
@@ -177,7 +178,7 @@ void GenBitOpReg(uint insn_patt, int val, int dest_reg)
 		dest_reg = ddddd_2_DDDDDD(dest_reg);
 		if (dest_reg == -1)
 		{
-			yyerror("In operands field: Illegal destenation register specified.");
+			yyerror("In operands field: Illegal destination register specified.");
 			dest_reg = 4;
 		}
 		inst_code.w0 = insn_patt | (val) | (dest_reg << 8);
@@ -638,7 +639,7 @@ void GenDorForever(raddr *rel_target)
 		inst_code.w1 = 0;
 		if (rel_target->type != T_LONG)
 		{
-			yyerror("In operands field: Illegal destenation address.");
+			yyerror("In operands field: Illegal destination address.");
 			rel_target->type = T_LONG;
 			rel_target->value = 0;
 		}
@@ -669,7 +670,6 @@ void GenEnddo(void)
 		insert_code_w(&inst_code);
 	}
 }
-
 
 
 void GenIllegal(void)
@@ -759,7 +759,7 @@ void GenJccBitRelReg(int insn_patt, int val, int dest_reg, raddr *rel_target)
 		dest_reg = ddddd_2_DDDDDD(dest_reg);
 		if (dest_reg == -1)
 		{
-			yyerror("In operands field: Illegal destenation register specified.");
+			yyerror("In operands field: Illegal destination register specified.");
 			dest_reg = 4;
 		}
 		inst_code.sflag = 1;
@@ -827,7 +827,7 @@ void GenJccBitAbs(const int *insn_patt, int val, int xory, bcode *ea, raddr *rel
 						inst_code.w0 = insn_patt[2] | ((ea->w1 - 0xffff80) << 8) | (val) | (xory << 6);
 					} else
 					{
-						yyerror("Destenation address out of range.");
+						yyerror("Destination address out of range.");
 						inst_code.w0 = insn_patt[3] | (val) | (xory << 6);
 					}
 				}
@@ -884,7 +884,7 @@ void GenLra(raddr *rel_target, uint dest_reg)
 
 		inst_code.sflag = 1;
 		if (rel_target->type == T_REGISTER)
-			inst_code.sflag = FALSE;
+			inst_code.sflag = 0;
 		insert_vcode_w(&inst_code);
 	} else
 	{
@@ -1051,6 +1051,8 @@ void GenMovec1(const uint *insn_patt, uint dir, uint xory, bcode *ea, uint dest_
 		inst_code.sflag = 0;
 		inst_code.w0 = 0;
 		inst_code.w1 = 0;
+		PipeLineNewDstAguReg(dest_reg);
+
 		dest_reg = ddddd_2_ddddd2(dest_reg);
 		if (dest_reg == -1)
 		{
@@ -1088,29 +1090,32 @@ void GenMovec2(uint src_reg, uint dest_reg)
 	} else
 	{
 		bcode inst_code;
-
+		int new_src, new_dest;
+		
 		inst_code.sflag = 0;
 		inst_code.w0 = 0;
 		inst_code.w1 = 0;
+
+		PipeLineNewSrcAguReg(src_reg);
+		PipeLineNewDstAguReg(dest_reg);
+
+		new_src = ddddd_2_ddddd2(src_reg);
+		new_dest = ddddd_2_eeeeee(dest_reg);
+
+		if (new_src != -1 && new_dest != -1)
 		{
-			int new_src = ddddd_2_ddddd2(src_reg);
-			int new_dest = ddddd_2_eeeeee(dest_reg);
+			inst_code.w0 = 0x440a0 | (new_dest << 8) | new_src;
+		} else
+		{
+			int new_src = ddddd_2_eeeeee(src_reg);
+			int new_dest = ddddd_2_ddddd2(dest_reg);
 
 			if (new_src != -1 && new_dest != -1)
 			{
-				inst_code.w0 = 0x440a0 | (new_dest << 8) | new_src;
+				inst_code.w0 = 0x4c0a0 | (new_src << 8) | new_dest;
 			} else
 			{
-				int new_src = ddddd_2_eeeeee(src_reg);
-				int new_dest = ddddd_2_ddddd2(dest_reg);
-
-				if (new_src != -1 && new_dest != -1)
-				{
-					inst_code.w0 = 0x4c0a0 | (new_src << 8) | new_dest;
-				} else
-				{
-					yyerror("Illegal register combination.");
-				}
+				yyerror("Illegal register combination.");
 			}
 		}
 		insert_code_w(&inst_code);
@@ -1133,6 +1138,8 @@ void GenMovec3(uint sh, int val, uint dest_reg)
 		inst_code.sflag = 0;
 		inst_code.w0 = 0;
 		inst_code.w1 = 0;
+		PipeLineNewDstAguReg(dest_reg);
+
 		dest_reg = ddddd_2_ddddd2(dest_reg);
 		if (dest_reg == -1)
 		{
@@ -1230,7 +1237,7 @@ void GenMovep(uint src_xory, bcode *src_ea, uint dst_xory, bcode *dst_ea)
 		{
 			if (src_ea->sflag != 2 || dst_ea->sflag != 2 || (src_ea->sflag == 2 && dst_ea->sflag == 2))
 			{
-				yyerror("Invalid source/destenation specified.");
+				yyerror("Invalid source/destination specified.");
 			}
 		} else
 		{								/* movep short_addressing , ea */
@@ -1317,7 +1324,9 @@ void GenMovep2(uint rw, bcode *src_ea, uint dst_xory, bcode *dst_ea)
 				}
 			}
 		} else
+		{
 			yyerror(ERROR_4);
+		}
 
 		inst_code.sflag = src_ea->sflag;
 		inst_code.w1 = src_ea->w1;
@@ -1923,6 +1932,7 @@ raddr GenRelAddrShort(int addr)
 	}
 	return ret;
 }
+
 
 raddr GenRelAddrReg(uint reg)
 {

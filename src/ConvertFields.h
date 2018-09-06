@@ -8,6 +8,8 @@ Author:     M.Buras (sqward)
 #ifndef _CONVERTFIELDS_H_
 #define _CONVERTFIELDS_H_
 
+#include "asm_types.h"
+
 int	ddddd_2_ff(unsigned int code);
 int	ddddd_2_ddddd(unsigned int code);
 int	ddddd_2_yff(unsigned int code);
@@ -34,12 +36,13 @@ int	ea_2_mmrr(unsigned int code, unsigned int code2);
 int	exp_2_ssss(int value);
 
 
-int GetQQQ( int first, int second, int dont_iterate  );
+int GetQQQ(int first, int second, int dont_iterate );
+int GetQQQQXregXreg(int first, int second);
+int GetQQQQXregYreg(int first, int second);
+int GetQQQQYregXreg(int first, int second);
+int GetQQQQYregYreg(int first, int second);
 
-
-int GetQQQQXregXreg( int first, int second );
-int GetQQQQXregYreg( int first, int second );
-int GetQQQQYregXreg( int first, int second );
-int GetQQQQYregYreg( int first, int second );
+bool isAguReg(uint reg);
+const char *getRegName(uint reg);
 
 #endif /* _CONVERTFIELDS_H_ */

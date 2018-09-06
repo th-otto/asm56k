@@ -19,10 +19,9 @@ int num_chunks;							/* pass 1 */
 int num_chunks2;						/* pass 2 */
 
 int pc;
-unsigned char *c_ptr;
-unsigned char *c_max_ptr;
 int mem_space;
 int in_section;
+static unsigned char *c_ptr;
 
 
 void allocate_chunk(int type)
@@ -38,7 +37,7 @@ void allocate_chunk(int type)
 		{
 			if (g_passNum != 0)
 			{
-				/* yywarning("Empty section defined1."); */
+				/* yywarning("Empty section defined."); */
 			}
 		}
 		num_chunks2++;
@@ -325,12 +324,10 @@ void verify_code(void)
 
 void insert_code_w(bcode *inst_code)
 {
-
 #if 0
 	if ((inst_code->w1 & 0xffffff) == 0x7FFF80)
 	{
 		yywarning("found!");
-
 	}
 #endif
 
@@ -370,7 +367,7 @@ void InsertString(const char *pString, int str_len)
 
 		for (; i != 0; i--)
 		{
-			*c_ptr++ = 0;				/*pad out the remaining bytes */
+			*c_ptr++ = 0;				/* pad out the remaining bytes */
 		}
 	} else
 	{

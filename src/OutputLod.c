@@ -101,7 +101,6 @@ static void LOD_OutputSymbols(FILE *output_file, int memspace, char type)
 /*
  * offset and skip are used for L memory only
  */
-
 static void LOD_SaveData(FILE *output_file, int chunkIndex, const char *MemType, int offset, int skip)
 {
 	int j, code_word;
@@ -137,7 +136,8 @@ static void LOD_SaveData(FILE *output_file, int chunkIndex, const char *MemType,
 	}
 }
 
-void SaveFileLod(char *name, char *iname)
+
+void SaveFileLod(const char *name, const char *iname)
 {
 	FILE *output_file;
 	int i;

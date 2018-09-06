@@ -49,15 +49,15 @@ static int skipping;
 
 
 
-void InitTokenStream(FILE *input, const char *file_name)
+void InitTokenStream(const char *file_name)
 {
 #if 0
 	buffer = (void *) asm_create_buffer(input, LEX_BUFFER);
 	asm_switch_to_buffer(buffer);
-	inc_names[0] = (char *) file_name;
+	inc_names[0] = file_name;
 	inc_buffers[0] = buffer;
 #endif
-	g_CurrentFile = (char *) file_name;
+	g_CurrentFile = file_name;
 }
 
 
@@ -259,7 +259,7 @@ int PushNewFile(const char *pFileName)
 			}
 		}
 	}
-	
+
 	if (pFile == NULL)
 	{
 		return -1;
@@ -288,11 +288,11 @@ int PushNewFile(const char *pFileName)
 	return 0;
 }
 
+
 /*
  * Include another source file
  */
-
-void IncludeFile(void)
+int IncludeFile(void)
 {
 	int i;
 	char inc_temp_string[512];
@@ -303,10 +303,11 @@ void IncludeFile(void)
 	{
 		yyerror("Includes nested too deep.");
 		asm_abort();
+		return FALSE;
 	}
 
 	if (skipping)
-		return;
+		return TRUE;
 
 	for (;;)
 	{
@@ -316,7 +317,7 @@ void IncludeFile(void)
 		{
 			Unput(i);
 			yyerror("Invalid include path.");
-			return;
+			return FALSE;
 		}
 
 		if (i != ' ' && i != '\t' && i != '\r' && i != '\n')
@@ -331,7 +332,7 @@ void IncludeFile(void)
 		{
 			Unput(i);
 			yyerror("Unexpected end of file.");
-			return;
+			return FALSE;
 		} else if ('\r' == i || '\n' == i || ' ' == i || '\t' == i)
 		{
 			*sptr++ = 0;
@@ -368,13 +369,15 @@ void IncludeFile(void)
 	if (PushNewFile(inc_temp_string))
 	{
 		yyerror("File not found: '%s'.", inc_temp_string);
+		return FALSE;
 	}
+	return TRUE;
 }
+
 
 /*
  * leave included file
  */
-
 int PopFile(void)
 {
 	asm_delete_buffer(inc_buffers[g_incStackDeepth]);
@@ -391,10 +394,10 @@ int PopFile(void)
 	return TRUE;
 }
 
+
 /*
  * skip a block of code
  */
-
 int SkipConditional(void)
 {
 	int token;

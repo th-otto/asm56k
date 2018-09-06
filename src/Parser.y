@@ -19,6 +19,7 @@ Author:     M.Buras (sqward)
 #include <ConvertFields.h>
 #include <TokenStream.h>
 #include <MacroProxy.h>
+#include <PipeLineRestriction.h>
 
 #include <codegen/GenMisc.h>
 #include <codegen/GenParMoves.h>
@@ -32,7 +33,7 @@ Author:     M.Buras (sqward)
 %union{
     Value val;
     u64 integer;
-    const int* pattern;
+    const int *pattern;
     int reg;
     double fp;
     hs* label;
@@ -74,15 +75,15 @@ Author:     M.Buras (sqward)
 
 %token <pattern> OP_ADD_SUB OP_CMP OP_AND_EOR_OR OP_ASX OP_LSX OP_BIT_XXX OP_R_BIT_XXX
 %token <pattern>  OP_J_BIT_XXX OP_DEC OP_EXTRACT OP_EXTRACTU OP_INC OP_INSERT
-%token <condition> OP_BCC OP_BRKCC OP_BSCC OP_DEBUGCC OP_IFCC
+%token <condition> OP_BCC OP_BRKCC OP_BSCC OP_DEBUGCC OP_IFCC OP_IFCCU OP_JCC OP_JSCC OP_TCC OP_TRAPCC
 %token <integer> OP_ONE_PAR_INSN OP_NONE_PAR_INSN OP_ADC_SBC OP_ADDx_SUBx OP_ABS OP_ADC OP_ADD OP_AND OP_ANDI_ORI
 %token <integer> OP_ASL OP_ASR OP_BCHG OP_BCLR OP_BRA OP_BRCLR OP_BRSET OP_BSCLR OP_BSET OP_BSR OP_BSSET OP_BTST
 %token <integer> OP_CLB OP_CLR OP_CMPM OP_CMPU OP_DEBUG OP_DIV OP_DMAC OP_DO OP_DOR OP_ENDDO OP_EOR
-%token <integer> OP_IFCCU OP_ILLEGAL OP_JCC OP_JCLR OP_JMP OP_JSCC OP_JSCLR OP_JSET OP_JSR OP_JSSET OP_LRA
+%token <integer> OP_ILLEGAL OP_JCLR OP_JMP OP_JSCLR OP_JSET OP_JSR OP_JSSET OP_LRA
 %token <integer> OP_LSL OP_LSR OP_LUA OP_MAC OP_MACI OP_MACxx OP_MACR OP_MACRI OP_MAX OP_MAXM OP_MERGE OP_MOVE
 %token <integer> OP_MOVEC OP_MOVEM OP_MOVEP OP_MPY OP_MPYxx OP_MPYI OP_MPYR OP_MPYRI OP_NEG OP_NOP OP_NORM OP_NORMF
 %token <integer> OP_NOT OP_OR OP_PFLUSH OP_PFLUSHUN OP_PFREE OP_PLOCK_PUNLOCK OP_PLOCKR_PUNLOCKR OP_REP OP_RESET
-%token <integer> OP_RND OP_ROL OP_ROR OP_RTI OP_RTS OP_SBC OP_STOP OP_SUB OP_SWI OP_TCC OP_TFR OP_TRAP OP_TRAPCC
+%token <integer> OP_RND OP_ROL OP_ROR OP_RTI OP_RTS OP_SBC OP_STOP OP_SUB OP_SWI OP_TFR OP_TRAP
 %token <integer> OP_TST OP_VSL OP_WAIT OP_EQU OP_INCLUDE OP_SET OP_MACRO OP_ENDM OP_END OP_ORG OP_ORG2 OP_PAGE
 %token <integer> OP_DC OP_GROUPING OP_GROUPINGEND TAG1 OP_IF OP_IFDEF OP_IFNDEF OP_ENDC OP_ELSE MACRO_PARAM MACRO_SYM
 %token <integer> TYPE_FRACT	 TYPE_FLOAT	 TYPE_INT OP_FOREVER OP_DS OP_DSM OP_REPT OP_ERROR OP_MSG OP_ALIGN
@@ -96,15 +97,15 @@ input   :	/* empty */
         |	input line
         ;
 
-line    :	EOL                                         {   				          		}
+line    :	EOL                                         {									}
         |   label OP_END                                {   YYACCEPT;               		}
         |   OP_END                                      {   YYACCEPT;               		}
         |	label OP_MACROCALL                          {   MacroCall($2.ptr);      		}
         |	OP_MACROCALL                                {   MacroCall($1.ptr);      		}
-        |	label EOL                                   {   				          		}
+        |	label EOL                                   {   								}
         |	_opcode EOL                                 {						    		}
         |	_opcode OP_END                              {   YYACCEPT;               		}
-        |	label _opcode EOL	                        {   				          		}
+        |	label _opcode EOL	                        {   								}
         |	label _opcode OP_END	                    {   YYACCEPT;               		}
         |	label OP_EQU exp OP_END						{   SymSet($1->pString,$3);      	}
         |	label OP_EQU exp EOL						{   SymSet($1->pString,$3);      	}
@@ -121,7 +122,7 @@ line    :	EOL                                         {   				          		}
                                                                 yyerror($2.ptr);
                                                         }
         |   OP_MSG OP_STRING                            {   
-                                                            if (g_passNum != 0) 
+                                                            if (g_passNum != 0)
                                                                 yywarning($2.ptr);         
                                                         }
         |	error EOL
@@ -167,9 +168,9 @@ _opcode
         |	OP_IF	exp error exp									{	GenIfError();							}
         |	OP_ELSE													{	GenElse();								}
         |	OP_ENDC													{   if_stack_l--;							}
-        |	OP_ORG  mem_space exp_int								{	GenOrg($2, $3);							}
+        |	OP_ORG  mem_space exp_int								{	PipeLineReset(); GenOrg($2, $3);		}
         |   OP_DC	dc_params										{											}
-        |   code                                                    {   CheckCodeInLMem();                      }
+        |   code                                                    {   CheckCodeInLMem(); PipeLineNewInst();	}
         ;
 
 code    
@@ -280,7 +281,7 @@ code
         |	OP_TRAPCC	                                            {   GenTrapcc($1);                          }
         |   OP_VSL ddddd TAG1 exp_int ',' LMEM  ea                  {   GenVsl($2,$4,&$7);                      }
         |	OP_MOVEM error                                          {   
-                                                                        if(g_passNum != 0) { yyerror("Illega movem operation."); };
+                                                                        if (g_passNum != 0) yyerror("Illega movem operation.");
                                                                     }
         ;
 
@@ -351,7 +352,7 @@ ddddd	:	XREG													{			$$=$1;				}
         |	LC														{			$$=56;				}
         ;
 
-/*                               Parallel moves syntax  */
+/*                               Parallel moves syntax */
 
 par_move:
             OP_IFCC										{	$$=GenParIFcc(0x20200,$1);								}   /* 56301 extension  */
@@ -378,6 +379,7 @@ par_move:
         |	ddddd ',' XMEM ea ddddd ',' YMEM ea			{	$$=GenParXRegYReg(XRegYReg_pattern[3],&$4,$1,&$8,$5);	}	/* X:Y: parallel moves */
         |	/*empty*/									{   $$=GenParEmpty();                                       }	/* no parallel move */
         ;
+
 MMRRR	:	'(' RREG ')' MINUS_N						{	$$ = GenEA1( 0,$2, $4 ).w0;				}
         |	'(' RREG ')' PLUS_N							{	$$ = GenEA1( 0x8,$2, $4 ).w0;			}
         |	'(' RREG ')' '-' 							{	$$ = GenEA2( 0x10, $2 ).w0;				}

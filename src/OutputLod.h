@@ -12,6 +12,6 @@ Author:     M.Buras (sqward)
 extern int 	output_format;
 extern int	g_output_symbols;
 
-void	SaveFileLod(char* name,char* iname);
+void	SaveFileLod(const char *name, const char *iname);
 
-#endif /*_OUTPUT_LOD_H_ */
+#endif /* _OUTPUT_LOD_H_ */

@@ -55,6 +55,7 @@ void InitMacroProxy(void)
 	g_MacroNumInstances = 0;
 }
 
+
 int yylex(void)
 {
 	TokenVal *pTokenValue;
@@ -164,7 +165,7 @@ int yylex(void)
 }
 
 
-void Record_Macro(hs * temp)
+void Record_Macro(hs *temp)
 {
 	SymSetValueMacro(temp, T_MACRO, (void *) GetCurrentStreamPos(), (void *) inc_names[g_incStackDeepth],
 					 (int) g_currentLine);
@@ -189,11 +190,11 @@ void Skip_Macro(void)
 	while (token != OP_ENDM);
 }
 
+
 /*
  * Replay_Macro() inserts previously defined macro
  */
-
-void Replay_Macro(hs * name)
+void Replay_Macro(hs *name)
 {
 	int token;
 	int params_count = 0;
@@ -261,7 +262,7 @@ void Replay_Macro(hs * name)
 
 	PushStream((TokenVal *) name->m_data1, (char *) name->m_data2, g_currentLine, params_count, g_MacroNumInstances);
 
-	g_CurrentFile = (char *) name->m_data2;
+	g_CurrentFile = name->m_data2;
 	g_currentLine = name->m_data3;
 
 	g_pParamsArrayPool = pParamArray;

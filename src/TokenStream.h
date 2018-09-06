@@ -65,7 +65,7 @@ extern TokenVal*	params_pointers[];
 extern TokenVal		macros_params[];
 
 
-void		InitTokenStream(FILE* input,const char *file_name);
+void		InitTokenStream(const char *file_name);
 void		PushStream( TokenVal* pMacro,const char* pFileName, int curline, int params_count, int instancesNumber );
 int			PopStream(void);
 int			TopPosStream(void);
@@ -79,9 +79,9 @@ void    	Skip_line(void);
 int     	SkipConditional(void);
 int     	PopFile(void);
 int         PushNewFile(const char* pFileName);
-void    	IncludeFile(void);
+int         IncludeFile(void);
 
-void		AddIncDir(const char* pDir);
+void		AddIncDir(const char *pDir);
 bool		GetIncDir(const char **pDir, uint* pDirNum);
 
 /* interfacing with lex */

@@ -14,7 +14,7 @@ Author:     M.Buras (sqward)
 #define BIGGER_OR_EQUAL 4
 #define NOT_EQUAL 5
 
-extern long asci2frac(char* string,int mode);
+extern long asci2frac(char* string, int mode);
 
 enum ValueType 
 {
@@ -26,8 +26,7 @@ enum ValueType
 
 typedef struct 
 {
-
-	enum ValueType  m_type ;
+	enum ValueType  m_type;
 
 	union 
     {
@@ -46,37 +45,37 @@ int	Val_GetAsInt(Value val);
 u32	Val_GetAsFract24(Value val);
 u64	Val_GetAsFract48(Value val);
 
-Value Val_Add(Value val1,Value val2);
-Value Val_Sub(Value val1,Value val2);
-Value Val_Mul(Value val1,Value val2);
-Value Val_Div(Value val1,Value val2);
+Value Val_Add(Value val1, Value val2);
+Value Val_Sub(Value val1, Value val2);
+Value Val_Mul(Value val1, Value val2);
+Value Val_Div(Value val1, Value val2);
 Value Val_Neg(Value val1);
-Value Val_And(Value val1,Value val2);
-Value Val_Xor(Value val1,Value val2);
-Value Val_Or(Value val1,Value val2);
+Value Val_And(Value val1, Value val2);
+Value Val_Xor(Value val1, Value val2);
+Value Val_Or(Value val1, Value val2);
 
-Value Val_Lsr(Value val1,Value val2);
-Value Val_Lsl(Value val1,Value val2);
+Value Val_Lsr(Value val1, Value val2);
+Value Val_Lsl(Value val1, Value val2);
 
-bool Val_Eq(Value val1,Value val2);
-bool Val_Ls(Value val1,Value val2);
-bool Val_Gt(Value val1,Value val2);
-bool Val_Le(Value val1,Value val2);
-bool Val_Gte(Value val1,Value val2);
+bool Val_Eq(Value val1, Value val2);
+bool Val_Ls(Value val1, Value val2);
+bool Val_Gt(Value val1, Value val2);
+bool Val_Le(Value val1, Value val2);
+bool Val_Gte(Value val1, Value val2);
 
-bool Val_CheckResolved( Value val2 );
-bool Val_CheckResolved2( Value val1,Value val2 );
+bool Val_CheckResolved(Value val2);
+bool Val_CheckResolved2(Value val1, Value val2);
 
 Value Val_CreateUnresolved(void);
 Value Val_CreateFloat(double val);
 Value Val_CreateInt(s64 val);
 Value Val_CreateFract(double val);
 
-void EvalCondition(uint condition,Value val1,Value val2);
-void EvalDefined(const char* pStr,bool invert);
+void EvalCondition(uint condition, Value val1, Value val2);
+void EvalDefined(const char* pStr, bool invert);
 void GenIfError(void);
 void GenElse(void);
-void EvalIfOneArg( uint cond , Value val );
+void EvalIfOneArg(uint cond, Value val);
 
 int StrToInt(const char* pString);
 

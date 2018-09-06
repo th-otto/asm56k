@@ -11,4 +11,4 @@ Author:     M.Buras (sqward)
 int StringBufferInit(int bufferSize);
 const char *StringBufferInsert(const char *pStr);
 
-#endif /*_STRINGBUFFER_H_ */
+#endif /* _STRINGBUFFER_H_ */

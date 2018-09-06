@@ -1,6 +1,6 @@
 #include "ErrorMessages.h"
 
-char const ERROR_4[] = "Illegal addressing  mode.";
+char const ERROR_4[] = "Illegal addressing mode.";
 char const ERROR_5[] = "Destination address out of range.";
 char const ERROR_6[] = "Immediate value to big: [0-23] range allowed.";
 char const ERROR_8[] = "Illegal destination register.";

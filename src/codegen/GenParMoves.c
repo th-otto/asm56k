@@ -8,6 +8,7 @@ Author:     M.Buras (sqward)
 #include <stdio.h>
 #include "GenParMoves.h"
 #include <ConvertFields.h>
+#include <PipeLineRestriction.h>
 #include <export.h>
 #include <ErrorMessages.h>
 
@@ -80,6 +81,8 @@ bcode GenParExpReg(int val, uint dst_reg)
 		move.sflag = 1;
 	} else
 	{
+		PipeLineNewDstAguReg(dst_reg);
+
 		dst_reg = ddddd_2_ddddd(dst_reg);
 		if (dst_reg == -1)
 		{
@@ -106,6 +109,8 @@ bcode GenParExpRegShort(int val, uint dst_reg)
 	{
 	} else
 	{
+		PipeLineNewDstAguReg(dst_reg);
+
 		if (val != (val & 0xff))
 		{
 			yyerror("Warning: In parallel move field: Immediate data excess 8bit number -> truncated");
@@ -133,6 +138,9 @@ bcode GenParRegReg(uint src_reg, uint dst_reg)
 	{
 	} else
 	{
+		PipeLineNewSrcAguReg(src_reg);
+		PipeLineNewDstAguReg(dst_reg);
+
 		src_reg = ddddd_2_ddddd(src_reg);
 		if (src_reg == -1)
 		{
@@ -142,7 +150,7 @@ bcode GenParRegReg(uint src_reg, uint dst_reg)
 		dst_reg = ddddd_2_ddddd(dst_reg);
 		if (dst_reg == -1)
 		{
-			yyerror("In parallel move field: Illegal destenation register specified.");
+			yyerror("In parallel move field: Illegal destination register specified.");
 			dst_reg = 0;
 		}
 		move.w0 = 0x200000 | (src_reg << 13) | (dst_reg << 8);
@@ -182,6 +190,9 @@ bcode GenMemReg(const uint *opcodes, bcode *ea, uint dst_reg)
 			move.sflag = 0;
 	} else
 	{
+		PipeLineNewSrcEA(ea);
+		PipeLineNewDstAguReg(dst_reg);
+
 		dst_reg = ddddd_2_ddddd(dst_reg);
 		if (dst_reg == -1)
 		{
@@ -214,8 +225,12 @@ bcode GenParExpRegRegReg(int val, uint dst_reg1, uint src_reg2, uint dst_reg2)
 	ea.sflag = 1;
 	ea.w0 = 0x34;
 	ea.w1 = val;
-	return GenParEaRegRegReg(&ea, dst_reg1, src_reg2, dst_reg2);
 
+	PipeLineNewDstAguReg(dst_reg1);
+	PipeLineNewSrcAguReg(src_reg2);
+	PipeLineNewDstAguReg(dst_reg2);
+
+	return GenParEaRegRegReg(&ea, dst_reg1, src_reg2, dst_reg2);
 }
 
 
@@ -240,6 +255,8 @@ bcode GenParEaRegRegReg(bcode *ea, uint dst_reg1, uint src_reg2, uint dst_reg2)
 #endif
 	} else
 	{
+		PipeLineNewSrcEA(ea);
+
 		src_reg2 = ddddd_2_d(src_reg2);
 		if (src_reg2 == -1)
 		{
@@ -248,7 +265,6 @@ bcode GenParEaRegRegReg(bcode *ea, uint dst_reg1, uint src_reg2, uint dst_reg2)
 		}
 		dst_reg2 = ddddd_2_yff(dst_reg2);
 		if (dst_reg2 != 0 && dst_reg2 != 1)
-
 		{
 			yyerror("In Y field: Illelgal register: Y0,Y1 only allowed.");
 		}
@@ -280,6 +296,8 @@ bcode GenParRegEaRegReg(uint src_reg1, bcode *ea, uint src_reg2, uint dst_reg2)
 			ea->sflag = 1;
 	} else
 	{
+		PipeLineNewDstEA(ea);
+
 		if (ea->w0 == 0x34)				/* cancel short addressing attempt */
 		{
 			ea->w0 = 0x30;
@@ -362,6 +380,8 @@ bcode GenParRegRegEaReg(uint src_reg1, uint dst_reg1, bcode *ea, uint dst_reg2)
 			move.sflag = 1;
 	} else
 	{
+		PipeLineNewSrcEA(ea);
+
 		src_reg1 = ddddd_2_d(src_reg1);
 		if (src_reg1 == -1)
 		{
@@ -401,9 +421,10 @@ bcode GenParRegRegRegEa(uint src_reg1, uint dst_reg1, uint dst_reg2, bcode *ea)
 			move.sflag = 1;
 	} else
 	{
+		PipeLineNewDstEA(ea);
+
 		if (dst_reg1 != dst_reg2 && src_reg1 != 0x6)
 		{
-
 			if ((src_reg1 = ddddd_2_d(src_reg1)) < 0)
 			{
 				src_reg1 = 0;
@@ -422,7 +443,6 @@ bcode GenParRegRegRegEa(uint src_reg1, uint dst_reg1, uint dst_reg2, bcode *ea)
 			move.w1 = ea->w1;
 		} else
 		{
-
 			if ((dst_reg2 = ddddd_2_d(dst_reg2)) < 0)
 			{
 				dst_reg2 = 0;
@@ -469,6 +489,8 @@ bcode GenLMemReg(const uint *opcodes, bcode *ea, uint dst_reg)
 			move.sflag = 0;
 	} else
 	{
+		PipeLineNewSrcEA(ea);
+
 		if ((dst_reg = ddddd_2_LLL(dst_reg)) < 0)
 		{
 			yyerror("Wrong register in long parallel move (use: a10,b10,x,y,ab,ba)");
@@ -504,6 +526,9 @@ bcode GenParXRegYReg(uint opcode, bcode *src_ea1, uint dst_reg1, bcode *src_ea2,
 	{
 	} else
 	{
+		PipeLineNewDstEA(src_ea1);
+		PipeLineNewDstEA(src_ea2);
+
 		src_ea1->w0 = ea_2_MMRRR(src_ea1->w0);
 		if (src_ea1->w0 == -1)
 		{

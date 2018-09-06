@@ -23,10 +23,10 @@ int const bsset_patterns[6];
 int const bra_patterns[3];
 int const extract_patterns[6];
 
-void GenBitOp(const int *insn_patt,int val,int xory,bcode *par_move  );
-void GenBitOpReg(uint insn_patt,int val,int dest_reg);
-void GenInsExt1(uint insn_patt,uint reg1,uint src_reg,uint dest_reg);
-void GenInsExt2(uint insn_patt,uint val,uint src_reg,uint dest_reg);
+void GenBitOp(const int *insn_patt, int val, int xory, bcode *par_move);
+void GenBitOpReg(uint insn_patt, int val, int dest_reg);
+void GenInsExt1(uint insn_patt, uint reg1, uint src_reg, uint dest_reg);
+void GenInsExt2(uint insn_patt, uint val, uint src_reg, uint dest_reg);
 
 
 #endif /* _GENBITOPS_H_ */

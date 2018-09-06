@@ -1,6 +1,6 @@
 
 BETA TODO:
-
+- add the path of the currently assembled file to the scan path for include directive
 - There's a problem with forward declared variables and IF directive. Detect forward refference and error
 - write docs
 - write tests (OP_MOVEP)
@@ -8,6 +8,7 @@ BETA TODO:
 --------------------------------------------------------------------------------------------------
 
 V 1.5 TODO:
+- rs and rs reset for easy structures definition
 - smarter DS handling ?
 - pipeline restrictions!
 - check for overlaping chunks

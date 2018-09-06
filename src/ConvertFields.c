@@ -9,6 +9,48 @@ Author:     M.Buras (sqward)
 #include "ConvertFields.h"
 #include "export.h"
 
+static const char *const g_regNames[] = {
+
+	"x0", "x1",							// 0, 1   
+	"y0", "y1",							// 2, 3   
+	"a0", "a1", "a2"					// 4,5,6   
+		"b0", "b1", "b2"				// 7,8,9   
+		"A",							// 10
+	"B",								// 11
+
+	"R0",								// 12
+	"R1",								// 12
+	"R2",								// 12
+	"R3",								// 12
+	"R4",								// 12
+	"R5",								// 12
+	"R6",								// 12
+	"R7",								// 12
+
+	"N0",								// 12
+	"N1",								// 12
+	"N2",								// 12
+	"N3",								// 12
+	"N4",								// 12
+	"N5",								// 12
+	"N6",								// 12
+	"N7",								// 12
+
+	"A10",								// 28
+	"B10",								// 29
+	"X",								// 30
+	"Y",								// 31
+	"AB",								// 32
+	"BA",								// 33
+	"MR",								// 34
+
+	"CCR",
+	"COM",
+	"EOM",
+
+	"M0" "M1" "M2" "M3" "M4" "M5" "M6" "M7" "EP" "VBA" "SC" "SZ" "SR" "OMR" "SP" "SSH" "SSL" "LA" "LC"
+};
+
 static char const _ddddd_2_ddddd[] = {
 	0x4, 0x5, 0x6, 0x7, 0x8, 0xc, 0xa, 0x9, 0xd, 0xb, 0xe, 0xf,	/* alu registers mapping */
 	0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,	/* agu Rx registers mapping */
@@ -86,7 +128,7 @@ static char const _ddddd_2_EE[] = {
 	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 	0xff, 0xff, 0x00, 0x01, 0x02, 0x03, 0xff, 0xff,
 	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+	0xff, 0xff, 0xff, 0x02, 0xff, 0xff, 0xff, 0xff,
 	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
@@ -251,7 +293,7 @@ int ddddd_2_d_dst(unsigned int code)
 
 	if (reg == -1)
 	{
-		yyerror("In operands field: Illegal destenation register specified: A or B only allowed.");
+		yyerror("In operands field: Illegal destination register specified: A or B only allowed.");
 		reg = 0;
 	}
 	return reg;
@@ -276,7 +318,7 @@ int ddddd_2_JJJ(unsigned int code)
 	return _ddddd_2_JJJ[code];
 }
 
-/* used bu TFR */
+/* used by TFR */
 static char const _ddddd_2_JJJ2[] = {
 	0x08 >> 1, 0x0C >> 1, 0x0A >> 1, 0x0E >> 1, 0xff, 0xff, 0xff, 0xff,
 	0xff, 0xff, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff,
@@ -363,7 +405,6 @@ static char const _ddddd_2_ddddd2[] = {
 
 int ddddd_2_ddddd2(unsigned int code)
 {
-	/* int test = _ddddd_2_ddddd2[50]; */
 	return _ddddd_2_ddddd2[code];
 }
 
@@ -511,6 +552,7 @@ int GetQQQ(int first, int second, int dont_iterate)
 		return -1;
 }
 
+
 int GetQQQQXregXreg(int first, int second)
 {
 	switch ((first << 1) | second)
@@ -527,6 +569,7 @@ int GetQQQQXregXreg(int first, int second)
 		return -1;
 	}
 }
+
 
 int GetQQQQXregYreg(int first, int second)
 {
@@ -545,6 +588,7 @@ int GetQQQQXregYreg(int first, int second)
 	}
 }
 
+
 int GetQQQQYregXreg(int first, int second)
 {
 	switch ((first << 1) | second)
@@ -562,6 +606,7 @@ int GetQQQQYregXreg(int first, int second)
 	}
 }
 
+
 int GetQQQQYregYreg(int first, int second)
 {
 	switch ((first << 1) | second)
@@ -577,4 +622,20 @@ int GetQQQQYregYreg(int first, int second)
 	default:
 		return -1;
 	}
+}
+
+
+bool isAguReg(uint reg)
+{
+	if ((reg >= 12 && reg < 28) || (reg >= 38 && reg < 46))
+	{
+		return TRUE;
+	}
+	return FALSE;
+}
+
+
+const char *getRegName(uint reg)
+{
+	return g_regNames[reg];
 }

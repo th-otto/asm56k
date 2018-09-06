@@ -13,18 +13,18 @@ Author:     M.Buras (sqward)
 #include <Value.h>
 #include "SymbolTable.h"
 #include "CodeUtils.h"
-#include "OutputEmbededAsm.h"
+#include "OutputEmbededC.h"
 
 
 /*
             offset and skip are used for L memory only
 */
 
-static void SaveDataEmbeded(FILE *output_file, int chunkIndex, int MemType, int offset, int skip)
+static void SaveDataEmbededC(FILE *output_file, int chunkIndex, int MemType, int offset, int skip)
 {
-	int j;
-	int mod_cnt;
-	unsigned char *code;
+	int j = 0;
+	int mod_cnt = 0;
+	unsigned char *code = NULL;
 
 	mod_cnt = 0;
 	code = chunks[chunkIndex].code_ptr + offset;
@@ -33,27 +33,20 @@ static void SaveDataEmbeded(FILE *output_file, int chunkIndex, int MemType, int 
 
 	j = (chunks[chunkIndex].code_len / 3) >> (skip ? 1 : 0);
 
-	fprintf(output_file, "\n  dc.b $00,$00,$%.2x\n", MemType);
-	fprintf(output_file, "  dc.b $%.2x,$%.2x,$%.2x\n", (chunks[chunkIndex].pc >> 16) & 0xff,
+	fprintf(output_file, "\n 0x00,0x00,0x%.2x,\n", MemType);
+	fprintf(output_file, " 0x%.2x,0x%.2x,0x%.2x,\n", (chunks[chunkIndex].pc >> 16) & 0xff,
 			(chunks[chunkIndex].pc >> 8) & 0xff, (chunks[chunkIndex].pc) & 0xff);
-	fprintf(output_file, "  dc.b $%.2x,$%.2x,$%.2x\n", (j >> 16) & 0xff, (j >> 8) & 0xff, (j) & 0xff);
-
-	if (j != 0)
-		fprintf(output_file, "  dc.b ");
+	fprintf(output_file, " 0x%.2x,0x%.2x,0x%.2x,\n", (j >> 16) & 0xff, (j >> 8) & 0xff, (j) & 0xff);
 
 	for (; j != 0; j--)
 	{
 
 		if (mod_cnt == 7 || j == 1)
 		{
-			fprintf(output_file, "$%.2x,$%.2x,$%.2x\n", code[0], code[1], code[2]);
-			if (j > 1)
-			{
-				fprintf(output_file, "  dc.b ");
-			}
+			fprintf(output_file, "0x%.2x,0x%.2x,0x%.2x,\n", code[0], code[1], code[2]);
 		} else
 		{
-			fprintf(output_file, "$%.2x,$%.2x,$%.2x,", code[0], code[1], code[2]);
+			fprintf(output_file, "0x%.2x,0x%.2x,0x%.2x,", code[0], code[1], code[2]);
 		}
 
 		code += (3 + skip);
@@ -64,7 +57,7 @@ static void SaveDataEmbeded(FILE *output_file, int chunkIndex, int MemType, int 
 }
 
 
-void SaveFileEmbeded(const char *name)
+void SaveFileEmbededC(const char *name)
 {
 	FILE *output_file;
 	int i;
@@ -74,6 +67,7 @@ void SaveFileEmbeded(const char *name)
 	bool no_prefix = FALSE;
 
 	output_file = fopen(name, "wb");
+
 	if (output_file <= 0)
 	{
 		printf("error while opening file: %s for write.\n", name);
@@ -86,6 +80,7 @@ void SaveFileEmbeded(const char *name)
 	if (pBaseName == NULL)
 	{
 		pBaseName = strrchr(baseName, '\\');
+
 		if (pBaseName == NULL)
 		{
 			pBaseName = baseName;
@@ -98,6 +93,7 @@ void SaveFileEmbeded(const char *name)
 		pBaseName++;
 	}
 
+
 	pFileExt = strrchr(pBaseName, '.');
 
 	if (pFileExt)
@@ -105,15 +101,12 @@ void SaveFileEmbeded(const char *name)
 		pFileExt[0] = 0;
 	}
 
-	fprintf(output_file, "  xdef _EmbededP56_%s\n\n", pBaseName);
-	fprintf(output_file, "  xdef _EmbededP56_%s_size\n\n", pBaseName);
-
 	if (num_chunks == 0)
 	{
 		return;
 	}
 
-	fprintf(output_file, "_EmbededP56_%s:\n", pBaseName);
+	fprintf(output_file, "unsigned char EmbededP56_%s[] = { \n", pBaseName);
 
 	for (i = 0; i != num_chunks2; i++)
 	{
@@ -132,27 +125,25 @@ void SaveFileEmbeded(const char *name)
 		{
 			switch (chunks[i].mem_type)
 			{
+				break;
 			case P_MEM:
-				SaveDataEmbeded(output_file, i, chunks[i].mem_type, 0, 0);
+				SaveDataEmbededC(output_file, i, chunks[i].mem_type, 0, 0);
 				break;
 			case X_MEM:
-				SaveDataEmbeded(output_file, i, chunks[i].mem_type, 0, 0);
+				SaveDataEmbededC(output_file, i, chunks[i].mem_type, 0, 0);
 				break;
 			case Y_MEM:
-				SaveDataEmbeded(output_file, i, chunks[i].mem_type, 0, 0);
+				SaveDataEmbededC(output_file, i, chunks[i].mem_type, 0, 0);
 				break;
 			case L_MEM:
-				SaveDataEmbeded(output_file, i, X_MEM, 3, 3);
-				SaveDataEmbeded(output_file, i, Y_MEM, 0, 3);
+				SaveDataEmbededC(output_file, i, X_MEM, 3, 3);
+				SaveDataEmbededC(output_file, i, Y_MEM, 0, 3);
 				break;
 			}
 		}
 	}
-
-	fprintf(output_file, "_EmbededP56_%s_size:  dc.l (_EmbededP56_%s_size-_EmbededP56_%s)/3\n", pBaseName, pBaseName,
-			pBaseName);
-
-	fprintf(output_file, "  end\n");
+	fprintf(output_file, "0x0,0x0,0x4\n");	// memtype 4 is a terminator
+	fprintf(output_file, "};\n");
 
 	fclose(output_file);
 }

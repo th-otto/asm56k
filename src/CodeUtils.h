@@ -49,13 +49,11 @@ extern int	num_chunks;		/* pass 1 */
 extern int	num_chunks2;	/* pass 2 */
 
 extern int		pc;
-extern unsigned char*	c_ptr;
-extern unsigned char*	c_max_ptr;
 extern int 	mem_space;
 extern int 	in_section;
 
 
-void	CreateOutputName(char* input_name,char** output_name);
+void	CreateOutputName(char* input_name, char** output_name);
 void	allocate_chunk(int type);
 void	close_chunk(void);
 void	allocate_vchunk(int type);
@@ -65,21 +63,21 @@ int		GetCurrentMemType(void);
 int     GetCurrentPC(void);
 void	insert_code(void);
 void	insert_code_w(bcode *inst_code);
-void	InsertString(const char *string,int str_len);
+void	InsertString(const char *string,  int str_len);
 void	insert_vcode(void);
 void	insert_vcode_w(const bcode *inst_code);
-void	GenDc( Value data );
-void	GenDS( Value val1 );
-int		GenAlign( Value val1 );
-void	GenDSM( hs* pLabel, Value val1  );
+void	GenDc(Value data);
+void	GenDS(Value val1);
+int		GenAlign(Value val1);
+void	GenDSM(hs* pLabel, Value val1 );
 void	GenOrg(uint memSpace, uint address);
 void    CheckCodeInLMem(void);
 int		GetCurrentChunkBegin(void);
-void	retInit( raddr *ret );
+void	retInit(raddr *ret);
 
 
-#define DSP56301 if ( g_dsp_cpu != 56301 ) yyerror ("Illegal 56301 instruction. CPU is set to %d",g_dsp_cpu )
+#define DSP56301 if (g_dsp_cpu != 56301) yyerror ("Illegal 56301 instruction. CPU is set to %d", g_dsp_cpu)
 /* this is a bit pointless... */
-#define DSP56001 if ( g_dsp_cpu != 56001 ) yyerror ("Illegal 56001 instruction. CPU is set to %d",g_dsp_cpu )
+#define DSP56001 if (g_dsp_cpu != 56001) yyerror ("Illegal 56001 instruction. CPU is set to %d", g_dsp_cpu)
 
 #endif /* _CODEUTILS_H_ */
