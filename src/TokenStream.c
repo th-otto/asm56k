@@ -333,14 +333,14 @@ int IncludeFile(void)
 	{
 		i = Input();
 
-		if (i == EOF)
+		if (i == EOF || i == '\r' || i == '\n')
 		{
 			Unput(i);
 			yyerror("Invalid include path.");
 			return FALSE;
 		}
 
-		if (i != ' ' && i != '\t' && i != '\r' && i != '\n')
+		if (i != ' ' && i != '\t')
 		{
 			break;
 		}
