@@ -420,9 +420,6 @@ void GenDo2(int val, raddr *rel_target)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		if (rel_target->type == T_REGISTER)
 		{
 			yyerror("In operands field: Only absolute address is valid.");
@@ -454,9 +451,6 @@ void GenDo3(uint src_reg, raddr *rel_target)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		if (rel_target->type == T_REGISTER)
 		{
 			yyerror("In operands field: Only absolute address is valid.");
@@ -489,9 +483,6 @@ void GenDoForever(raddr *rel_target)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		if (rel_target->type == T_REGISTER)
 		{
 			yyerror("In operands field: Only absolute address is valid.");
@@ -518,9 +509,6 @@ void GenDor1(uint xory, bcode *ea, raddr *rel_target)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		if (ea->sflag == 1)
 		{
 			yyerror("In operands field: Illegal addressing mode (Try to force short).");
@@ -565,9 +553,6 @@ void GenDor2(int val, raddr *rel_target)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		if (rel_target->type != T_LONG)
 		{
 			yyerror("In operands field: Illegal destination address.");
@@ -599,9 +584,6 @@ void GenDor3(uint src_reg, raddr *rel_target)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		if (rel_target->type != T_LONG)
 		{
 			yyerror("In operands field: Illegal destination address.");
@@ -634,9 +616,6 @@ void GenDorForever(raddr *rel_target)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		if (rel_target->type != T_LONG)
 		{
 			yyerror("In operands field: Illegal destination address.");
@@ -664,9 +643,8 @@ void GenEnddo(void)
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.w0 = 0x8c;
+		inst_code.w1 = 0;
 		insert_code_w(&inst_code);
 	}
 }
@@ -685,9 +663,8 @@ void GenIllegal(void)
 		bcode inst_code;
 
 		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		inst_code.w0 = 0x5;
+		inst_code.w1 = 0;
 		insert_code_w(&inst_code);
 	}
 }
@@ -707,9 +684,6 @@ void GenJmpJsrJsccJcc(const uint *insn_patt, uint condition, bcode *ea)
 	{
 		bcode inst_code;
 
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 		if (ea->sflag == 2)
 		{
 			if (ea->w1 > 4095)
@@ -719,6 +693,7 @@ void GenJmpJsrJsccJcc(const uint *insn_patt, uint condition, bcode *ea)
 			}
 			inst_code.sflag = 0;
 			inst_code.w0 = insn_patt[0] | (condition << 12) | ea->w1;
+			inst_code.w1 = 0;
 		} else
 		{
 			inst_code.sflag = ea->sflag;
@@ -741,10 +716,6 @@ void GenJccBitRelReg(int insn_patt, int val, int dest_reg, raddr *rel_target)
 	} else
 	{
 		bcode inst_code;
-
-		inst_code.sflag = 0;
-		inst_code.w0 = 0;
-		inst_code.w1 = 0;
 
 		if (val > 23)
 		{
@@ -823,7 +794,8 @@ void GenJccBitAbs(const int *insn_patt, int val, int xory, bcode *ea, raddr *rel
 				} else
 				{
 					if (ea->w1 >= 0xffff80 && ea->w1 <= 0xffffbf)
-					{					/* 56301 only! */
+					{
+						/* 56301 only! */
 						inst_code.w0 = insn_patt[2] | ((ea->w1 - 0xffff80) << 8) | (val) | (xory << 6);
 					} else
 					{
@@ -1261,9 +1233,7 @@ void GenMovep(uint src_xory, bcode *src_ea, uint dst_xory, bcode *dst_ea)
 			new_src_addr = src_ea->w1 | 0xffff00;
 			if (new_src_addr >= 0xffffc0 && new_src_addr <= 0xffffff)
 			{
-				inst_code.w0 =
-					0x84080 | (src_xory << 16) | (dir << 15) | (dst_ea->w0 << 8) | (dst_xory << 6) | (new_src_addr -
-																									  0xffffc0);
+				inst_code.w0 = 0x84080 | (src_xory << 16) | (dir << 15) | (dst_ea->w0 << 8) | (dst_xory << 6) | (new_src_addr - 0xffffc0);
 			} else
 			{
 				if (new_src_addr >= 0xffff80 && new_src_addr <= 0xffffbf)
@@ -1416,8 +1386,7 @@ void GenMovep4(uint rw, uint xory, bcode *ea, uint reg)
 				{
 					if (ea->w1 >= 0xffff80 && ea->w1 <= 0xffffbf)
 					{
-						inst_code.w0 = 0x044080 | (rw << 15) | (reg << 8)
-							|| (((ea->w1 - 0xffff80) & 0x20) << 1) | ((ea->w1 - 0xffff80) & 0x1f);
+						inst_code.w0 = 0x044080 | (rw << 15) | (reg << 8) | (((ea->w1 - 0xffff80) & 0x20) << 1) | ((ea->w1 - 0xffff80) & 0x1f);
 						if (xory == 1)
 						{
 							inst_code.w0 = inst_code.w0 ^ 0xa;
@@ -1856,7 +1825,7 @@ bcode GenImmShortIO(uint opcode, uint addr)
 	move.w1 = 0;
 	if (g_passNum == 0)
 	{
-		move.sflag = 0;
+		move.sflag = 2;
 	} else
 	{
 		move.sflag = 2;
@@ -1875,7 +1844,7 @@ bcode GenImmShortAbs(uint opcode, uint addr)
 	move.w1 = 0;
 	if (g_passNum == 0)
 	{
-		move.sflag = 0;
+		move.sflag = 2;
 	} else
 	{
 		move.sflag = 2;
