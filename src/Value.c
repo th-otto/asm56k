@@ -201,14 +201,15 @@ Value Val_Mul(Value val1, Value val2)
 
 	ret.m_type = val1.m_type;
 
-	if (val1.m_type != val2.m_type)
-	{
-		yyerror("Can't multiply incompatible types values.");
-	}
-
 	if (val1.m_type == kFract || val1.m_type == kFloat)
 	{
+		val2 = Val_CastToFloat(val2);
 		ret.m_value.m_float = val1.m_value.m_float * val2.m_value.m_float;
+	} else if (val2.m_type == kFract || val2.m_type == kFloat)
+	{
+		val1 = Val_CastToFloat(val1);
+		ret.m_value.m_float = val1.m_value.m_float * val2.m_value.m_float;
+		ret.m_type = val1.m_type;
 	} else
 	{
 		ret.m_value.m_int = val1.m_value.m_int * val2.m_value.m_int;
@@ -238,7 +239,7 @@ Value Val_Div(Value val1, Value val2)
 			{
 				yyerror("Division by zero.");
 			}
-			ret.m_value.m_float = 1;	/* ? */
+			ret.m_value.m_float = 1;
 		} else
 		{
 			ret.m_value.m_float = val1.m_value.m_float / val2.m_value.m_float;
@@ -252,11 +253,12 @@ Value Val_Div(Value val1, Value val2)
 			{
 				yyerror("Division by zero.");
 			}
-			ret.m_value.m_float = 1;	/* ? */
+			ret.m_value.m_float = 1;
 		} else
 		{
 			ret.m_value.m_float = val1.m_value.m_float / val2.m_value.m_float;
 		}
+		ret.m_type = val1.m_type;
 	} else
 	{
 		if (val2.m_value.m_int == 0)
@@ -265,7 +267,7 @@ Value Val_Div(Value val1, Value val2)
 			{
 				yyerror("Division by zero.");
 			}
-			ret.m_value.m_float = 1;	/* ? */
+			ret.m_value.m_int = 1;
 		} else
 		{
 			ret.m_value.m_int = val1.m_value.m_int / val2.m_value.m_int;
@@ -300,7 +302,7 @@ static Value Val_Mod(Value val1, Value val2)
 			{
 				yyerror("Division by zero.");
 			}
-			ret.m_value.m_float = 1;	/* ? */
+			ret.m_value.m_int = 1;
 		} else
 		{
 			ret.m_value.m_int = val1.m_value.m_int % val2.m_value.m_int;
