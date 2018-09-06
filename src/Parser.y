@@ -410,8 +410,8 @@ exp     :	NUM_FRACT	        						{   $$ = Val_CreateFract($1);       }
         |	NUM_FLOAT									{   $$ = Val_CreateFloat($1);       }
         |	NUM_INTEGER	            					{   $$ = Val_CreateInt($1);			}
         |	SYM		            						{   $$ = GetSym($1.ptr); 			}
-        |	OP_STRING2                                  {$$=Val_CreateInt(StrToInt($1.ptr));}
-        |   '*'                                         {$$ = Val_CreateInt(GetCurrentPC());}
+        |	OP_STRING2                                  {	$$ = Val_CreateInt(StrToInt($1.ptr));	}
+        |	'*'                                         {	$$ = Val_CreateInt(GetCurrentPC());	}
         |	exp '&' exp	        						{   $$ = Val_And($1,$3);            }
         |	exp '|' exp	        						{   $$ = Val_Or($1,$3);				}
         |	exp '^' exp	        						{   $$ = Val_Xor($1,$3);			}
@@ -426,7 +426,7 @@ exp     :	NUM_FRACT	        						{   $$ = Val_CreateFract($1);       }
         |	TYPE_FRACT	'(' exp ')'						{	$$ = Val_CastToFract($3);		}
         |	TYPE_FLOAT	'(' exp ')'						{	$$ = Val_CastToFloat($3);		}
         |	TYPE_INT	'(' exp ')'						{	$$ = Val_CastToInt($3);			}
-        |	TYPE_INT	'(' OP_STRING ')'				{$$=Val_CreateInt(StrToInt($3.ptr));}
+        |	TYPE_INT	'(' OP_STRING ')'				{	$$ = Val_CreateInt(StrToInt($3.ptr));	}
         ;
 
 %%

@@ -424,7 +424,7 @@ Value Val_Lsr(Value val1, Value val2)
 	if (val1.m_type == kFract || val1.m_type == kFloat || val2.m_type == kFract || val2.m_type == kFloat)
 	{
 		ret.m_value.m_float = 0;
-		yyerror("Float not allowed for bitwise operations");
+		yyerror("Float not allowed for bit-wise shift");
 	} else
 	{
 		ret.m_value.m_int = val1.m_value.m_int >> val2.m_value.m_int;
@@ -453,7 +453,7 @@ Value Val_Lsl(Value val1, Value val2)
 	if (val1.m_type == kFract || val1.m_type == kFloat || val2.m_type == kFract || val2.m_type == kFloat)
 	{
 		ret.m_value.m_float = 0;
-		yyerror("Float not allowed for bitwise operations");
+		yyerror("Float not allowed for bit-wise shift");
 	} else
 	{
 		ret.m_value.m_int = val1.m_value.m_int << val2.m_value.m_int;
