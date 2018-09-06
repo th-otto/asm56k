@@ -279,7 +279,7 @@ enum opt {
 	OPT_VERSION = 'V',
 	
 	OPT_EMBED_ASM = 'e',
-	OPT_EMBED_C = 'v',
+	OPT_EMBED_C = 'k',
 	OPT_OUTPUT = 'o',
 	OPT_P56 = 'p',
 	OPT_SYMBOLS = 's',
@@ -314,7 +314,7 @@ static void usage(FILE *fp, int status)
 	fprintf(fp, "  -o, --output <file>          LOD output file.\n");
 	fprintf(fp, "  -p, --p56-file <file>        P56 output file.\n");
 	fprintf(fp, "  -e, --embed-asm-file <file>  Output devpac/vasm file.\n");
-	fprintf(fp, "  -v, --embed-c-file <file>    Output C file.\n");
+	fprintf(fp, "  -k, --embed-c-file <file>    Output C file.\n");
 	fprintf(fp, "  -s, --symbols                Output symbols (in LOD).\n");
 	fprintf(fp, "  -z, --write-zero             Output section even if it contains only zeros.\n");
 	fprintf(fp, "  -D, --define <name[=value]>  Define a symbol.\n");
@@ -333,7 +333,7 @@ int main(int argc, char *argv[])
 	StringBufferInit(0x8000);
 	InitSymbolTable();
 
-	while ((c = getopt_long(argc, argv, "c:e:o:p:svzD:I:", long_options, NULL)) != -1)
+	while ((c = getopt_long(argc, argv, "c:e:o:p:skzD:I:Vh", long_options, NULL)) != -1)
 	{
 		switch ((enum opt) c)
 		{
