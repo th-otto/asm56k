@@ -8,8 +8,6 @@ x_r:		ds	1
 	
 	tgt	y0,b		r1,r2
 	
-	end
-	
 	sub	b,a		x:(r3+n3),x1
 	sub	b,a
 
@@ -25,7 +23,7 @@ x_r:		ds	1
 	move	#'dom',x0
 	
 	ifdef dsp56301
-		add	x0,b		ifeq
+		add	x0,b
 	endc
 	
 	movep	y:$0,X:<<$ffeb
