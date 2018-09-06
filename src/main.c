@@ -70,59 +70,57 @@ void debugprint(const char *pFmt, ...)
 {
 #ifdef DEBUG
 	va_list arglist;
-	char buff[512];
 
 	va_start(arglist, pFmt);
-
-	vprintf(pFmt, arglist);
+	vfprintf(stderr, pFmt, arglist);
 	va_end(arglist);
 #endif
 }
 
 
-int yyerror(const char *s, ...)
+static void yymessage(const char *lineformat, const char *format, va_list arglist)
 {
-	char error_buf[512];
-	va_list arglist;
 	int i;
 
-	for (i = 0; i < g_incStackDeepth; i++)
+	if (g_incStackDeepth > 0)
 	{
-		printf("%s:%d: In file included from here.\n", inc_names[i], inc_lines[i]);
+		for (i = 0; i < g_incStackDeepth; i++)
+		{
+			fprintf(stderr, "%s:%d: in file included from here.\n", inc_names[i], inc_lines[i]);
+		}
 	}
 
-	va_start(arglist, s);
-	snprintf(error_buf, 512, "%s:%d: %s\n", inc_names[g_incStackDeepth], g_currentLine, s);
-	vprintf(error_buf, arglist);
-	g_errorCount++;
-	va_end(arglist);
-	return 0;
+	fprintf(stderr, lineformat, inc_names[g_incStackDeepth], g_currentLine);
+	vfprintf(stderr, format, arglist);
+	fputc('\n', stderr);
 }
 
 
-int yywarning(const char *s, ...)
+void yywarning(const char *s, ...)
 {
-	char warn_buf[512];
 	va_list arglist;
-	int i;
-
-	for (i = 0; i < g_incStackDeepth; i++)
-	{
-		printf("%s:%d: In file included from here.\n", inc_names[i], inc_lines[i]);
-	}
 
 	va_start(arglist, s);
-	snprintf(warn_buf, 512, "%s:%d: Warning: %s\n", inc_names[g_incStackDeepth], g_currentLine, s);
-	vprintf(warn_buf, arglist);
-	g_warnCount++;
+	yymessage("%s:%d: Warning: ", s, arglist);
 	va_end(arglist);
-	return 0;
+	g_warnCount++;
+}
+
+
+void yyerror(const char *s, ...)
+{
+	va_list arglist;
+
+	va_start(arglist, s);
+	yymessage("%s:%d: ", s, arglist);
+	va_end(arglist);
+	g_errorCount++;
 }
 
 
 void asm_abort(void)
 {
-	printf("Terminating execution.\n");
+	fprintf(stderr, "Terminating execution.\n");
 	longjmp(critical_error, 1);
 }
 
