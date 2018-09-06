@@ -429,6 +429,7 @@ int SkipConditional(void)
 		switch (token)
 		{
 		case OP_IF:
+		case OP_IFCC:
 			nest++;
 			if (nest > 1024)
 			{
