@@ -79,6 +79,7 @@ void    	Skip_line(void);
 int     	SkipConditional(void);
 int     	PopFile(void);
 int         PushNewFile(const char* pFileName);
+bool PushNewMainFile(const char *pFileName);
 int         IncludeFile(void);
 
 void		AddIncDir(const char *pDir);

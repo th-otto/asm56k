@@ -178,7 +178,7 @@ static int asm56k(void)
 
 	AddIncDir("./");
 
-	if (PushNewFile(input_name) != 0)
+	if (PushNewMainFile(input_name) == FALSE)
 	{
 		fprintf(stderr, "File not found: '%s'\n", input_name);
 		return EXIT_FAILURE;

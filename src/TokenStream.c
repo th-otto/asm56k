@@ -229,6 +229,30 @@ int PrefetchTokens(void)
 }
 
 
+static void CreateNewLexBuffer(FILE *pFile, const char *pFileName)
+{
+	g_incStackDeepth++;
+	inc_handles[g_incStackDeepth] = pFile;
+	inc_buffers[g_incStackDeepth] = (void *) asm_create_buffer(inc_handles[g_incStackDeepth], LEX_BUFFER);
+	inc_names[g_incStackDeepth] = StringBufferInsert(pFileName);
+
+	g_currentLine = 1;
+
+	asm_switch_to_buffer(inc_buffers[g_incStackDeepth]);
+
+	/*
+	 * Insert source file name into the tokenized code
+	 * This tells us which source line in which source
+	 * is invalid (this is for error reporting)
+	 */
+
+	yylval.text.len = 0;				/* fake string */
+	yylval.text.ptr = StringBufferInsert(pFileName);
+
+	debugprint("Include_file(%s);\n", pFileName);
+}
+
+
 int PushNewFile(const char *pFileName)
 {
 	char name_buf[512];
@@ -265,27 +289,23 @@ int PushNewFile(const char *pFileName)
 		return -1;
 	}
 
-	g_incStackDeepth++;
-	inc_handles[g_incStackDeepth] = pFile;
-	inc_buffers[g_incStackDeepth] = (void *) asm_create_buffer(inc_handles[g_incStackDeepth], LEX_BUFFER);
-	inc_names[g_incStackDeepth] = StringBufferInsert(pFileName);
-
-	g_currentLine = 1;
-
-	asm_switch_to_buffer(inc_buffers[g_incStackDeepth]);
-
-	/*
-	 * Insert source file name into the tokenized code
-	 * This tells us which source line in which source
-	 * is invalid (this is for error reporting)
-	 */
-
-	yylval.text.len = 0;				/* fake string */
-	yylval.text.ptr = StringBufferInsert(pFileName);
-
-	debugprint("Include_file(%s);\n", pFileName);
+	CreateNewLexBuffer(pFile, pFileName);
 
 	return 0;
+}
+
+
+bool PushNewMainFile(const char *pFileName)
+{
+	FILE *pFile;
+
+	pFile = fopen(pFileName, "r");
+	if (pFile != NULL)
+	{
+		CreateNewLexBuffer( pFile, pFileName);
+		return TRUE;
+	}
+	return FALSE;
 }
 
 
