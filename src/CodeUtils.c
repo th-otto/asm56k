@@ -48,16 +48,22 @@ void allocate_chunk(int type)
 	c_ptr = chunks[num_chunks2].code_ptr = pNewChunkMem;
 	chunks[num_chunks2].mem_type = type;
 	chunks[num_chunks2].pc = pc;
+	chunks[num_chunks2].hasdata = FALSE;
 	in_section = TRUE;
+}
+
+
+static int GetCurrentChunkIndex(void)
+{
+	if (g_passNum != 0)
+		return num_chunks2;
+	return num_chunks;
 }
 
 
 int GetCurrentMemType(void)
 {
-	if (g_passNum != 0)
-		return chunks[num_chunks2].mem_type;
-	else
-		return chunks[num_chunks].mem_type;
+	return chunks[GetCurrentChunkIndex()].mem_type;
 }
 
 
@@ -76,10 +82,7 @@ int GetCurrentPC(void)
 
 int GetCurrentChunkBegin(void)
 {
-	if (g_passNum != 0)
-		return chunks[num_chunks2].pc;
-	else
-		return chunks[num_chunks].pc;
+	return chunks[GetCurrentChunkIndex()].pc;
 }
 
 
@@ -111,6 +114,7 @@ void allocate_vchunk(int type)
 
 	chunks[num_chunks].mem_type = type;
 	chunks[num_chunks].pc = pc;
+	chunks[num_chunks].hasdata = FALSE;
 
 	in_section = TRUE;
 }
@@ -179,7 +183,7 @@ void GenDS(Value val1)
 {
 	int lmem = 1;
 	int size;
-	int val = 0;
+	int val;
 
 	if (Val_CheckResolved(val1))
 	{
@@ -270,7 +274,7 @@ void GenDSM(hs *pLabel, Value val1)
 
 	if (val == 0 && g_passNum != 0)
 	{
-		yywarning("Zero size DSM buffer not allowed.");
+		yyerror("Zero size DSM buffer not allowed.");
 		return;
 	}
 
@@ -324,13 +328,6 @@ void verify_code(void)
 
 void insert_code_w(bcode *inst_code)
 {
-#if 0
-	if ((inst_code->w1 & 0xffffff) == 0x7FFF80)
-	{
-		yywarning("found!");
-	}
-#endif
-
 	*c_ptr++ = (unsigned char) (inst_code->w0 >> 16);
 	*c_ptr++ = (unsigned char) (inst_code->w0 >> 8);
 	*c_ptr++ = (unsigned char) (inst_code->w0);
@@ -344,6 +341,9 @@ void insert_code_w(bcode *inst_code)
 		*c_ptr++ = (unsigned char) (inst_code->w1);
 		pc++;
 	}
+
+	/* This is required for empty segment detection */
+	chunks[GetCurrentChunkIndex()].hasdata = TRUE;
 }
 
 
@@ -373,6 +373,9 @@ void InsertString(const char *pString, int str_len)
 	{
 		c_ptr += wordLength * 3;
 	}
+
+	/* This is required for empty segment detection */
+	chunks[GetCurrentChunkIndex()].hasdata = TRUE;
 }
 
 
@@ -394,6 +397,9 @@ void insert_vcode_w(const bcode *inst_code)
 		yyerror("No output memory section defined.");
 		asm_abort();
 	}
+
+	/* This is required for empty segment detection */
+	chunks[GetCurrentChunkIndex()].hasdata = TRUE;
 }
 
 

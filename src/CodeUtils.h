@@ -21,20 +21,19 @@ Author:     M.Buras (sqward)
 #define L_MEM 3
 
 
-typedef struct
-{
-    uint pc;
-    uchar *code_ptr;
-    int	code_len;		/* code length for pass 1 */
-    int code_len2;		/* code length for pass 2, for verification */
-    int	mem_type;
+typedef struct {
+	uint pc;
+	uchar *code_ptr;
+	int code_len;		/* code length for pass 1 */
+	int code_len2;		/* code length for pass 2, for verification */
+	int mem_type;
+	bool hasdata;		/* Says that this section was all zeros so far. This is used to merge empty section. */
 } chunk;
 
-typedef struct
-{
-    int sflag;
+typedef struct {
+	int sflag;
 	uint w0;
-    uint w1;
+	uint w1;
 } bcode;
 
 typedef struct {
@@ -44,13 +43,13 @@ typedef struct {
     int abs_value;
 } raddr;
 
-extern chunk	chunks[1024];
-extern int	num_chunks;		/* pass 1 */
-extern int	num_chunks2;	/* pass 2 */
+extern chunk chunks[1024];
+extern int num_chunks;		/* pass 1 */
+extern int num_chunks2;	/* pass 2 */
 
-extern int		pc;
-extern int 	mem_space;
-extern int 	in_section;
+extern int pc;
+extern int mem_space;
+extern int in_section;
 
 
 void	CreateOutputName(char* input_name, char** output_name);
