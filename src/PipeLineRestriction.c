@@ -47,8 +47,7 @@ void PipeLineNewSrcAguReg(uint reg)
 		{
 			if (reg == g_prevInstrRegs[i])
 			{
-				yyerror("Pipeline restriction violation: register %s used as target in previous instruction.",
-						getRegName(reg));
+				yywarning("Pipeline restriction violation: register %s used as target in previous instruction.", getRegName(reg));
 			}
 		}
 	}
