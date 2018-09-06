@@ -87,6 +87,8 @@ bool		GetIncDir(const char **pDir, uint *pDirNum);
 
 /* interfacing with lex */
 
+#define YYEOF 0
+
 struct yy_buffer_state;
 
 struct yy_buffer_state *asm_create_buffer(FILE *, int);

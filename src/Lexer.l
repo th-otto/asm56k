@@ -569,7 +569,7 @@ BEGIN(macro)
                                 int sym = 0;
                                 int second = input();
 
-                                if ( second == EOF )
+                                if ( second == YYEOF )
                                 {
                                     yyerror("Unexpected end of file in C-style comment.");
 								    break;
@@ -668,7 +668,7 @@ static void ParseString(void)
 		{
 			*sptr = '\0';
 			break;
-		} else if (c == EOF)
+		} else if (c == 0)
 		{
 			yyerror("String spans the input file.");
 			break;

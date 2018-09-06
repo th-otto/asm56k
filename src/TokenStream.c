@@ -333,7 +333,7 @@ int IncludeFile(void)
 	{
 		i = Input();
 
-		if (i == EOF || i == '\r' || i == '\n')
+		if (i == YYEOF || i == '\r' || i == '\n')
 		{
 			Unput(i);
 			yyerror("Invalid include path.");
@@ -348,9 +348,8 @@ int IncludeFile(void)
 
 	for (;;)
 	{
-		if (EOF == i)
+		if (YYEOF == i)
 		{
-			Unput(i);
 			yyerror("Unexpected end of file.");
 			return FALSE;
 		} else if ('\r' == i || '\n' == i || ' ' == i || '\t' == i)
