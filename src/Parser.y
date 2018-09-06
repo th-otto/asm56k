@@ -58,7 +58,7 @@ Author:     M.Buras (sqward)
 %type <integer> ddddd exp_int MMRRR X_or_Y QQQQ plus_minus QQQ SH condition dc_params mem_space
 
 %left '&' ',' '|' '^' LSL LSR 
-%left '+' '-' 
+%left '+' '-' '~' '!'
 %left '*' '/'
 
 /*
@@ -421,6 +421,8 @@ exp 	:	NUM_FRACT									{	$$ = Val_CreateFract($1);				}
 		|	exp '*' exp 								{	$$ = Val_Mul($1,$3);					}
 		|	exp '/' exp 								{	$$ = Val_Div($1,$3);					}
 		|  '-' exp										{	$$ = Val_Neg($2);						}
+		|  '!' exp										{	$$ = Val_Not($2);						}
+		|  '~' exp										{	$$ = Val_BinNot($2);					}
 		|	'(' exp ')' 								{	$$ = $2;								}
 		|	TYPE_FRACT	'(' exp ')' 					{	$$ = Val_CastToFract($3);				}
 		|	TYPE_FLOAT	'(' exp ')' 					{	$$ = Val_CastToFloat($3);				}

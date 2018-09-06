@@ -157,6 +157,7 @@ BEGIN(macro)
 "|"										{	return '|';																		}
 "="										{	return '=';																		}
 "!"										{	return '!';																		}
+"~"										{	return '~';																		}
 "&"										{	return '&';																		}
 "<<"									{	return LSL;																		}
 ">>"									{	return LSR;																		}

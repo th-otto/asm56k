@@ -335,6 +335,53 @@ Value Val_Neg(Value val1)
 }
 
 
+Value Val_BinNot(Value val1)
+{
+	Value ret;
+
+	if (Val_CheckResolved(val1))
+	{
+		return Val_CreateUnresolved();
+	}
+
+	ret.m_type = val1.m_type;
+
+	if (val1.m_type == kFract || val1.m_type == kFloat)
+	{
+		yyerror("Float not allowed for bitwise operations");
+		ret.m_value.m_float = 0;
+	} else
+	{
+		ret.m_value.m_int = ~val1.m_value.m_int;
+	}
+
+	return ret;
+}
+
+
+Value Val_Not(Value val1)
+{
+	Value ret;
+
+	if (Val_CheckResolved(val1))
+	{
+		return Val_CreateUnresolved();
+	}
+
+	ret.m_type = val1.m_type;
+
+	if (val1.m_type == kFract || val1.m_type == kFloat)
+	{
+		ret.m_value.m_float = val1.m_value.m_float == 0.0;
+	} else
+	{
+		ret.m_value.m_int = val1.m_value.m_int == 0;
+	}
+
+	return ret;
+}
+
+
 Value Val_And(Value val1, Value val2)
 {
 	Value ret;

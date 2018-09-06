@@ -50,6 +50,8 @@ Value Val_Sub(Value val1, Value val2);
 Value Val_Mul(Value val1, Value val2);
 Value Val_Div(Value val1, Value val2);
 Value Val_Neg(Value val1);
+Value Val_Not(Value val1);
+Value Val_BinNot(Value val1);
 Value Val_And(Value val1, Value val2);
 Value Val_Xor(Value val1, Value val2);
 Value Val_Or(Value val1, Value val2);
