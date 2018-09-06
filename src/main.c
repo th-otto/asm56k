@@ -35,13 +35,22 @@ Author:     M.Buras (sqward)
 #include <getopt.h>
 
 
-
 int g_currentLine = 1;
 int g_passNum;
 int g_errorCount;
 int g_warnCount;
 int g_LocalSerial = 0;
 jmp_buf critical_error;
+
+static char *lod_output_name = NULL;
+static char *p56_output_name = NULL;
+static char *embed_asm_output_name = NULL;
+static char *embed_c_output_name = NULL;
+
+static char *input_name = NULL;
+int g_dsp_cpu = 56001;
+int g_output_symbols;
+int g_write_zero_sections;
 
 static char const program[] = "asm56k";
 static char const version[] = "0.93";
@@ -68,7 +77,8 @@ void debugprint(const char *pFmt, ...)
 	vprintf(pFmt, arglist);
 	va_end(arglist);
 #endif
-};
+}
+
 
 int yyerror(const char *s, ...)
 {
@@ -87,7 +97,8 @@ int yyerror(const char *s, ...)
 	g_errorCount++;
 	va_end(arglist);
 	return 0;
-};
+}
+
 
 int yywarning(const char *s, ...)
 {
@@ -131,6 +142,7 @@ static void InitParserPass1(void)
 	PushStream(g_tokens, inc_names[0], 1, -1, 0);
 }
 
+
 static void InitParserPass2(void)
 {
 	g_LocalSerial = 0;
@@ -145,16 +157,6 @@ static void InitParserPass2(void)
 }
 
 
-static char *lod_output_name = NULL;
-static char *p56_output_name = NULL;
-static char *embed_asm_output_name = NULL;
-static char *embed_c_output_name = NULL;
-
-static char *input_name = NULL;
-int g_dsp_cpu = 56001;
-int g_falcon = 0;
-int g_output_symbols = 0;
-int g_write_zero_sections = 0;
 
 
 static int asm56k(void)
@@ -265,6 +267,7 @@ static void DefineSymbol(char *v)
 		val = Val_CreateInt(1);
 	SymSet(pSymbol, val);
 }
+
 
 static void AddIncludePath(const char *v)
 {

@@ -28,7 +28,7 @@ uint const movem_pattern1[2];
 uint const movem_pattern2[2];
 
 void GenOneParamParMove(uint insn_patt, uint reg, bcode *par_move);
-void GenBccRelTarger(uint insn_patt,  raddr *rel_target);
+void GenBccRelTarger(uint insn_patt, raddr *rel_target);
 
 void GenBraRelTarger(raddr *rel_target);
 void GenJccBitRel(const int *insn_patt, int val, int xory, bcode *ea, raddr *rel_target);

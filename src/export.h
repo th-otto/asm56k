@@ -18,8 +18,8 @@ extern void		asm_abort(void);
 
 extern int 		g_currentLine;
 extern int      g_LocalSerial;
-extern int		yyerror(const char* s, ... ) __attribute__((format(printf, 1, 2)));
-extern int      yywarning(const char* s, ... ) __attribute__((format(printf, 1, 2)));
+extern int		yyerror(const char *s, ... ) __attribute__((format(printf, 1, 2)));
+extern int      yywarning(const char *s, ... ) __attribute__((format(printf, 1, 2)));
 extern int		yylex(void);
 extern int		asmlex(void);
 extern void		mtest(void *vector, const char *File, int Line);

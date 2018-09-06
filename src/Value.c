@@ -140,6 +140,7 @@ u32 Val_GetAsFract24(Value val)
 	return 0;
 }
 
+
 u64 Val_GetAsFract48(Value val)
 {
 	if (val.m_type == kFract || val.m_type == kFloat)
@@ -159,6 +160,7 @@ u64 Val_GetAsFract48(Value val)
 
 	return 0;
 }
+
 
 Value Val_Add(Value val1, Value val2)
 {

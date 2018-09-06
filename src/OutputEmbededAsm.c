@@ -19,7 +19,6 @@ Author:     M.Buras (sqward)
 /*
             offset and skip are used for L memory only
 */
-
 static void SaveDataEmbeded(FILE *output_file, int chunkIndex, int MemType, int offset, int skip)
 {
 	int j;
@@ -68,7 +67,7 @@ void SaveFileEmbeded(const char *name)
 {
 	FILE *output_file;
 	int i;
-	char baseName[256];
+	char baseName[512];
 	char *pBaseName = NULL;
 	char *pFileExt = NULL;
 	bool no_prefix = FALSE;

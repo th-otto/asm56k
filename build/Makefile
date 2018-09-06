@@ -30,7 +30,6 @@ SRCS = \
 	$(srcdir)/main.c \
 	$(srcdir)/codegen/GenArith.c \
 	$(srcdir)/codegen/GenBitOps.c \
-	$(srcdir)/codegen/GenControl.c \
 	$(srcdir)/codegen/GenMisc.c \
 	$(srcdir)/codegen/GenParMoves.c \
 	\

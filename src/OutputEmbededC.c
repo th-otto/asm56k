@@ -19,7 +19,6 @@ Author:     M.Buras (sqward)
 /*
             offset and skip are used for L memory only
 */
-
 static void SaveDataEmbededC(FILE *output_file, int chunkIndex, int MemType, int offset, int skip)
 {
 	int j = 0;
@@ -61,7 +60,7 @@ void SaveFileEmbededC(const char *name)
 {
 	FILE *output_file;
 	int i;
-	char baseName[256];
+	char baseName[512];
 	char *pBaseName = NULL;
 	char *pFileExt = NULL;
 	bool no_prefix = FALSE;
@@ -125,7 +124,6 @@ void SaveFileEmbededC(const char *name)
 		{
 			switch (chunks[i].mem_type)
 			{
-				break;
 			case P_MEM:
 				SaveDataEmbededC(output_file, i, chunks[i].mem_type, 0, 0);
 				break;
@@ -142,7 +140,7 @@ void SaveFileEmbededC(const char *name)
 			}
 		}
 	}
-	fprintf(output_file, "0x0,0x0,0x4\n");	// memtype 4 is a terminator
+	fprintf(output_file, "0x0,0x0,0x3\n");	/* memtype 3 is a terminator */
 	fprintf(output_file, "};\n");
 
 	fclose(output_file);

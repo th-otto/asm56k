@@ -23,13 +23,13 @@ typedef struct
 	int token;
 	union
 	{
-		void* pNextBlock;
+		void *pNextBlock;
 		YYSTYPE val;
 	}data;
 } TokenVal;
 
 typedef struct{
-	TokenVal* 	macro_ptr;
+	TokenVal 	*macro_ptr;
 	int			instancesNumber;
 	int			line_num;
 	int 	    menager_mode;
@@ -52,38 +52,38 @@ extern void*		inc_buffers[];
 extern int			inc_lines[];
 extern int			g_incStackDeepth;
 
-extern TokenVal* 	g_tokens;
-extern TokenVal* 	wglobal_tokens;
+extern TokenVal *g_tokens;
+extern TokenVal *wglobal_tokens;
 
 extern int 			g_streamsStrackIndex;
 extern StreamStackEntry	streamsStack[];
 
-extern TokenVal* 	g_pParamsPool;
-extern TokenVal** 	g_pParamsArrayPool;
+extern TokenVal *g_pParamsPool;
+extern TokenVal **g_pParamsArrayPool;
 extern int			g_MacroNumInstances;
 extern TokenVal*	params_pointers[];
 extern TokenVal		macros_params[];
 
 
 void		InitTokenStream(const char *file_name);
-void		PushStream( TokenVal* pMacro,const char* pFileName, int curline, int params_count, int instancesNumber );
+void		PushStream(TokenVal *pMacro, const char *pFileName, int curline, int params_count, int instancesNumber);
 int			PopStream(void);
 int			TopPosStream(void);
 void		ResetStream(void);
 TokenVal*	GetCurrentStreamPos(void);
-int			GetToken(TokenVal** pTokenValue);
+int			GetToken(TokenVal **pTokenValue);
 int			SkipToken(void);
-TokenVal*	CopyToken(int token,TokenVal* pToken);
+TokenVal*	CopyToken(int token,TokenVal *pToken);
 int			PrefetchTokens(void);
 void    	Skip_line(void);
 int     	SkipConditional(void);
 int     	PopFile(void);
-int         PushNewFile(const char* pFileName);
-bool PushNewMainFile(const char *pFileName);
-int         IncludeFile(void);
+int         PushNewFile(const char *pFileName);
+bool		PushNewMainFile(const char *pFileName);
+int    		IncludeFile(void);
 
 void		AddIncDir(const char *pDir);
-bool		GetIncDir(const char **pDir, uint* pDirNum);
+bool		GetIncDir(const char **pDir, uint *pDirNum);
 
 /* interfacing with lex */
 

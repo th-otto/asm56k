@@ -660,7 +660,6 @@ static void ParseString(void)
 	char quote = asmtext[0];
 	int len_str = 0;
 
-
 	for (;;)
 	{
 		c = input();

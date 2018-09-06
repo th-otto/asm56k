@@ -99,4 +99,3 @@ void PipeLineNewDstEA(bcode *reg)
 	}
 #endif
 }
-

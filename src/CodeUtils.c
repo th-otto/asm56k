@@ -3,7 +3,6 @@
 Project:    asm56k
 Author:     M.Buras (sqward)
 
-
 */
 
 #include <stdio.h>
@@ -220,7 +219,7 @@ void GenDS(Value val1)
 int GenAlign(Value val1)
 {
 	int old_pc = pc;
-	int val = 0;
+	int val;
 
 	if (Val_CheckResolved(val1))
 	{
@@ -233,7 +232,7 @@ int GenAlign(Value val1)
 	if (GetCurrentMemType() == L_MEM)
 		val <<= 1;
 
-	while (1)
+	for (;;)
 	{
 		if (pc % val == 0)
 		{
@@ -249,7 +248,6 @@ int GenAlign(Value val1)
 		{
 			c_ptr += 3;
 		}
-
 		pc++;
 	}
 
@@ -322,7 +320,6 @@ void verify_code(void)
 			}
 		}
 	}
-
 }
 
 

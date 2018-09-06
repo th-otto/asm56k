@@ -3,7 +3,6 @@
 Project:    asm56k
 Author:     M.Buras (sqward)
 
-
 */
 #ifndef _CODEUTILS_H_
 #define _CODEUTILS_H_
@@ -39,13 +38,13 @@ typedef struct {
 typedef struct {
     int sflag;
     int type;
-    int	value;
+    int value;
     int abs_value;
 } raddr;
 
 extern chunk chunks[1024];
 extern int num_chunks;		/* pass 1 */
-extern int num_chunks2;	/* pass 2 */
+extern int num_chunks2;		/* pass 2 */
 
 extern int pc;
 extern int mem_space;
@@ -59,18 +58,18 @@ void	allocate_vchunk(int type);
 void	close_vchunk(void);
 void	verify_code(void);
 int		GetCurrentMemType(void);
-int     GetCurrentPC(void);
+int 	GetCurrentPC(void);
 void	insert_code(void);
 void	insert_code_w(bcode *inst_code);
-void	InsertString(const char *string,  int str_len);
+void	InsertString(const char *string, int str_len);
 void	insert_vcode(void);
 void	insert_vcode_w(const bcode *inst_code);
 void	GenDc(Value data);
 void	GenDS(Value val1);
 int		GenAlign(Value val1);
-void	GenDSM(hs* pLabel, Value val1 );
+void	GenDSM(hs* pLabel, Value val1);
 void	GenOrg(uint memSpace, uint address);
-void    CheckCodeInLMem(void);
+void	CheckCodeInLMem(void);
 int		GetCurrentChunkBegin(void);
 void	retInit(raddr *ret);
 

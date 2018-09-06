@@ -32,6 +32,7 @@ uint const ymem_reg_pattern2[] = {
 	0x484000
 };
 
+
 uint const lmem_reg_pattern1[] = {
 	0x408000,
 	0x40c000
@@ -41,6 +42,7 @@ uint const lmem_reg_pattern2[] = {
 	0x400000,
 	0x404000
 };
+
 
 uint const XRegYReg_pattern[] = {
 	0xc08000,
@@ -92,7 +94,6 @@ bcode GenParExpReg(int val, uint dst_reg)
 		move.sflag = 1;
 		move.w0 = 0x40c000 | 0x3400 | ((dst_reg & 0x18) << 17) | ((dst_reg & 0x7) << 16);
 		move.w1 = val;
-
 	}
 	return move;
 }

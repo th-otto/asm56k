@@ -302,7 +302,7 @@ bool PushNewMainFile(const char *pFileName)
 	pFile = fopen(pFileName, "r");
 	if (pFile != NULL)
 	{
-		CreateNewLexBuffer( pFile, pFileName);
+		CreateNewLexBuffer(pFile, pFileName);
 		return TRUE;
 	}
 	return FALSE;

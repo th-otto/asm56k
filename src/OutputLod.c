@@ -148,8 +148,8 @@ void SaveFileLod(const char *name, const char *iname)
 		printf("error while opening file: %s for write.\n", name);
 		return;
 	}
-	/* write out LOD header: */
 
+	/* write out LOD header: */
 	fprintf(output_file, "_START %s 0000 0000 0000 asm56k v0.1a\r\n\r\n", iname);
 
 	if (num_chunks == 0)

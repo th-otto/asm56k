@@ -35,4 +35,8 @@ ziobro		equ 0
 			msg "ziobro equals zero"
 		endc
 		
+		if	ziobro != 1
+			msg "ziobro indeed equals zero"
+		endc
+
 		end

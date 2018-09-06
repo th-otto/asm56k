@@ -35,8 +35,7 @@ int	ea_2_MMRRR(unsigned int code);
 int	ea_2_mmrr(unsigned int code, unsigned int code2);
 int	exp_2_ssss(int value);
 
-
-int GetQQQ(int first, int second, int dont_iterate );
+int GetQQQ(int first, int second, int dont_iterate);
 int GetQQQQXregXreg(int first, int second);
 int GetQQQQXregYreg(int first, int second);
 int GetQQQQYregXreg(int first, int second);
