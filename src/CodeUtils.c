@@ -9,6 +9,7 @@ Author:     M.Buras (sqward)
 #include <stdlib.h>
 #include <string.h>
 #include <asm_types.h>
+#include "ErrorMessages.h"
 #include <export.h>
 #include "CodeUtils.h"
 
@@ -257,10 +258,9 @@ int GenAlign(Value val1)
 
 void GenDSM(hs *pLabel, Value val1)
 {
-	int wasted = 0;
-	u32 align_mask = 0x80000000;
-
-	int val = 0;
+	uint wasted;
+	u32 align_mask, align_val;
+	uint val;
 
 	if (Val_CheckResolved(val1))
 	{
@@ -270,35 +270,47 @@ void GenDSM(hs *pLabel, Value val1)
 
 	val = Val_GetAsInt(val1);
 
-	if (val == 0 && g_passNum != 0)
+	if (val == 0)
 	{
 		yyerror("Zero size DSM buffer not allowed.");
 		return;
 	}
-
-	while (1)
+	if (val >= 0x10000)
 	{
-		if (val & align_mask)
+		yyerror(ERROR_9);
+		return;
+	}
+
+	val--;
+	align_mask = 0;
+	align_val = 1;
+	for (;;)
+	{
+		if ((val & align_mask) == val)
 		{
 			break;
 		}
-		align_mask >>= 1;
+		align_val <<= 1;
+		align_mask <<= 1;
+		align_mask |= 1;
 	}
 
-	wasted = GenAlign(Val_CreateInt(align_mask));
-
-	if (pLabel)
+	if ((pc & ~align_mask) != pc)
 	{
-		SymSetValue(pLabel, T_PTR, Val_CreateInt(pc));	/* reset label address value */
+		wasted = GenAlign(Val_CreateInt(align_val));
+
+		if (pLabel)
+		{
+			SymSetValue(pLabel, T_PTR, Val_CreateInt(pc));	/* reset label address value */
+		}
+
+		if (wasted != 0 && g_passNum != 0)
+		{
+			yywarning("DSM statement wasted %u words of memory.", wasted);
+		}
 	}
 
-	if (wasted != 0 && g_passNum != 0)
-	{
-
-		yywarning("DSM statement wasted %d words of memory.", wasted);
-	}
-
-	GenDS(Val_CreateInt(val));
+	GenDS(Val_CreateInt(val + 1));
 }
 
 
