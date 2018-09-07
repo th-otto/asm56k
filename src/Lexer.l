@@ -670,7 +670,7 @@ static void ParseString(void)
 		{
 			*sptr = '\0';
 			break;
-		} else if (c == 0)
+		} else if (c == YYEOF)
 		{
 			yyerror("String spans the input file.");
 			break;

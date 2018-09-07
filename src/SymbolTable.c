@@ -190,6 +190,7 @@ void SymSet(const char *pSymbol, Value val)
 	if ((temp = FindSymbol(pSymbol)) == 0)
 	{
 		yyerror("Undefined symbol: %s", pSymbol);
+		return;
 	}
 	SymSetValue(temp, T_VALUE, val);
 }
