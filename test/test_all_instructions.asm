@@ -340,3 +340,4 @@ loopz:	asr		a
 	
 	
 	
+	set loopz,1

@@ -113,6 +113,7 @@ line    :	EOL                                         {									}
 
 		|	label OP_DSM exp							{	GenDSM( $1, $3 );				}
 		|	OP_DSM	exp 								{	GenDSM( NULL, $2 ); 			}
+		|	OP_SET SYM ',' exp							{	SymSet($2.ptr,$4);				}
 
 		|	OP_MACRO OP_END 							{	MacroError();					}
 		|	OP_MACRO EOL								{	MacroError();					}

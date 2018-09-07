@@ -478,6 +478,7 @@ BEGIN(macro)
 {R}{T}{S}               				{	INTEG(0xc,OP_NONE_PAR_INSN);		}
 
 {S}{B}{C}               				{	INTEG(0x25,OP_ADC_SBC);				}
+{S}{E}{T}               				{	BEGIN(symbol); return(OP_SET);		}
 {S}{T}{O}{P}            				{	INTEG(0x87,OP_NONE_PAR_INSN);		}
 
 {S}{U}{B}               				{	PATT(sub_patterns,OP_ADD_SUB);		}
