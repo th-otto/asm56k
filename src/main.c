@@ -53,7 +53,7 @@ int g_output_symbols;
 int g_write_zero_sections;
 
 static char const program[] = "asm56k";
-static char const version[] = "0.93";
+static char const version[] = "1.01";
 
 
 void mtest(void *pMem, const char *File, int Line)
@@ -334,7 +334,7 @@ int main(int argc, char *argv[])
 	StringBufferInit(0x8000);
 	InitSymbolTable();
 
-	while ((c = getopt_long(argc, argv, "c:e:o:p:skzD:I:Vh", long_options, NULL)) != -1)
+	while ((c = getopt_long(argc, argv, "c:e:k:o:p:szD:I:Vh", long_options, NULL)) != -1)
 	{
 		switch ((enum opt) c)
 		{
