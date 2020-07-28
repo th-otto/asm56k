@@ -378,7 +378,7 @@ int IncludeFile(void)
 
 	if (inc_temp_string[0] == '\"')
 	{
-		strcpy(inc_temp_string, inc_temp_string + 1);
+		memmove(inc_temp_string, inc_temp_string + 1, strlen(inc_temp_string + 1) + 1);
 		if (strrchr(inc_temp_string, '\"') != NULL)
 		{
 			*strrchr(inc_temp_string, '\"') = 0;
