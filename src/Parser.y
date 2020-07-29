@@ -163,6 +163,7 @@ _opcode
 		|	OP_ALIGN exp											{	GenAlign( $2 ); 						}
 		|	OP_IFCC exp 											{	EvalIfOneArg( $1, $2  );				}
 		|	OP_IF	exp condition exp								{	EvalCondition($3,$2,$4);				}
+		|	OP_IF	exp 											{	EvalIfOneArg(0x2,$2);					}
 		|	OP_IFDEF SYM											{	EvalDefined($2.ptr,FALSE);				}
 		|	OP_IFNDEF SYM											{	EvalDefined($2.ptr,TRUE);				}
 		|	OP_IF	exp error exp									{	GenIfError();							}

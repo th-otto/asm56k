@@ -297,6 +297,7 @@ BEGIN(macro)
 
 {E}{N}{D}{M}							{	NOVAL(OP_ENDM);						}
 {E}{N}{D}{C}							{	NOVAL(OP_ENDC);						}
+{E}{N}{D}{I}{F}							{	NOVAL(OP_ENDC);						}
 {E}{N}{D}								{	BEGIN(symbol);
 											if( PopFile() )
 											{
