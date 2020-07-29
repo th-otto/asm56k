@@ -61,3 +61,10 @@ asm56k
 build/Parser.c
 build/Parser.h
 build/Lexer.c
+tools/cldinfo
+tools/cldlod
+tools/cofdmp
+tools/lod2p56
+tools/srec
+tools/dsp56k-strip
+tools/tiohist
