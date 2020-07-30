@@ -1597,10 +1597,17 @@ void GenTcc1(uint condition, uint src_reg, uint dst_reg)
 		inst_code.sflag = 0;
 		inst_code.w0 = 0;
 		inst_code.w1 = 0;
-		new_src_reg = ddddd_2_JJJ(src_reg);
+		if (src_reg == 10 || src_reg == 11) /* A/B */
+			new_src_reg = 0;
+		else
+			new_src_reg = ddddd_2_JJJ(src_reg);
 		if (new_src_reg != -1)
 		{
 			if (src_reg == dst_reg)
+			{
+				yyerror(ERROR_7);
+				new_src_reg = 0;
+			} else if (new_src_reg == 4 || new_src_reg == 6)
 			{
 				yyerror(ERROR_16);
 				new_src_reg = 0;
@@ -1647,16 +1654,20 @@ void GenTcc2(uint condition, uint src_reg1, uint dst_reg1, uint src_reg2, uint d
 		inst_code.w1 = 0;
 		if (src_reg1 == dst_reg1)
 		{
-			yyerror(ERROR_8);
+			yyerror(ERROR_7);
 			src_reg1 = 0;
 		}
-		src_reg1 = ddddd_2_JJJ(src_reg1);
-		if (src_reg1 == -1)
+		if (src_reg1 == 10 || src_reg1 == 11) /* A/B */
+			src_reg1 = 0;
+		else
+			src_reg1 = ddddd_2_JJJ(src_reg1);
+		if (src_reg1 == -1 || src_reg1 == 4 || src_reg1 == 6)
 		{
 			yyerror(ERROR_16);
 			src_reg1 = 0;
 		}
 		dst_reg1 = ddddd_2_d_dst(dst_reg1);
+
 		src_reg2 = ddddd_2_RRR(src_reg2);
 		if (src_reg2 == -1)
 		{

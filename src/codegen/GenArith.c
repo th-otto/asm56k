@@ -94,7 +94,7 @@ void GenAndEorOr(uint insn_patt, uint src_reg, uint dest_reg, bcode *par_move)
 		inst_code.w1 = 0;
 		if (src_reg == dest_reg)
 		{
-			yyerror("In operands field: Same source and target specified.");
+			yyerror(ERROR_7);
 		}
 		inst_code.sflag = par_move->sflag;
 		inst_code.w0 = insn_patt | (ddddd_2_d_dst(dest_reg) << 3) | (ddddd_2_JJ_src(src_reg) << 4) | (par_move->w0);
@@ -164,13 +164,13 @@ void GenAddSub(uint insn_patt, uint src_reg, uint dest_reg, bcode *par_move)
 
 		if (src_reg == dest_reg)
 		{
-			yyerror("In operands field: Same source and target specified.");
+			yyerror(ERROR_7);
 		}
 
 		src_reg = ddddd_2_JJJ(src_reg);
 		if (src_reg == -1)
 		{
-			yyerror("In operands field: illegal source operand: B/A,X,Y,X0-1,Y0-1 only allowed.");
+			yyerror("In operands field: illegal source operand: B/A,X,Y,X0,X1,Y0,Y1 only allowed.");
 			src_reg = 0;
 		}
 		dest_reg = ddddd_2_d_dst(dest_reg);
@@ -202,13 +202,13 @@ void GenCmp(uint insn_patt, uint src_reg, uint dest_reg, bcode *par_move)
 
 		if (src_reg == dest_reg)
 		{
-			yyerror("In operands field: Same source and target specified.");
+			yyerror(ERROR_7);
 		}
 
 		src_reg = ddddd_2_JJJ2(src_reg);
 		if (src_reg == -1)
 		{
-			yyerror("In operands field: illegal source operand: B/A,X0-1,Y0-1 only allowed.");
+			yyerror("In operands field: illegal source operand: B/A,X0,Y0,X1,Y1 only allowed.");
 			src_reg = 0;
 		}
 		dest_reg = ddddd_2_d_dst(dest_reg);
@@ -381,7 +381,7 @@ void GenAsxReg(uint insn_patt, int val_reg, uint src_reg, uint dest_reg)
 		val_reg = ddddd_2_sss(val_reg);
 		if (val_reg == -1)
 		{
-			yyerror("In operands field: Illegal register: X0-1, Y0-1, A1, B1 only allowed.");
+			yyerror("In operands field: Illegal register: X0,X1,Y0,Y1,A1,B1 only allowed.");
 			val_reg = 0;
 		}
 		src_reg = ddddd_2_d_src(src_reg);
@@ -410,12 +410,17 @@ void GenCmpm(uint src_reg, uint dest_reg, bcode *par_move)
 
 		if (src_reg == dest_reg)
 		{
-			yyerror("In operands field: Same source and target register specified.");
+			yyerror(ERROR_7);
 		}
-		src_reg = ddddd_2_JJJ(src_reg);
-		if (src_reg == -1)
+		if (src_reg == 10) /* A */
+			src_reg = 1;
+		else if (src_reg == 11) /* B */
+			src_reg = 0;
+		else
+			src_reg = ddddd_2_JJJ(src_reg);
+		if (src_reg == -1 || src_reg == 4 || src_reg == 6)
 		{
-			yyerror("In operands field: Illegal register specified: B/A,X0,Y0,X1,Y1 only allowed.");
+			yyerror("In operands field: Illegal source operand: B/A,X0,Y0,X1,Y1 only allowed.");
 			src_reg = 0;
 		}
 		dest_reg = ddddd_2_d_dst(dest_reg);
@@ -445,7 +450,7 @@ void GenCmpu(uint src_reg, uint dest_reg)
 		inst_code.w1 = 0;
 		if (src_reg == dest_reg)
 		{
-			yyerror("In operands field: Same source and target register specified.");
+			yyerror(ERROR_7);
 		}
 		src_reg = ddddd_2_ggg(src_reg);
 		if (src_reg == -1)
