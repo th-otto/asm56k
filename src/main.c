@@ -54,7 +54,7 @@ int g_output_symbols;
 int g_write_zero_sections;
 
 static char const program[] = "asm56k";
-static char const version[] = "1.01";
+static char const version[] = "1.02";
 
 
 void mtest(void *pMem, const char *File, int Line)
