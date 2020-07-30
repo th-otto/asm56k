@@ -64,7 +64,7 @@ x_r:		ds	1
 	movec	la,lc						
 
 	
-	tlt	x,a						; yes, set new max
+	tlt	x0,a						; yes, set new max
 	
 	
 	add	x,b		x:(r4),a	b,y1
