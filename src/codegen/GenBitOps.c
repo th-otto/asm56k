@@ -122,7 +122,7 @@ void GenBitOp(const int *insn_patt, int val, int xory, bcode *ea)
 		inst_code.w1 = 0;
 		if (val > 23)
 		{
-			yyerror("In operands filed: Immediate value to big: <0-23> range alowed.");
+			yyerror("In operands filed: Immediate value to big: <0-23> range allowed.");
 			val = 0;
 		}
 		if (ea->sflag == 2)

@@ -719,7 +719,7 @@ void GenJccBitRelReg(int insn_patt, int val, int dest_reg, raddr *rel_target)
 
 		if (val > 23)
 		{
-			yyerror("In operands filed: Immediate value to big: [0-23] range alowed.");
+			yyerror("In operands filed: Immediate value to big: [0-23] range allowed.");
 			val = 0;
 		}
 		if (rel_target->type != T_LONG)

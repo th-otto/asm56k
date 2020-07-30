@@ -321,12 +321,12 @@ void GenAndiOri(uint insn_patt, int val, uint dest_reg)
 		dest_reg = ddddd_2_EE(dest_reg);
 		if (dest_reg == -1)
 		{
-			yyerror("In operands field: Illegal register: Control registers only alowed.");
+			yyerror("In operands field: Illegal register: Control registers only allowed.");
 			dest_reg = 0;
 		}
 		if (val != (val & 0xff))
 		{
-			yyerror("In operands field: Immediate value too big: 8-bit value alowed.");
+			yyerror("In operands field: Immediate value too big: 8-bit value allowed.");
 			val &= 0xff;
 		}
 		inst_code.w0 = insn_patt | dest_reg | (val << 8);
@@ -352,7 +352,7 @@ void GenAsxImmediate(uint insn_patt, int val, uint src_reg, uint dest_reg)
 		inst_code.w1 = 0;
 		if ((val & 0x3f) != val)
 		{
-			yyerror("In operands filed: Immediate value to big: <0x0-0x3f> range alowed.");
+			yyerror("In operands filed: Immediate value to big: <0x0-0x3f> range allowed.");
 			val &= 0x3f;
 		}
 		src_reg = ddddd_2_d_src(src_reg);
@@ -450,7 +450,7 @@ void GenCmpu(uint src_reg, uint dest_reg)
 		src_reg = ddddd_2_ggg(src_reg);
 		if (src_reg == -1)
 		{
-			yyerror("In operands field: Illegal source register: A/B,X0,Y0,X1,Y1 alowed.");
+			yyerror("In operands field: Illegal source register: A/B,X0,Y0,X1,Y1 allowed.");
 			src_reg = 0;
 		}
 		dest_reg = ddddd_2_d_dst(dest_reg);
