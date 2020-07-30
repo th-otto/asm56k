@@ -362,13 +362,13 @@ par_move:
 		|	'#' '<' exp_int ',' ddddd					{	$$=GenParExpRegShort( $3, $5 ); 						}	/* Doesn't use extension word */	
 		|	ddddd ',' ddddd 							{	$$=GenParRegReg($1,$3); 								}
 		|	MMRRR										{	$$=GenParUpdate($1);									}	/* U: address register update */
-		|	XMEM ea ',' ddddd							{	$$=GenMemReg(xmem_reg_pattern1,&$2, $4);				}	/* X: parallel moves */
-		|	ddddd ',' XMEM ea							{	$$=GenMemReg(xmem_reg_pattern2,&$4, $1);				}	/* X: parallel moves */
+		|	XMEM ea ',' ddddd							{	$$=GenMemReg(xmem_reg_pattern1,&$2, $4, 1);				}	/* X: parallel moves */
+		|	ddddd ',' XMEM ea							{	$$=GenMemReg(xmem_reg_pattern2,&$4, $1, 0);				}	/* X: parallel moves */
 		|	'#' exp_int ',' ddddd ddddd ',' ddddd		{	$$=GenParExpRegRegReg($2,$4,$5,$7); 					}	/*buggy*/		/* X:R parallel moves */
 		|	XMEM ea ',' ddddd ddddd ',' ddddd			{	$$=GenParEaRegRegReg(&$2,$4,$5,$7); 					}	/*buggy*/	
 		|	ddddd ',' XMEM ea ddddd ',' ddddd			{	$$=GenParRegEaRegReg($1,&$4,$5,$7); 					}	/* X:R: (class II move encapsuled) */
-		|	YMEM ea ',' ddddd							{	$$=GenMemReg(ymem_reg_pattern1,&$2, $4);				}  
-		|	ddddd ',' YMEM ea							{	$$=GenMemReg(ymem_reg_pattern2,&$4, $1);				}
+		|	YMEM ea ',' ddddd							{	$$=GenMemReg(ymem_reg_pattern1,&$2, $4, 1);				}
+		|	ddddd ',' YMEM ea							{	$$=GenMemReg(ymem_reg_pattern2,&$4, $1, 0);				}
 		|	ddddd ',' ddddd '#' SH exp_int ',' ddddd	{	$$=GenParRegRegExpReg($1,$3,$6,$8); 					}	/*untested*/
 		|	ddddd ',' ddddd YMEM ea ',' ddddd			{	$$=GenParRegRegEaReg($1,$3,&$5,$7); 					}	/*untested*/
 		|	ddddd ',' ddddd ddddd ',' YMEM ea			{	$$=GenParRegRegRegEa( $1,$3,$4,&$7);					}

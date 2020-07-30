@@ -25,7 +25,7 @@ bcode GenParExpReg(int val, uint dst_reg);
 bcode GenParExpRegShort(int val, uint dst_reg);
 bcode GenParRegReg(uint src_reg, uint dst_reg);
 bcode GenParUpdate(uint update_op);
-bcode GenMemReg(const uint *opcodes, bcode *ea, uint dst_reg);
+bcode GenMemReg(const uint *opcodes, bcode *ea, uint dst_reg, int is_dst);
 bcode GenParExpRegRegReg(int val,uint dst_reg1, uint src_reg2, uint dst_reg2);
 bcode GenParEaRegRegReg(bcode *ea,uint dst_reg1, uint src_reg2, uint dst_reg2);
 bcode GenParRegEaRegReg(uint src_reg1,bcode *ea, uint src_reg2, uint dst_reg2);

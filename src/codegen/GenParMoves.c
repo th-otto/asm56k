@@ -177,7 +177,7 @@ bcode GenParUpdate(uint update_op)
 }
 
 
-bcode GenMemReg(const uint *opcodes, bcode *ea, uint dst_reg)
+bcode GenMemReg(const uint *opcodes, bcode *ea, uint dst_reg, int is_dst)
 {
 	bcode move;
 
@@ -197,7 +197,7 @@ bcode GenMemReg(const uint *opcodes, bcode *ea, uint dst_reg)
 		dst_reg = ddddd_2_ddddd(dst_reg);
 		if (dst_reg == -1)
 		{
-			yyerror("In parallel move field: Illegal destination register specified.");
+			yyerror("In parallel move field: Illegal %s register specified.", is_dst ? "destination" : "source");
 			dst_reg = 0;
 		}
 		if (ea->sflag == 2)
