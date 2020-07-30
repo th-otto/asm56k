@@ -36,6 +36,7 @@ Author:     M.Buras (sqward)
 
 
 int g_currentLine = 1;
+int g_errorLine = 1;
 int g_passNum;
 int g_errorCount;
 int g_warnCount;
@@ -90,7 +91,7 @@ static void yymessage(const char *lineformat, const char *format, va_list arglis
 		}
 	}
 
-	fprintf(stderr, lineformat, inc_names[g_incStackDeepth], g_currentLine);
+	fprintf(stderr, lineformat, inc_names[g_incStackDeepth], g_errorLine);
 	vfprintf(stderr, format, arglist);
 	fputc('\n', stderr);
 }
@@ -132,6 +133,7 @@ static void InitParserPass1(void)
 	g_passNum = 0;						/* pass 1 */
 	pc = 0;
 	g_currentLine = 1;
+	g_errorLine = 1;
 	num_chunks = 0;
 	num_chunks2 = 0;
 	if_stack_l = 0;
@@ -149,6 +151,7 @@ static void InitParserPass2(void)
 	pc = 0;
 	if_stack_l = 0;
 	g_currentLine = 1;
+	g_errorLine = 1;
 	ResetStream();
 	PipeLineReset();
 	PushStream(g_tokens, inc_names[0], 1, -1, 0);

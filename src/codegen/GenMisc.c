@@ -1028,7 +1028,7 @@ void GenMovec1(const uint *insn_patt, uint dir, uint xory, bcode *ea, uint dest_
 		dest_reg = ddddd_2_ddddd2(dest_reg);
 		if (dest_reg == -1)
 		{
-			dir ? yyerror(ERROR_16) : yyerror(ERROR_8);
+			yyerror(dir ? ERROR_16 : ERROR_8);
 			dest_reg = 0;
 		}
 		if (ea->sflag == 2)
@@ -1159,7 +1159,7 @@ void GenMovem(const uint *insn_patt, uint dir, bcode *ea, uint reg)
 		reg = ddddd_2_DDDDDD(reg);
 		if (reg == -1)
 		{
-			dir ? yyerror(ERROR_16) : yyerror(ERROR_8);
+			yyerror(dir ? ERROR_16 : ERROR_8);
 			reg = 0;
 		}
 		if (ea->sflag == 2)
@@ -1372,7 +1372,7 @@ void GenMovep4(uint rw, uint xory, bcode *ea, uint reg)
 		reg = ddddd_2_DDDDDD(reg);
 		if (reg == -1)
 		{
-			yyerror("Illegal destination register.");
+			yyerror(ERROR_8);
 		} else
 		{
 			if (ea->sflag == 2)

@@ -17,6 +17,7 @@ extern int      g_write_zero_sections;
 extern void		asm_abort(void);
 
 extern int 		g_currentLine;
+extern int 		g_errorLine;
 extern int      g_LocalSerial;
 extern void		yyerror(const char *s, ... ) __attribute__((format(printf, 1, 2)));
 extern void     yywarning(const char *s, ... ) __attribute__((format(printf, 1, 2)));

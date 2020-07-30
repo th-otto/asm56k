@@ -66,6 +66,7 @@ int yylex(void)
 	case TOKEN_ENTER_FILE:
 		inc_lines[g_incStackDeepth] = g_currentLine;
 		g_currentLine = 1;
+		g_errorLine = 1;
 		g_incStackDeepth++;
 		inc_names[g_incStackDeepth] = yylval.text.ptr;
 		g_CurrentFile = inc_names[g_incStackDeepth];
@@ -79,6 +80,7 @@ int yylex(void)
 		g_incStackDeepth--;
 		g_CurrentFile = inc_names[g_incStackDeepth];
 		g_currentLine = inc_lines[g_incStackDeepth];
+		g_errorLine = g_currentLine;
 		debugprint("re-entering: %s in line: %d.\n", inc_names[g_incStackDeepth], g_currentLine);
 		token = yylex();
 		break;
@@ -168,7 +170,7 @@ int yylex(void)
 void Record_Macro(hs *temp)
 {
 	SymSetValueMacro(temp, T_MACRO, (void *) GetCurrentStreamPos(), (void *) inc_names[g_incStackDeepth],
-					 (int) g_currentLine);
+					 g_currentLine);
 	Skip_Macro();
 }
 
@@ -264,6 +266,7 @@ void Replay_Macro(hs *name)
 
 	g_CurrentFile = name->m_data2;
 	g_currentLine = name->m_data3;
+	g_errorLine = g_currentLine;
 
 	g_pParamsArrayPool = pParamArray;
 	g_pParamsPool = pStoreParam;

@@ -96,27 +96,27 @@ input   :	/* empty */
         |	input line
         ;
 
-line    :	EOL                                         {									}
+line    :	EOL                                         {	g_errorLine = g_currentLine;	}
         |	label OP_END                                {   YYACCEPT;               		}
         |	OP_END                                      {   YYACCEPT;               		}
         |	label OP_MACROCALL                          {   MacroCall($2.ptr);      		}
         |	OP_MACROCALL                                {   MacroCall($1.ptr);      		}
-        |	label EOL                                   {   								}
-        |	_opcode EOL                                 {									}
+        |	label EOL                                   {   g_errorLine = g_currentLine;	}
+        |	_opcode EOL                                 {	g_errorLine = g_currentLine;	}
         |	_opcode OP_END                              {   YYACCEPT;               		}
-        |	label _opcode EOL							{									}
+        |	label _opcode EOL							{	g_errorLine = g_currentLine;	}
         |	label _opcode OP_END						{	YYACCEPT;						}
 		|	label OP_EQU exp OP_END 					{	SymSet($1->pString,$3); 		}
-		|	label OP_EQU exp EOL						{	SymSet($1->pString,$3); 		}
+		|	label OP_EQU exp EOL						{	SymSet($1->pString,$3); g_errorLine = g_currentLine; }
 		|	label OP_MACRO OP_END						{	MacroRecord($1->pString);		}
-		|	label OP_MACRO EOL							{	MacroRecord($1->pString);		}
+		|	label OP_MACRO EOL							{	MacroRecord($1->pString); g_errorLine = g_currentLine; }
 
 		|	label OP_DSM exp							{	GenDSM( $1, $3 );				}
 		|	OP_DSM	exp 								{	GenDSM( NULL, $2 ); 			}
 		|	OP_SET SYM ',' exp							{	SymSet($2.ptr,$4);				}
 
 		|	OP_MACRO OP_END 							{	MacroError();					}
-		|	OP_MACRO EOL								{	MacroError();					}
+		|	OP_MACRO EOL								{	MacroError(); g_errorLine = g_currentLine; }
 		|	OP_ERROR OP_STRING							{	
 															if (g_passNum != 0) 
 																yyerror($2.ptr);
@@ -125,7 +125,7 @@ line    :	EOL                                         {									}
 															if (g_passNum != 0)
 																yywarning($2.ptr);
 														}
-		|	error EOL
+		|	error EOL									{	g_errorLine = g_currentLine; }
 		;
 
 label	:	SYM ':' 									{	$$ = AddLabel( &$1 );		  }
@@ -282,7 +282,7 @@ code
 		|	OP_TRAPCC												{	GenTrapcc($1);							}
 		|	OP_VSL ddddd TAG1 exp_int ',' LMEM	ea					{	GenVsl($2,$4,&$7);						}
 		|	OP_MOVEM error											{	
-																		if (g_passNum != 0) yyerror("Illega movem operation.");
+																		if (g_passNum != 0) yyerror("Illegal movem operation.");
 																	}
 		;
 

@@ -96,6 +96,7 @@ void PushStream(TokenVal *pMacro, const char *pFileName, int curline, int params
 int PopStream(void)
 {
 	g_currentLine = streamsStack[g_streamsStrackIndex].line_num;
+	g_errorLine = g_currentLine;
 
 	g_pParamsArrayPool = streamsStack[g_streamsStrackIndex].params_array;
 	g_pParamsPool = streamsStack[g_streamsStrackIndex].pParamsPool;
@@ -149,6 +150,7 @@ int GetToken(TokenVal **pTokenValue)
 	if (token == EOL)
 	{
 		g_currentLine = pToken->data.val.integer;
+		g_errorLine = g_currentLine - 1;
 	}
 
 	return token;
@@ -173,6 +175,7 @@ int SkipToken(void)
 	if (token == EOL)
 	{
 		g_currentLine = pToken->data.val.integer;
+		g_errorLine = g_currentLine - 1;
 	}
 
 	skipping = FALSE;
@@ -237,6 +240,7 @@ static void CreateNewLexBuffer(FILE *pFile, const char *pFileName)
 	inc_names[g_incStackDeepth] = StringBufferInsert(pFileName);
 
 	g_currentLine = 1;
+	g_errorLine = 1;
 
 	asm_switch_to_buffer(inc_buffers[g_incStackDeepth]);
 
@@ -406,6 +410,8 @@ int PopFile(void)
 	{
 		g_incStackDeepth--;
 		g_currentLine = inc_lines[g_incStackDeepth];
+		g_errorLine = g_currentLine;
+
 		asm_switch_to_buffer(inc_buffers[g_incStackDeepth]);
 		return FALSE;
 	}
@@ -433,7 +439,7 @@ int SkipConditional(void)
 			nest++;
 			if (nest > 1024)
 			{
-				yyerror("Conditional assembly nested too deep.\n");
+				yyerror("Conditional assembly nested too deep.");
 				asm_abort();
 			}
 			break;
@@ -486,7 +492,7 @@ void AddIncDir(const char *pDir)
 {
 	if (g_IncDirsNum >= MAX_INC_DIRS_LIST)
 	{
-		yyerror("To many include directories... MAX_INC_DIRS = %d\n", MAX_INC_DIRS_LIST);
+		yyerror("Too many include directories... MAX_INC_DIRS = %d\n", MAX_INC_DIRS_LIST);
 	} else
 	{
 		g_IncDirs[g_IncDirsNum] = strdup(pDir);

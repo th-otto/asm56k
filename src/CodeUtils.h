@@ -74,8 +74,8 @@ int		GetCurrentChunkBegin(void);
 void	retInit(raddr *ret);
 
 
-#define DSP56301 if (g_dsp_cpu != 56301) yyerror ("Illegal 56301 instruction. CPU is set to %d", g_dsp_cpu)
+#define DSP56301 if (g_dsp_cpu != 56301) yyerror ("Illegal %d instruction. CPU is set to %d", 56301, g_dsp_cpu)
 /* this is a bit pointless... */
-#define DSP56001 if (g_dsp_cpu != 56001) yyerror ("Illegal 56001 instruction. CPU is set to %d", g_dsp_cpu)
+#define DSP56001 if (g_dsp_cpu != 56001) yyerror ("Illegal %d instruction. CPU is set to %d", 56001, g_dsp_cpu)
 
 #endif /* _CODEUTILS_H_ */
