@@ -128,7 +128,8 @@ static void tiohist(FILE *pt, FILE *pb)
 		}
 		prev_icycle = icycle;
 		prev_blk = cur_blk;
-		while ((fc = getc(pt)) != '\n' && (fc != EOF)) ;
+		while ((fc = getc(pt)) != '\n' && fc != EOF)
+			;
 	}
 
 	/* find maximum cycles for scaling */

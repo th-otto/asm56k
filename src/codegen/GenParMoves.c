@@ -267,7 +267,7 @@ bcode GenParEaRegRegReg(bcode *ea, uint dst_reg1, uint src_reg2, uint dst_reg2)
 		dst_reg2 = ddddd_2_yff(dst_reg2);
 		if (dst_reg2 != 0 && dst_reg2 != 1)
 		{
-			yyerror("In Y field: Illelgal register: Y0,Y1 only allowed.");
+			yyerror("In Y field: Illegal register: Y0,Y1 only allowed.");
 		}
 		dst_reg1 = ddddd_2_ff(dst_reg1);
 		if (dst_reg1 == -1)
@@ -435,7 +435,7 @@ bcode GenParRegRegRegEa(uint src_reg1, uint dst_reg1, uint dst_reg2, bcode *ea)
 
 			if (dst_reg1 != 0 && dst_reg1 != 1)
 			{
-				yyerror("In X field: Illelgal register: X0,X1 only allowed.");
+				yyerror("In X field: Illegal register: X0,X1 only allowed.");
 			}
 
 			dst_reg2 = ddddd_2_yff(dst_reg2);

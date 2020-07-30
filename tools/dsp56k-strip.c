@@ -468,7 +468,8 @@ char *tmpnam(char *template)
 	if (t < 0L)
 		t *= -1L;
 	sprintf(tbuf, "%05ld", t);
-	for (i = strlen(subpat) - 1, p = tbuf + strlen(tbuf); i > 0; i--, p--) ;
+	for (i = strlen(subpat) - 1, p = tbuf + strlen(tbuf); i > 0; i--, p--)
+		;
 	i = 'a';
 	do
 	{
