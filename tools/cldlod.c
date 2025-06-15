@@ -104,7 +104,7 @@ static void swapw(void *ptr, int size, int nitems)
 	}
 }
 #else
-#define swapw (ptr, size, nitems)
+#define swapw(ptr, size, nitems)
 #endif
 
 

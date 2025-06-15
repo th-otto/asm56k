@@ -12,20 +12,20 @@ Author:     M.Buras (sqward)
 #include <asm_types.h>
 #include <CodeUtils.h>
 
-uint const jmp_pattern[2];
-uint const jcc_pattern[2];
-uint const jsr_pattern[2];
-uint const jscc_pattern[2];
+extern uint const jmp_pattern[2];
+extern uint const jcc_pattern[2];
+extern uint const jsr_pattern[2];
+extern uint const jscc_pattern[2];
 
-int const jclr_patterns[6];
-int const jsclr_patterns[6];
-int const jset_patterns[6];
-int const jsset_patterns[6];
+extern int const jclr_patterns[6];
+extern int const jsclr_patterns[6];
+extern int const jset_patterns[6];
+extern int const jsset_patterns[6];
 
-uint const movec_pattern1[2];
-uint const movec_pattern2[2];
-uint const movem_pattern1[2];
-uint const movem_pattern2[2];
+extern uint const movec_pattern1[2];
+extern uint const movec_pattern2[2];
+extern uint const movem_pattern1[2];
+extern uint const movem_pattern2[2];
 
 void GenOneParamParMove(uint insn_patt, uint reg, bcode *par_move);
 void GenBccRelTarger(uint insn_patt, raddr *rel_target);

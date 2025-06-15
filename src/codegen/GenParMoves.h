@@ -12,13 +12,13 @@ Author:     M.Buras (sqward)
 #include <asm_types.h>
 #include <CodeUtils.h>
 
-uint const xmem_reg_pattern1[2];
-uint const xmem_reg_pattern2[2];
-uint const ymem_reg_pattern1[2];
-uint const ymem_reg_pattern2[2];
-uint const lmem_reg_pattern1[2];
-uint const lmem_reg_pattern2[2];
-uint const XRegYReg_pattern[4];
+extern uint const xmem_reg_pattern1[2];
+extern uint const xmem_reg_pattern2[2];
+extern uint const ymem_reg_pattern1[2];
+extern uint const ymem_reg_pattern2[2];
+extern uint const lmem_reg_pattern1[2];
+extern uint const lmem_reg_pattern2[2];
+extern uint const XRegYReg_pattern[4];
 
 bcode GenParIFcc(uint condition, uint opcode);
 bcode GenParExpReg(int val, uint dst_reg);

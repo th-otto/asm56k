@@ -2,12 +2,6 @@ prefix = /usr/local
 bindir = $(prefix)/bin
 
 #-----------------------------------------------
-#target file name
-#-----------------------------------------------
-
-TARGETNAME=asm56k
-
-#-----------------------------------------------
 #srcdir is a path to your top level "buildfiles" file
 #-----------------------------------------------
 srcdir = ../src
@@ -50,13 +44,21 @@ CROSSPREFIX=m68k-atari-mint-
 CPU=-m68020-60
 
 NATIVECC = gcc
+EXE_EXT=.ttp
 
 else
 
 NATIVECC = $(CC)
 CPU=
+EXE_EXT=
 
 endif
+
+#-----------------------------------------------
+#target file name
+#-----------------------------------------------
+
+TARGETNAME=asm56k$(EXE_EXT)
 
 
 CC=$(CROSSPREFIX)gcc
